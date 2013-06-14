@@ -1,0 +1,21 @@
+MobiTool
+
+The point:
+I was given a kindle, I got some books, some had bad punctuation
+and spelling mistakes, or the OCR had just gotten it wrong.
+
+I wrote this so I could fix them, but that purpose got waylaid
+when I was bored.
+
+What it does:
+
+- Opens and displays mobi documents encoded with PalmDoc compression
+- Extract/replace images and text
+- Modify some basic information (title, author, blurb, cover images)
+
+What it doesn't (but may do in future), or what's broken:
+
+- Compress with PalmDoc (the unit test succeeds, but kindle doesn't
+  display correctly in places)
+- Generate mobi table of contents for imported text
+- Decode/generate INDX and TAGX records
