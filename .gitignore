@@ -1,0 +1,20 @@
+*.class
+*.patch
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Eclipse files
+.classpath
+.project
+
+# Mobi files
+*.mobi
+*.html
+*.htm
+
+test_content
+doc
+bin

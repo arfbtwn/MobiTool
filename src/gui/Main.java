@@ -16,10 +16,23 @@
  */
 package gui;
 
+import little.nj.gui.LookAndFeelDialog;
+import little.nj.util.Statics;
+
 public class Main {
 
     @SuppressWarnings("unused")
     public static void main(String[] args) {
+        try {
+            // Read style from somewhere
+            String style = Statics.EMPTY_STRING;
+            
+            LookAndFeelDialog.setStyle(style);
+            
+        } catch (IllegalArgumentException e) {
+            LookAndFeelDialog.showDialog();
+        }
+        
         Controller c = new Controller();
     }
 }

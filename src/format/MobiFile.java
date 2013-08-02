@@ -308,6 +308,19 @@ public class MobiFile extends PdbFile {
         System.out.println("Extracting Images...");
         extractImages();
     }
+    
+    /* (non-Javadoc)
+     * @see format.PdbFile#reload()
+     */
+    @Override
+    public void reload() throws IOException {
+        super.reload();
+        try {
+            parse();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     protected void refresh() {
         removeText();

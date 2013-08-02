@@ -338,7 +338,7 @@ public class PalmDocCodec implements ICodec {
                     break;
             } while (in.position() < in.capacity());
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return raw.position();
     }
