@@ -17,14 +17,12 @@
 package gui;
 
 import java.awt.event.ActionEvent;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
-/**
- * @author Nicholas
- * 
- */
+
 public class HtmlCommands extends FileCommands {
 
     @SuppressWarnings("serial")
@@ -37,9 +35,17 @@ public class HtmlCommands extends FileCommands {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (getController().file != null)
-                if (jfc.showSaveDialog(getController().edit) == JFileChooser.APPROVE_OPTION)
-                    getController().file.getText().writeToFile(
-                            jfc.getSelectedFile());
+                if (jfc.showSaveDialog(getController().edit) == JFileChooser.APPROVE_OPTION) {
+                    
+                    try (FileOutputStream fos = new FileOutputStream(jfc.getSelectedFile())) {
+                        byte[][] records = getController().file.getText().getRecords();
+                        
+                        for(byte[] i : records)
+                            fos.write(i);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }                 
         }
     }
 

@@ -21,14 +21,12 @@ import interfaces.ICodec;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import little.nj.util.Statics;
-import util.WritesToFile;
 
-public class PalmDocText implements WritesToFile {
+public class PalmDocText {
 
     private ICodec                codec;
 
@@ -58,10 +56,7 @@ public class PalmDocText implements WritesToFile {
             e.printStackTrace();
         }
     }
-
-    /**
-     * @return the codec
-     */
+    
     public ICodec getCodec() {
         return codec;
     }
@@ -124,18 +119,5 @@ public class PalmDocText implements WritesToFile {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public boolean writeToFile(File f) {
-        try {
-            FileOutputStream fos = new FileOutputStream(f);
-            o_stream.writeTo(fos);
-            fos.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 }
