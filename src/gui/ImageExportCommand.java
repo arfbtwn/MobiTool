@@ -35,14 +35,17 @@ public class ImageExportCommand extends BaseCommand {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (getController().file != null) {
-            List<BufferedImage> list = Arrays.asList(getController().images
+        if (controller.file != null) {
+            List<BufferedImage> list = Arrays.asList(controller.images
                     .getImageView().getSelectedItems());
             int j = 1;
             File file = null;
             for (BufferedImage i : list) {
-                file = new File(System.getProperty("user.dir") + "/" + "Image"
-                        + j++ + "." + "jpg");
+                file = new File(
+                        String.format("%s%s%sImage%d.jpg", 
+                                System.getProperty("user.dir"),
+                                File.separator,
+                                j++));
                 try {
                     ImageIO.write(i, "jpg", file);
                 } catch (IOException e1) {
@@ -50,7 +53,7 @@ public class ImageExportCommand extends BaseCommand {
                 }
             }
             if (file != null)
-                JOptionPane.showMessageDialog(getController().edit,
+                JOptionPane.showMessageDialog(controller.edit,
                         "Images Extracted to: " + file.getParentFile()
                                 + "\\Image*.jpg");
         }

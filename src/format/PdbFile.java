@@ -20,11 +20,13 @@ import headers.PdbHeader;
 import headers.PdbToc;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+import little.nj.util.FileUtil;
 import little.nj.util.Statics;
+import little.nj.util.StreamUtil.OutputAction;
 import records.PdbRecord;
 import util.WritesToFile;
 
@@ -78,18 +80,26 @@ public class PdbFile implements WritesToFile {
 
     @Override
     public boolean writeToFile(File out) {
-        try {
-            getToc().refresh();
-            FileOutputStream fos = new FileOutputStream(out);
-            ByteBuffer bb = ByteBuffer.allocate(getFileLength());
-            header.write(bb);
-            fos.write(bb.array());
-            fos.flush();
-            fos.close();
+        /*
+         * Prepare the output buffer
+         */
+        getToc().refresh();
+        final ByteBuffer bb = ByteBuffer.allocate(getFileLength());
+        header.write(bb);
+        
+        /*
+         * Write the file
+         */
+        FileUtil util = FileUtil.getInstance();
+        if (util.writeFile(file, new OutputAction() {
+
+            @Override
+            public void act(OutputStream stream) throws IOException {
+                stream.write(bb.array());
+                
+            }})) {
             file = out;
             return true;
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return false;
     }

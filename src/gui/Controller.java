@@ -112,6 +112,14 @@ public class Controller {
         images.setExtractAction(new ImageExportCommand(this));
         images.setCoversAction(new AbstractAction("Set Cover & Thumbnail") {
 
+            /* (non-Javadoc)
+             * @see javax.swing.AbstractAction#isEnabled()
+             */
+            @Override
+            public boolean isEnabled() {
+                return images.getImageView().getSelectedItems().length > 0;
+            }
+            
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 file.setCovers(images.getImageView().getSelectedItems());

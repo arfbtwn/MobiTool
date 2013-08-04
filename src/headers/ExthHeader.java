@@ -26,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import little.nj.adts.ByteFieldSet;
+import little.nj.adts.ByteFieldMapSet;
 import little.nj.adts.IntByteField;
 import little.nj.adts.StringByteField;
 import little.nj.algorithms.KmpSearch;
@@ -37,11 +37,11 @@ public class ExthHeader implements Iterable<ExthRecord> {
 
     public class ExthRecord {
 
-        private int  id;
+        private int id;
 
-        Integer      integer_data;
+        private Integer integer_data;
 
-        String       string_data;
+        private String string_data;
 
         private Type type;
 
@@ -61,7 +61,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
         private void decodeData(byte[] data) {
             switch (getType()) {
             case INT:
-                integer_data = Integer.valueOf(ByteBuffer.wrap(data).getInt());
+                integer_data = ByteBuffer.wrap(data).getInt();
                 break;
             case STRING:
                 string_data = new String(data, charset);
@@ -156,46 +156,46 @@ public class ExthHeader implements Iterable<ExthRecord> {
         INT, STRING;
     }
 
-    public static final ByteFieldSet ALL_FIELDS     = new ByteFieldSet();
+    public static final ByteFieldMapSet ALL_FIELDS = new ByteFieldMapSet();
 
-    public static final int          AUTHOR         = 100;
+    public static final int AUTHOR = 100;
 
-    public static final int          BLURB          = 103;
+    public static final int BLURB = 103;
 
-    public static final int          COVER          = 201;
+    public static final int COVER = 201;
 
-    public static final int          CREATOR_ID     = 204;
+    public static final int CREATOR_ID = 204;
 
-    public static final int          CREATOR_STRING = 108;
+    public static final int CREATOR_STRING = 108;
 
-    public static final Integer[]    ENCODE_INT;
+    public static final Integer[] ENCODE_INT;
 
-    public static final Integer[]    ENCODE_STRING;
+    public static final Integer[] ENCODE_STRING;
 
-    public static final int          FAKECOVER      = 203;
+    public static final int FAKECOVER = 203;
 
-    public static final int          ISBN           = 104;
+    public static final int ISBN = 104;
 
-    public static final int          THUMB          = 202;
+    public static final int THUMB = 202;
 
-    public static final int          TITLE          = 503;
+    public static final int TITLE = 503;
     static {
         ALL_FIELDS.add(new StringByteField(4, "Identifier", CHARSET, "EXTH"));
         ALL_FIELDS.add(new IntByteField("Length"));
         ALL_FIELDS.add(new IntByteField("Count"));
         ENCODE_STRING = new Integer[] { Integer.valueOf(AUTHOR),
-            Integer.valueOf(BLURB), Integer.valueOf(ISBN),
-            Integer.valueOf(CREATOR_STRING), Integer.valueOf(TITLE) };
+                Integer.valueOf(BLURB), Integer.valueOf(ISBN),
+                Integer.valueOf(CREATOR_STRING), Integer.valueOf(TITLE) };
         ENCODE_INT = new Integer[] { Integer.valueOf(COVER),
-            Integer.valueOf(THUMB), Integer.valueOf(FAKECOVER),
-            Integer.valueOf(CREATOR_ID) };
+                Integer.valueOf(THUMB), Integer.valueOf(FAKECOVER),
+                Integer.valueOf(CREATOR_ID) };
     }
 
-    private Charset                  charset;
+    private Charset charset;
 
-    private ByteFieldSet             fields;
+    private ByteFieldMapSet fields;
 
-    private List<ExthRecord>         records;
+    private List<ExthRecord> records;
 
     public ExthHeader(ByteBuffer in, Charset ch) throws InvalidHeaderException {
         this(ch);
@@ -280,7 +280,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
             throw new InvalidHeaderException();
         records.clear();
         fields.parseAll(raw);
-        int count = fields.<IntByteField>getAs("Count").getValue();
+        int count = fields.<IntByteField> getAs("Count").getValue();
         for (int i = 0; i < count; i++)
             records.add(new ExthRecord(raw));
     }
@@ -338,8 +338,8 @@ public class ExthHeader implements Iterable<ExthRecord> {
     }
 
     public void write(ByteBuffer out) {
-        fields.<IntByteField>getAs("Length").setValue(getLength());
-        fields.<IntByteField>getAs("Count").setValue(records.size());
+        fields.<IntByteField> getAs("Length").setValue(getLength());
+        fields.<IntByteField> getAs("Count").setValue(records.size());
         fields.write(out);
         for (ExthRecord i : records)
             out.put(i.getBuffer());

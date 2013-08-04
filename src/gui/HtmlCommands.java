@@ -34,18 +34,15 @@ public class HtmlCommands extends FileCommands {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (getController().file != null)
-                if (jfc.showSaveDialog(getController().edit) == JFileChooser.APPROVE_OPTION) {
+            if (jfc.showSaveDialog(controller.edit) == JFileChooser.APPROVE_OPTION)
+                try (FileOutputStream fos = new FileOutputStream(jfc.getSelectedFile())) {
+                    byte[][] records = controller.file.getText().getRecords();
                     
-                    try (FileOutputStream fos = new FileOutputStream(jfc.getSelectedFile())) {
-                        byte[][] records = getController().file.getText().getRecords();
-                        
-                        for(byte[] i : records)
-                            fos.write(i);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }                 
+                    for(byte[] i : records)
+                        fos.write(i);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
         }
     }
 
@@ -58,15 +55,14 @@ public class HtmlCommands extends FileCommands {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Controller c = getController();
-            if (c.file != null)
-                if (jfc.showOpenDialog(c.edit) == JFileChooser.APPROVE_OPTION)
-                    try {
-                        c.file.importFromHtml(jfc.getSelectedFile());
-                        c.refresh();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+            Controller c = controller;
+            if (jfc.showOpenDialog(c.edit) == JFileChooser.APPROVE_OPTION)
+                try {
+                    c.file.importFromHtml(jfc.getSelectedFile());
+                    c.refresh();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
         }
     }
 }

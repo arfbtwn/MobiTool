@@ -27,11 +27,11 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.ComponentView;
-import javax.swing.text.Document;
 import javax.swing.text.Element;
 import javax.swing.text.Position.Bias;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
+import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.ImageView;
 
@@ -153,9 +153,8 @@ public class MobiEditorKit extends HTMLEditorKit {
     }
 
     @Override
-    public Document createDefaultDocument() {
-        // TODO Auto-generated method stub
-        return super.createDefaultDocument();
+    public HTMLDocument createDefaultDocument() {
+        return (HTMLDocument) super.createDefaultDocument();
     }
 
     @Override

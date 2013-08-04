@@ -48,27 +48,11 @@ public class MobiFile extends PdbFile {
 
     private MobiDocHeader       mobi;
 
-    /*
-     * Headers
-     */
     private PalmDocHeader       palm;
 
-    /*
-     * Content
-     */
     private PalmDocText         text;
 
-    /*
-     * Header location
-     */
     private PdbRecord           zero;
-
-    public MobiFile(File in, IManageCodecs codecs) throws IOException,
-            InvalidHeaderException {
-        super(in);
-        codec_manager = codecs;
-        parse();
-    }
 
     public MobiFile(IManageCodecs codecs) {
         zero = new PdbRecord();
@@ -77,6 +61,13 @@ public class MobiFile extends PdbFile {
         text = new PalmDocText(mobi.getEncoding());
         codec_manager = codecs;
         getToc().iterator().add(zero);
+    }
+    
+    public MobiFile(File in, IManageCodecs codecs) throws IOException,
+            InvalidHeaderException {
+        super(in);
+        codec_manager = codecs;
+        parse();
     }
 
     protected void adjustRecordPointers(int from, int count) {
@@ -176,9 +167,9 @@ public class MobiFile extends PdbFile {
         int record = mobi.getFirstContentRecord();
         int count = palm.getTextRecordCount();
         if (record > 0) {
+            setTextCodec();
             ListIterator<?> it = getToc().iterator(record);
-            text.setCodec(codec_manager.getCodec(palm.getCompression()
-                    .toString()));
+            
             while (count-- > 0)
                 text.addToFile(((PdbRecord) it.next()).getBuffer());
         }
@@ -246,7 +237,13 @@ public class MobiFile extends PdbFile {
     }
 
     public void importFromHtml(File file) throws IOException {
+        setTextCodec();
         getText().readFromFile(file);
+    }
+    
+    protected void setTextCodec() {
+        getText().setCodec(codec_manager.getCodec(palm.getCompression()
+                    .toString()));
     }
 
     protected void insertContent() {
@@ -423,7 +420,7 @@ public class MobiFile extends PdbFile {
 
     @Override
     public boolean writeToFile(File out) {
-        //refresh();
+        refresh();
         return super.writeToFile(out);
     }
 }

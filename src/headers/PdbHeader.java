@@ -21,7 +21,7 @@ import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import little.nj.adts.ByteFieldSet;
+import little.nj.adts.ByteFieldMapSet;
 import little.nj.adts.IntByteField;
 import little.nj.adts.ShortByteField;
 import little.nj.adts.StringByteField;
@@ -29,8 +29,8 @@ import little.nj.adts.StringByteField;
 
 public class PdbHeader {
 
-    public static final ByteFieldSet ALL_FIELDS;
-
+    public static final ByteFieldMapSet ALL_FIELDS;
+    
     public static final Charset      CHARSET;
 
     public static final Calendar     EPOCH_MAC;
@@ -49,7 +49,7 @@ public class PdbHeader {
         EPOCH_NIX = Calendar.getInstance(TIMEZONE);
         EPOCH_NIX.clear();
         EPOCH_NIX.set(1970, 0, 1);
-        ALL_FIELDS = new ByteFieldSet();
+        ALL_FIELDS = new ByteFieldMapSet();
         ALL_FIELDS.add(new StringByteField(LENGTH_NAME, "Name", CHARSET));
         ALL_FIELDS.add(new ShortByteField("Attributes"));
         ALL_FIELDS.add(new ShortByteField("Version"));
@@ -94,7 +94,7 @@ public class PdbHeader {
         return (int) i;
     }
 
-    private ByteFieldSet fields;
+    private ByteFieldMapSet fields;
 
     private boolean      signed_date;
 

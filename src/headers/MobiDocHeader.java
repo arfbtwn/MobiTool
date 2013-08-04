@@ -20,7 +20,7 @@ import static headers.PdbHeader.CHARSET;
 import java.nio.ByteBuffer;
 
 import little.nj.adts.ByteField;
-import little.nj.adts.ByteFieldSet;
+import little.nj.adts.ByteFieldMapSet;
 import little.nj.adts.IntByteField;
 import little.nj.adts.ShortByteField;
 import little.nj.adts.StringByteField;
@@ -36,7 +36,7 @@ public class MobiDocHeader {
      * A placeholder for all known fields. This is mainly useful for
      * new headers and allows us to store some defaults
      */
-    public static final ByteFieldSet ALL_FIELDS   = new ByteFieldSet();
+    public static final ByteFieldMapSet ALL_FIELDS   = new ByteFieldMapSet();
 
     /**
      * The number of 'extra index' fields. These are unused
@@ -102,7 +102,7 @@ public class MobiDocHeader {
 
     private ExthHeader               exth;
 
-    private ByteFieldSet             fields;
+    private ByteFieldMapSet             fields;
 
     public MobiDocHeader() {
         fields = ALL_FIELDS.clone();
@@ -129,7 +129,7 @@ public class MobiDocHeader {
         return fields.<IntByteField>getAs("FCIS Record").getValue();
     }
 
-    public ByteFieldSet getFields() {
+    public ByteFieldMapSet getFields() {
         return fields;
     }
 

@@ -18,7 +18,7 @@ package headers;
 
 import java.nio.ByteBuffer;
 
-import little.nj.adts.ByteFieldSet;
+import little.nj.adts.ByteFieldMapSet;
 import little.nj.adts.IntByteField;
 import little.nj.adts.ShortByteField;
 
@@ -26,7 +26,7 @@ import headers.Enumerations.Compression;
 
 public class PalmDocHeader {
 
-    public static final ByteFieldSet ALL_FIELDS = new ByteFieldSet();
+    public static final ByteFieldMapSet ALL_FIELDS = new ByteFieldMapSet();
 
     public static final short        LENGTH     = 16;
     static {
@@ -39,7 +39,7 @@ public class PalmDocHeader {
         ALL_FIELDS.add(new IntByteField("Current Position"));
     }
 
-    protected ByteFieldSet           fields;
+    protected ByteFieldMapSet           fields;
 
     public PalmDocHeader() {
         fields = ALL_FIELDS.clone();
@@ -58,7 +58,7 @@ public class PalmDocHeader {
         return Compression.valueOf(fields.<ShortByteField>getAs("Compression").getValue());
     }
 
-    public ByteFieldSet getFields() {
+    public ByteFieldMapSet getFields() {
         return fields;
     }
 

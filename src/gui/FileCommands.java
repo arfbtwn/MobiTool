@@ -25,10 +25,7 @@ import little.nj.util.Statics;
 import exceptions.InvalidHeaderException;
 import format.MobiFile;
 
-/**
- * @author Nicholas
- * 
- */
+
 public class FileCommands {
 
     @SuppressWarnings("serial")
@@ -40,8 +37,8 @@ public class FileCommands {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            getController().file = new MobiFile(getController().codecs);
-            getController().refresh();
+            controller.file = new MobiFile(controller.codecs);
+            controller.refresh();
         }
     }
 
@@ -54,11 +51,11 @@ public class FileCommands {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            if (jfc.showOpenDialog(getController().edit) == JFileChooser.APPROVE_OPTION)
+            if (jfc.showOpenDialog(controller.edit) == JFileChooser.APPROVE_OPTION)
                 try {
-                    getController().file = new MobiFile(jfc.getSelectedFile(),
-                            getController().codecs);
-                    getController().refresh();
+                    controller.file = new MobiFile(jfc.getSelectedFile(),
+                            controller.codecs);
+                    controller.refresh();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InvalidHeaderException e) {
@@ -76,10 +73,10 @@ public class FileCommands {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (getController().file != null)
-                if (jfc.showSaveDialog(getController().edit) == JFileChooser.APPROVE_OPTION) {
-                    getController().apply();
-                    getController().file.writeToFile(jfc.getSelectedFile());
+            if (controller.file != null)
+                if (jfc.showSaveDialog(controller.edit) == JFileChooser.APPROVE_OPTION) {
+                    controller.apply();
+                    controller.file.writeToFile(jfc.getSelectedFile());
                 }
         }
     }
@@ -93,9 +90,9 @@ public class FileCommands {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            if (getController().file != null) {
-                getController().apply();
-                getController().file.writeToFile();
+            if (controller.file != null) {
+                controller.apply();
+                controller.file.writeToFile();
             }
         }
     }

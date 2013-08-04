@@ -26,7 +26,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Enumeration;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -39,11 +38,10 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
-import javax.swing.text.ElementIterator;
 import javax.swing.text.html.HTMLDocument;
+
+import little.nj.util.Statics;
 
 import editorkit.MobiEditorKit;
 
@@ -146,8 +144,8 @@ public class TextPanel extends JPanel implements HyperlinkListener {
         _scroller.setViewportView(_content);
         _scroller
                 .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        _scroller
-                .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+//        _scroller
+//                .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         _content.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         _content.setEditable(false);
         _kit.setParent(_scroller);
@@ -185,35 +183,15 @@ public class TextPanel extends JPanel implements HyperlinkListener {
     }
 
     public void setText(String in) {
-        HTMLDocument doc = (HTMLDocument) _kit.createDefaultDocument();
+        StringReader reader = new StringReader(in);
+        
+        HTMLDocument doc = _kit.createDefaultDocument();
         
         try {
-            StringReader read = new StringReader(in);
-            
-            doc.putProperty("IgnoreCharsetDirective", Boolean.TRUE);
-            _kit.read(read, doc, 0);
-            
-            ElementIterator it = new ElementIterator(doc);
-            Element elmo;
-            while ((elmo = it.next()) != null) {
-                AttributeSet attr = elmo.getAttributes();
-                for (Enumeration<?> i = attr.getAttributeNames(); i
-                        .hasMoreElements();) {
-                    Object x = i.nextElement();
-                    Object y = attr.getAttribute(x);
-                    if (x.toString().equals("width")
-                            && y.toString().matches("[-0]\\d*\\w+")) {
-                        attr = doc.getStyleSheet().removeAttribute(attr, x);
-                        doc.setParagraphAttributes(elmo.getStartOffset(),
-                                elmo.getEndOffset() - elmo.getStartOffset(),
-                                attr, true);
-                    }
-                }
-            }
-        } catch (IOException | BadLocationException ex) {
-            ex.printStackTrace();
-        } finally {
+            _kit.read(reader, doc, 0);
             _content.setDocument(doc);
+        } catch (IOException | BadLocationException e) {
+            _content.setText(Statics.EMPTY_STRING);
         }
     }
 }
