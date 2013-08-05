@@ -73,6 +73,10 @@ public class PdbFile implements WritesToFile {
     public void reload() throws IOException {
         parse(ByteBuffer.wrap(Statics.readFile(file)));
     }
+    
+    public boolean canSave() {
+        return file != null;
+    }
 
     public boolean writeToFile() {
         return writeToFile(file);

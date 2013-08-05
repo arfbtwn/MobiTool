@@ -20,22 +20,8 @@ import headers.Enumerations.Encoding;
 import interfaces.ICodec;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.nio.ByteBuffer;
-import java.util.Enumeration;
-
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Style;
-import javax.swing.text.html.CSS;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.StyleSheet;
-
-import editorkit.MobiEditorKit;
-
-import little.nj.util.Statics;
 
 public class PalmDocText {
 
@@ -49,10 +35,6 @@ public class PalmDocText {
 
     public PalmDocText(Encoding enc) {
         encoding = enc;
-    }
-
-    public PalmDocText(File in) throws IOException {
-        readFromFile(in);
     }
 
     public PalmDocText(short r_length, Encoding enc) {
@@ -101,49 +83,6 @@ public class PalmDocText {
 
     public int getUncompressedLength() {
         return o_stream.size();
-    }
-
-    public void readFromFile(File file) throws IOException {
-        
-        MobiEditorKit kit = new MobiEditorKit();
-        
-        HTMLDocument doc = kit.createDefaultDocument();
-        
-        StyleSheet styles = doc.getStyleSheet();
-        
-        try {
-            doc.putProperty("IgnoreCharsetDirective", Boolean.TRUE);
-            
-            kit.read(new StringReader(new String(Statics.readFile(file), encoding.getCharset())), doc, 0);
-            
-            Enumeration<?> rules = styles.getStyleNames();
-            while(rules.hasMoreElements()) {
-                String name = (String)rules.nextElement();
-                
-                if (name.equals("p")) {
-                    Style style = styles.getStyle(name);
-                    
-                    Enumeration<?> pairs = style.getAttributeNames();
-                    
-                    while(pairs.hasMoreElements()) {
-                         Object attr = pairs.nextElement();
-                        
-                        if (attr instanceof CSS.Attribute && 
-                                attr.toString().startsWith("margin")) {
-                            style.removeAttribute(attr);
-                        }
-                    }
-                }
-            }
-            
-            StringWriter writer = new StringWriter(doc.getLength());
-            
-            kit.write(writer, doc, 0, doc.getLength());
-            
-            setText(writer.toString());
-        } catch (BadLocationException ex) {
-            setText(Statics.EMPTY_STRING);
-        }
     }
 
     /**

@@ -70,7 +70,7 @@ public class FileCommands {
         public FileSaveAsCommand(Controller c) {
             super("Save As...", Statics.getImageIcon("images/SaveAs24.gif"), c);
         }
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             if (controller.file != null)
@@ -86,6 +86,14 @@ public class FileCommands {
 
         public FileSaveCommand(Controller c) {
             super("Save", Statics.getImageIcon("images/Save24.gif"), c);
+        }
+        
+        /* (non-Javadoc)
+         * @see javax.swing.AbstractAction#isEnabled()
+         */
+        @Override
+        public boolean isEnabled() {
+            return controller.file.canSave();
         }
 
         @Override

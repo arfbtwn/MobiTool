@@ -25,7 +25,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +37,14 @@ import java.util.ListIterator;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.html.CSS;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
+
+import little.nj.util.Statics;
 
 import records.PdbRecord;
 import exceptions.InvalidHeaderException;
@@ -238,7 +249,52 @@ public class MobiFile extends PdbFile {
 
     public void importFromHtml(File file) throws IOException {
         setTextCodec();
-        getText().readFromFile(file);
+        
+        HTMLEditorKit kit = new HTMLEditorKit();
+        
+        HTMLDocument doc = (HTMLDocument)kit.createDefaultDocument();
+        
+        StyleSheet styles = doc.getStyleSheet();
+        
+        try {
+            doc.putProperty("IgnoreCharsetDirective", Boolean.TRUE);
+            
+            kit.read(new StringReader(new String(Statics.readFile(file), text.getEncoding().getCharset())), doc, 0);
+            
+            Enumeration<?> rules = styles.getStyleNames();
+            while(rules.hasMoreElements()) {
+                String name = (String)rules.nextElement();
+                
+                if (name.equals("p")) {
+                    Style style = styles.getStyle(name);
+                    
+                    Enumeration<?> pairs = style.getAttributeNames();
+                    
+                    while(pairs.hasMoreElements()) {
+                         Object attr = pairs.nextElement();
+                        
+                        if (attr instanceof CSS.Attribute && 
+                                attr.toString().startsWith("margin")) {
+                            style.removeAttribute(attr);
+                        }
+                    }
+                }
+            }
+            
+            StringWriter writer = new StringWriter(doc.getLength());
+            
+            kit.write(writer, doc, 0, doc.getLength());
+            
+            getText().setText(writer.toString());
+            
+            Object title = doc.getProperty(HTMLDocument.TitleProperty);
+            
+            if (title != null)
+                setTitle((String)title);
+            
+        } catch (BadLocationException ex) {
+            getText().setText(Statics.EMPTY_STRING);
+        }
     }
     
     protected void setTextCodec() {
