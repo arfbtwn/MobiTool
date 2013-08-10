@@ -123,67 +123,6 @@ public class MobiFileTest extends MobiBaseTest {
     }
 
     @Test
-    public void test_File_UnhandledRecords() {
-        try {
-            _filename = "Child, Lee - Bad Luck and Trouble";
-            setUp();
-            int rec_lcon = _mobi.getLastContentRecord();
-            int rec_fnob = _mobi.getFirstNonBookRecord();
-            int rec_imag = _mobi.getFirstImageRecord();
-            int rec_indx = _mobi.getIndxRecord();
-            int rec_huff = _mobi.getHuffmanRecord();
-            int rec_flis = _mobi.getFlisRecord();
-            int rec_fcis = _mobi.getFcisRecord();
-            int cnt_text = _palm.getTextRecordCount();
-            int cnt_imag = _file.getImages().size();
-            _file.removeText();
-            assertEquals("IndxRecord", rec_indx - cnt_text,
-                    _mobi.getIndxRecord());
-            assertEquals("FirstNonBookRecord", rec_fnob - cnt_text,
-                    _mobi.getFirstNonBookRecord());
-            assertEquals("FirstImageRecord", rec_imag - cnt_text,
-                    _mobi.getFirstImageRecord());
-            assertEquals("LastContentRecord", rec_lcon - cnt_text,
-                    _mobi.getLastContentRecord());
-            assertEquals("HuffmanRecord", rec_huff, _mobi.getHuffmanRecord());
-            assertEquals("FlisRecord", rec_flis - cnt_text,
-                    _mobi.getFlisRecord());
-            assertEquals("FcisRecord", rec_fcis - cnt_text,
-                    _mobi.getFcisRecord());
-            _file.removeImages();
-            assertEquals("IndxRecord", rec_indx - cnt_text,
-                    _mobi.getIndxRecord());
-            assertEquals("FirstNonBookRecord", rec_fnob - cnt_text,
-                    _mobi.getFirstNonBookRecord());
-            assertEquals("FirstImageRecord", -1, _mobi.getFirstImageRecord());
-            assertEquals("LastContentRecord", rec_lcon - cnt_text - cnt_imag,
-                    _mobi.getLastContentRecord());
-            assertEquals("HuffmanRecord", rec_huff, _mobi.getHuffmanRecord());
-            assertEquals("FlisRecord", rec_flis - cnt_text - cnt_imag,
-                    _mobi.getFlisRecord());
-            assertEquals("FcisRecord", rec_fcis - cnt_text - cnt_imag,
-                    _mobi.getFcisRecord());
-            _file.insertContent();
-            assertEquals("IndxRecord", rec_indx, _mobi.getIndxRecord());
-            assertEquals("FirstNonBookRecord", rec_fnob,
-                    _mobi.getFirstNonBookRecord());
-            assertEquals("FirstImageRecord", rec_imag,
-                    _mobi.getFirstImageRecord());
-            assertEquals("LastContentRecord", rec_lcon,
-                    _mobi.getLastContentRecord());
-            assertEquals("HuffmanRecord", rec_huff, _mobi.getHuffmanRecord());
-            assertEquals("FlisRecord", rec_flis, _mobi.getFlisRecord());
-            assertEquals("FcisRecord", rec_fcis, _mobi.getFcisRecord());
-            ((PdbFile) _file).writeToFile(getMobiOutputFile(_filename));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            fail();
-        } finally {
-            _filename = null;
-        }
-    }
-
-    @Test
     public void test_New_Compressed_TextRecordOnly_FilePointers() {
         try {
             File html = getHtmlContentFile("LoremIpsum");

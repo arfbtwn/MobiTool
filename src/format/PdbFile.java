@@ -95,7 +95,7 @@ public class PdbFile implements WritesToFile {
          * Write the file
          */
         FileUtil util = FileUtil.getInstance();
-        if (util.writeFile(file, new OutputAction() {
+        if (util.writeFile(out, new OutputAction() {
 
             @Override
             public void act(OutputStream stream) throws IOException {

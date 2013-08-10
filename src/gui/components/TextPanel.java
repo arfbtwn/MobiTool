@@ -187,6 +187,8 @@ public class TextPanel extends JPanel implements HyperlinkListener {
         
         HTMLDocument doc = _kit.createDefaultDocument();
         
+        doc.putProperty("IgnoreCharsetDirective", Boolean.TRUE);
+        
         try {
             _kit.read(reader, doc, 0);
             _content.setDocument(doc);
