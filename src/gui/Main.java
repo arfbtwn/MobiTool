@@ -17,7 +17,7 @@
 package gui;
 
 import little.nj.gui.LookAndFeelDialog;
-import little.nj.util.Statics;
+import little.nj.util.StringUtil;
 
 public class Main {
 
@@ -25,7 +25,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             // Read style from somewhere
-            String style = Statics.EMPTY_STRING;
+            String style = StringUtil.EMPTY_STRING;
             
             LookAndFeelDialog.setStyle(style);
             

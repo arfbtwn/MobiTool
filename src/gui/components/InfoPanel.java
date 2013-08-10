@@ -30,7 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import little.nj.util.Statics;
+import little.nj.util.ImageUtil;
 
 @SuppressWarnings("serial")
 public class InfoPanel extends JPanel {
@@ -143,7 +143,7 @@ public class InfoPanel extends JPanel {
             thumb.setText("Add Cover...");
             thumb.setIcon(null);
         } else {
-            _thumb = new ImageIcon(Statics.resizeImage(i, PLACE_SIZE));
+            _thumb = new ImageIcon(ImageUtil.resizeImage(i, PLACE_SIZE));
             thumb.setText("");
             thumb.setIcon(_thumb);
         }

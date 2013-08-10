@@ -21,7 +21,7 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
-import little.nj.util.Statics;
+import little.nj.util.ImageUtil;
 import exceptions.InvalidHeaderException;
 import format.MobiFile;
 
@@ -32,7 +32,7 @@ public class FileCommands {
     public static class FileNewCommand extends BaseCommand {
 
         public FileNewCommand(Controller c) {
-            super("New", Statics.getImageIcon("images/New24.gif"), c);
+            super("New", ImageUtil.getImageIcon("images/New24.gif"), c);
         }
 
         @Override
@@ -46,7 +46,7 @@ public class FileCommands {
     public static class FileOpenCommand extends BaseCommand {
 
         public FileOpenCommand(Controller c) {
-            super("Open...", Statics.getImageIcon("images/Open24.gif"), c);
+            super("Open...", ImageUtil.getImageIcon("images/Open24.gif"), c);
         }
 
         @Override
@@ -68,7 +68,7 @@ public class FileCommands {
     public static class FileSaveAsCommand extends BaseCommand {
 
         public FileSaveAsCommand(Controller c) {
-            super("Save As...", Statics.getImageIcon("images/SaveAs24.gif"), c);
+            super("Save As...", ImageUtil.getImageIcon("images/SaveAs24.gif"), c);
         }
         
         @Override
@@ -85,7 +85,7 @@ public class FileCommands {
     public static class FileSaveCommand extends BaseCommand {
 
         public FileSaveCommand(Controller c) {
-            super("Save", Statics.getImageIcon("images/Save24.gif"), c);
+            super("Save", ImageUtil.getImageIcon("images/Save24.gif"), c);
         }
         
         /* (non-Javadoc)

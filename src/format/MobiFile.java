@@ -45,6 +45,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
 import little.nj.util.Statics;
+import little.nj.util.StringUtil;
 
 import records.PdbRecord;
 import exceptions.InvalidHeaderException;
@@ -293,7 +294,7 @@ public class MobiFile extends PdbFile {
                 setTitle((String)title);
             
         } catch (BadLocationException ex) {
-            getText().setText(Statics.EMPTY_STRING);
+            getText().setText(StringUtil.EMPTY_STRING);
         }
     }
     

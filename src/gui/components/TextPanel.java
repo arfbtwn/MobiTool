@@ -41,7 +41,7 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 
-import little.nj.util.Statics;
+import little.nj.util.StringUtil;
 
 import editorkit.MobiEditorKit;
 
@@ -191,7 +191,7 @@ public class TextPanel extends JPanel implements HyperlinkListener {
             _kit.read(reader, doc, 0);
             _content.setDocument(doc);
         } catch (IOException | BadLocationException e) {
-            _content.setText(Statics.EMPTY_STRING);
+            _content.setText(StringUtil.EMPTY_STRING);
         }
     }
 }
