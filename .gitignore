@@ -15,6 +15,7 @@
 *.html
 *.htm
 
+test_output
 test_content
 doc
 bin
