@@ -26,33 +26,13 @@ import headers.Enumerations.Compression;
 import java.io.File;
 import javax.imageio.ImageIO;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import test.MobiBaseTest;
 
-/**
- * @author nicholas
- * 
- */
+
 public class MobiFileTest extends MobiBaseTest {
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
 
     CodecManager  _codecs = new CodecManager();
 
@@ -66,20 +46,13 @@ public class MobiFileTest extends MobiBaseTest {
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws Exception {        
         if (_filename != null)
             _file = new MobiFile(getMobiContentFile(_filename), _codecs);
         else
             _file = new MobiFile(_codecs);
         _mobi = _file.getMobiDocHeader();
         _palm = _file.getPalmDocHeader();
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
     }
 
     /**
@@ -179,7 +152,7 @@ public class MobiFileTest extends MobiBaseTest {
                     .writeToFile(getMobiOutputFile("LoremIpsum_Image"));
         } catch (Exception ex) {
             ex.printStackTrace();
-            fail();
+            fail(ex.getMessage());
         }
     }
 
@@ -208,7 +181,7 @@ public class MobiFileTest extends MobiBaseTest {
             ((PdbFile) _file).writeToFile(out);
         } catch (Exception e) {
             e.printStackTrace();
-            fail();
+            fail(e.getMessage());
         } finally {
             _filename = null;
         }
@@ -235,7 +208,7 @@ public class MobiFileTest extends MobiBaseTest {
             ((PdbFile) _file).writeToFile(out);
         } catch (Exception ex) {
             ex.printStackTrace();
-            fail();
+            fail(ex.getMessage());
         } finally {
             _filename = null;
         }

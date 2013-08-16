@@ -19,10 +19,7 @@ package algorithms;
 import little.nj.exceptions.NotImplementedException;
 import interfaces.ICodec;
 
-/**
- * @author Nicholas
- * 
- */
+
 public class HuffCdicCodec implements ICodec {
 
     /*

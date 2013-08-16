@@ -27,10 +27,7 @@ import org.junit.Test;
 
 import test.MobiBaseTest;
 
-/**
- * @author nicholas
- * 
- */
+
 public class PalmDocCodecTest extends MobiBaseTest {
 
     /**

@@ -20,10 +20,7 @@ import java.util.Arrays;
 
 import interfaces.ICodec;
 
-/**
- * @author Nicholas
- * 
- */
+
 public class RawCodec implements ICodec {
 
     /*

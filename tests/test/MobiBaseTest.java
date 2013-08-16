@@ -20,10 +20,7 @@ import java.io.File;
 
 import little.nj.core.tests.TestBase;
 
-/**
- * @author Nicholas Little
- * 
- */
+
 public class MobiBaseTest extends TestBase {
 
     protected static String _filename = null;

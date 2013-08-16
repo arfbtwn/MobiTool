@@ -16,10 +16,7 @@
  */
 package interfaces;
 
-/**
- * @author Nicholas
- * 
- */
+
 public interface IManageCodecs {
 
     ICodec getCodec(String codec);

@@ -25,10 +25,7 @@ import java.util.HashMap;
 import algorithms.PalmDocCodec;
 import algorithms.RawCodec;
 
-/**
- * @author Nicholas Little
- * 
- */
+
 @SuppressWarnings("serial")
 public class CodecManager extends HashMap<String, ICodec> implements
         IManageCodecs {

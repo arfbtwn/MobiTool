@@ -28,9 +28,8 @@ import little.nj.util.FileUtil;
 import little.nj.util.Statics;
 import little.nj.util.StreamUtil.OutputAction;
 import records.PdbRecord;
-import util.WritesToFile;
 
-public class PdbFile implements WritesToFile {
+public class PdbFile {
 
     private File      file;
 
@@ -82,7 +81,6 @@ public class PdbFile implements WritesToFile {
         return writeToFile(file);
     }
 
-    @Override
     public boolean writeToFile(File out) {
         /*
          * Prepare the output buffer

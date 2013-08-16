@@ -16,10 +16,6 @@
  */
 package interfaces;
 
-/**
- * @author Nicholas
- * 
- */
 public interface ICodec {
 
     byte[] compress(byte[] input);

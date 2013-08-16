@@ -31,10 +31,7 @@ import org.junit.Test;
 import test.MobiBaseTest;
 import util.MediaLoader;
 
-/**
- * @author nicholas
- * 
- */
+
 public class MediaLoaderTest extends MobiBaseTest {
 
     /**

@@ -443,7 +443,7 @@ public class MobiFile extends PdbFile {
             index = images.indexOf(thumb);
             if (index < 0) {
                 index = images.size();
-                images.add(cover);
+                images.add(thumb);
             }
             mobi.getExthHeader().setThumb(index);
         }

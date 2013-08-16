@@ -27,10 +27,7 @@ import javax.swing.JPanel;
 import little.nj.adts.ByteField;
 import little.nj.gui.components.FieldPanelFactory;
 
-/**
- * @author nicholas
- * 
- */
+
 @SuppressWarnings("serial")
 public class HeaderPanel extends JPanel {
 

@@ -19,17 +19,11 @@ package headers;
 
 import java.nio.charset.Charset;
 
-/**
- * @author Nicholas Little
- *
- */
+
 public final class Enumerations {
 
     /**
      * An enum to represent the compression types we know about
-     * 
-     * @author Nicholas Little
-     *
      */
     public static enum Compression {
         HUFF_CDIC(17480), NONE(1), PALMDOC(2), UNKNOWN(15);
@@ -62,9 +56,6 @@ public final class Enumerations {
     /**
      * An enum to represent the character set encoding and translate
      * between system and field value
-     * 
-     * @author Nicholas Little
-     *
      */
     public static enum Encoding {
         CP1252(1252) {
@@ -107,9 +98,6 @@ public final class Enumerations {
     /**
      * An enum to represent the Locale specified in the file header
      * and translate the field value
-     * 
-     * @author Nicholas Little
-     *
      */
     public static enum Locale {
         UK_ENGLISH(2057), UNSPECIFIED(0), US_ENGLISH(1033);
@@ -139,9 +127,6 @@ public final class Enumerations {
 
     /**
      * An enum to represent the various types of mobi book formats available
-     * 
-     * @author Nicholas Little
-     *
      */
     public static enum MobiType {
         AUDIO(4), HTML(518), KF8(248), MOBI_BOOK(2), MOBI_KINDLEGEN(232), NEWS(

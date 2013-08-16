@@ -27,10 +27,7 @@ import java.util.Map;
 
 import little.nj.algorithms.KmpSearch;
 
-/**
- * @author Nicholas
- * 
- */
+
 public class PalmDocCodec implements ICodec {
 
     /**
