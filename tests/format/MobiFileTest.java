@@ -118,7 +118,7 @@ public class MobiFileTest extends MobiBaseTest {
             assertEquals(1, _palm.getTextRecordCount());
             assertEquals(2, _file.getRecordCount());
             File out = getMobiOutputFile("LoremIpsum_compressed");
-            ((PdbFile) _file).writeToFile(out);
+            _file.writeToFile(out);
         } catch (Exception e) {
             e.printStackTrace();
             fail();
@@ -148,8 +148,7 @@ public class MobiFileTest extends MobiBaseTest {
             assertEquals("FcisRecord", -1, _mobi.getFcisRecord());
             assertEquals(1, _palm.getTextRecordCount());
             assertEquals(3, _file.getRecordCount());
-            ((PdbFile) _file)
-                    .writeToFile(getMobiOutputFile("LoremIpsum_Image"));
+            _file.writeToFile(getMobiOutputFile("LoremIpsum_Image"));
         } catch (Exception ex) {
             ex.printStackTrace();
             fail(ex.getMessage());
@@ -178,7 +177,7 @@ public class MobiFileTest extends MobiBaseTest {
             assertEquals(1, _palm.getTextRecordCount());
             assertEquals(2, _file.getRecordCount());
             File out = getMobiOutputFile("LoremIpsum");
-            ((PdbFile) _file).writeToFile(out);
+            _file.writeToFile(out);
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -205,7 +204,7 @@ public class MobiFileTest extends MobiBaseTest {
             assertEquals(1, _palm.getTextRecordCount());
             assertEquals(2, _file.getRecordCount());
             File out = getMobiOutputFile(_filename + "_refresh");
-            ((PdbFile) _file).writeToFile(out);
+            _file.writeToFile(out);
         } catch (Exception ex) {
             ex.printStackTrace();
             fail(ex.getMessage());

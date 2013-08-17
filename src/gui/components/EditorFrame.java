@@ -62,7 +62,7 @@ public class EditorFrame extends JFrame {
         tabs = new JTabbedPane();
         info = new InfoPanel();
         images = new ImagePanel();
-        text = new TextPanel();
+        text = new MarkupPanel();
         header = new HeaderPanel();
         _new = new JButton("New");
         _open = new JButton("Open...");

@@ -144,12 +144,13 @@ public class Controller {
                         .setSelectedItems(
                                 new BufferedImage[] { file.getCover(),
                                         file.getThumb() });
-                text.getEditorKit().setImageList(file.getImages());
+                
+                //text.getEditorKit().setImageList(file.getImages());
                 text.setText(file.getText().getText());
                 text.setSelectedItem(file.getPalmDocHeader().getCompression()
                         .toString());
-                edit.repaint();
                 header.setHeader(file.getMobiDocHeader());
+                edit.repaint();
             }
         });
     }
