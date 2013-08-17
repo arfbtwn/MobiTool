@@ -62,12 +62,12 @@ public class ImagePanel extends JPanel {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 int sel = content.getSelectedItems().length;
-                ImageListView.ImagePanel s = (ImageListView.ImagePanel) e
-                        .getItem();
-                switch (e.getStateChange()) {
-                case 2:
+                ImageListView.ImagePanel s = 
+                        (ImageListView.ImagePanel) e.getItem();
+                
+                if (e.getStateChange() == ItemEvent.DESELECTED)
                     s.setText("");
-                }
+                
                 if (sel > 0)
                     content.setText(content.getSelectedItems()[0],
                             sel < 2 ? "Cover & Thumbnail Image" : "Cover Image");
@@ -76,8 +76,8 @@ public class ImagePanel extends JPanel {
                             "Thumbnail Image");
             }
         });
-        add(content, "Center");
-        add(footer, "Last");
+        add(content, BorderLayout.CENTER);
+        add(footer, BorderLayout.PAGE_END);
     }
 
     public void setCoversAction(Action a) {
