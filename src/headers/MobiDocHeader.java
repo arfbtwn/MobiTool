@@ -216,8 +216,6 @@ public class MobiDocHeader {
         switch (enable ? 0 : 1) {
         case 0:
             fields.<IntByteField>getAs("EXTH Flags").setValue(0x50);
-            if (exth != null)
-                break;
             exth = new ExthHeader(getEncoding().getCharset());
             break;
         case 1:

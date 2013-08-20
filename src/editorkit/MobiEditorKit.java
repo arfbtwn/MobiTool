@@ -28,7 +28,6 @@ import javax.swing.JComponent;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.ComponentView;
 import javax.swing.text.Element;
-import javax.swing.text.Position.Bias;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 import javax.swing.text.html.HTMLDocument;
@@ -38,6 +37,35 @@ import javax.swing.text.html.ImageView;
 @SuppressWarnings("serial")
 public class MobiEditorKit extends HTMLEditorKit {
 
+    private List<BufferedImage> images;
+
+    private JComponent          parent;
+    
+    private MobiFactory factory = new MobiFactory();
+
+    @Override
+    public HTMLDocument createDefaultDocument() {
+        return (HTMLDocument) super.createDefaultDocument();
+    }
+
+    @Override
+    public String getContentType() {
+        return "text/mobi-html";
+    }
+
+    @Override
+    public ViewFactory getViewFactory() {
+        return factory;
+    }
+
+    public void setImageList(List<BufferedImage> list) {
+        images = list;
+    }
+
+    public void setParent(JComponent parent) {
+        this.parent = parent;
+    }
+    
     class MobiFactory extends HTMLFactory {
 
         class ImgView extends ImageView {
@@ -110,12 +138,30 @@ public class MobiEditorKit extends HTMLEditorKit {
             public PageBreakView(Element elem) {
                 super(elem);
             }
-
+            
+            /* (non-Javadoc)
+             * @see javax.swing.text.ComponentView#getPreferredSpan(int)
+             */
             @Override
             public float getPreferredSpan(int axis) {
-                if (axis == Y_AXIS)
-                    return 1;
-                return getContainer().getWidth();
+                return getMinimumSpan(axis);
+            }
+            
+            /* (non-Javadoc)
+             * @see javax.swing.text.ComponentView#getMinimumSpan(int)
+             */
+            @Override
+            public float getMinimumSpan(int axis) {
+                int width = getContainer().getWidth();
+                int height = getContainer().getHeight();
+                
+                System.out.println(String.format("Width: %d, Height: %d", width, height));
+                
+                if (axis == X_AXIS) {
+                    
+                    return width;
+                }
+                return 50;
             }
 
             @Override
@@ -124,16 +170,7 @@ public class MobiEditorKit extends HTMLEditorKit {
                 System.out.println(a.toString());
                 g.drawLine(a.x, a.y, a.x + a.width, a.y);
             }
-
-            @Override
-            public int viewToModel(float x, float y, Shape a, Bias[] bias) {
-                return super.viewToModel(x, y, a, bias);
-            }
         }
-
-        List<BufferedImage> images;
-
-        JComponent          parent;
 
         @Override
         public View create(Element elem) {
@@ -143,41 +180,5 @@ public class MobiEditorKit extends HTMLEditorKit {
                 return new ImgView(elem);
             return super.create(elem);
         }
-    }
-
-    private MobiFactory factory;
-
-    public MobiEditorKit() {
-        super();
-        factory = new MobiFactory();
-    }
-
-    @Override
-    public HTMLDocument createDefaultDocument() {
-        return (HTMLDocument) super.createDefaultDocument();
-    }
-
-    @Override
-    public String getContentType() {
-        return "text/mobi-html";
-    }
-
-    @Override
-    protected Parser getParser() {
-        // TODO Auto-generated method stub
-        return super.getParser();
-    }
-
-    @Override
-    public ViewFactory getViewFactory() {
-        return factory;
-    }
-
-    public void setImageList(List<BufferedImage> list) {
-        factory.images = list;
-    }
-
-    public void setParent(JComponent parent) {
-        factory.parent = parent;
     }
 }

@@ -93,7 +93,7 @@ public class PdbFile {
          * Write the file
          */
         FileUtil util = FileUtil.getInstance();
-        if (util.writeFile(out, new OutputAction() {
+        if (util.write(out, new OutputAction() {
 
             @Override
             public void act(OutputStream stream) throws IOException {

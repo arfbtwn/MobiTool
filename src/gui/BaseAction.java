@@ -22,18 +22,18 @@ import javax.swing.Icon;
 
 
 @SuppressWarnings("serial")
-public abstract class BaseCommand extends AbstractAction {
+public abstract class BaseAction extends AbstractAction {
 
     protected final Controller controller;    
 
-    public BaseCommand(Controller c) {
+    public BaseAction(Controller c) {
         controller = c;
     }
 
     /**
      * @param name
      */
-    public BaseCommand(String name, Controller c) {
+    public BaseAction(String name, Controller c) {
         super(name);
         controller = c;
     }
@@ -42,7 +42,7 @@ public abstract class BaseCommand extends AbstractAction {
      * @param name
      * @param icon
      */
-    public BaseCommand(String name, Icon icon, Controller c) {
+    public BaseAction(String name, Icon icon, Controller c) {
         super(name, icon);
         controller = c;
     }

@@ -27,6 +27,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import little.nj.gui.components.ImageListView;
+import little.nj.util.StringUtil;
 
 @SuppressWarnings("serial")
 public class ImagePanel extends JPanel {
@@ -62,11 +63,9 @@ public class ImagePanel extends JPanel {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 int sel = content.getSelectedItems().length;
-                ImageListView.ImagePanel s = 
-                        (ImageListView.ImagePanel) e.getItem();
-                
+                                
                 if (e.getStateChange() == ItemEvent.DESELECTED)
-                    s.setText("");
+                    content.setText((BufferedImage)e.getItem(), StringUtil.EMPTY_STRING);
                 
                 if (sel > 0)
                     content.setText(content.getSelectedItems()[0],

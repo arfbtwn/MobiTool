@@ -19,6 +19,7 @@ package format;
 import headers.Enumerations.Encoding;
 import interfaces.ICodec;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -44,7 +45,8 @@ public class PalmDocText {
 
     public void addToFile(ByteBuffer in) {
         try {
-            o_stream.write(codec.decompress(in.array()));
+            byte[] bytes = codec.decompress(in.array());
+            o_stream.write(bytes);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -80,15 +82,15 @@ public class PalmDocText {
     public String getText() {
         return new String(o_stream.toByteArray(), encoding.getCharset());
     }
+    
+    public ByteArrayInputStream getStream() {
+        return new ByteArrayInputStream(o_stream.toByteArray());
+    }
 
     public int getUncompressedLength() {
         return o_stream.size();
     }
 
-    /**
-     * @param codec
-     *            the codec to set
-     */
     public void setCodec(ICodec codec) {
         this.codec = codec;
     }

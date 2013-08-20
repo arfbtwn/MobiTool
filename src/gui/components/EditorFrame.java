@@ -62,7 +62,7 @@ public class EditorFrame extends JFrame {
         tabs = new JTabbedPane();
         info = new InfoPanel();
         images = new ImagePanel();
-        text = new MarkupPanel();
+        text = new TextPanel();
         header = new HeaderPanel();
         _new = new JButton("New");
         _open = new JButton("Open...");
@@ -99,8 +99,8 @@ public class EditorFrame extends JFrame {
         tools.add(_open);
         tools.add(_save);
         tools.add(_saveas);
-        add(tools, "First");
-        add(tabs, "Center");
+        add(tools, BorderLayout.PAGE_START);
+        add(tabs, BorderLayout.CENTER);
         tabs.addTab("Info", info);
         tabs.addTab("Text", text);
         tabs.addTab("Images", images);

@@ -27,9 +27,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 @SuppressWarnings("serial")
-public class ImageExportCommand extends BaseCommand {
+public class ImageExportAction extends BaseAction {
 
-    public ImageExportCommand(Controller c) {
+    public ImageExportAction(Controller c) {
         super("Extract Images to...", null, c);
     }
 

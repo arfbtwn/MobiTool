@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 
 import javax.swing.Action;
@@ -180,6 +181,14 @@ public class TextPanel extends JPanel implements HyperlinkListener {
 
     public void setSelectedItem(Object item) {
         compression.setSelectedItem(item);
+    }
+    
+    public void readFromStream(InputStream in) {
+        try {
+            _content.read(in, _content.getDocument());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setText(String in) {

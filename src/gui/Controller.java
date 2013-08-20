@@ -84,10 +84,10 @@ public class Controller {
 
     @SuppressWarnings("serial")
     public void init() {
-        edit.setNewAction(new FileCommands.FileNewCommand(this));
-        edit.setOpenAction(new FileCommands.FileOpenCommand(this));
-        edit.setSaveAction(new FileCommands.FileSaveCommand(this));
-        edit.setSaveAsAction(new FileCommands.FileSaveAsCommand(this));
+        edit.setNewAction(new FileActions.FileNewAction(this));
+        edit.setOpenAction(new FileActions.FileOpenAction(this));
+        edit.setSaveAction(new FileActions.FileSaveAction(this));
+        edit.setSaveAsAction(new FileActions.FileSaveAsAction(this));
         info.setApplyListener(new ActionListener() {
 
             @Override
@@ -95,8 +95,8 @@ public class Controller {
                 Controller.this.apply();
             }
         });
-        text.setExtractAction(new HtmlCommands.HtmlExportCommand(this));
-        text.setReadAction(new HtmlCommands.HtmlImportCommand(this));
+        text.setExtractAction(new HtmlActions.HtmlExportAction(this));
+        text.setReadAction(new HtmlActions.HtmlImportAction(this));
         text.setCompressionComboItems(file.codec_manager.getKeys());
         text.addItemListener(new ItemListener() {
 
@@ -109,7 +109,7 @@ public class Controller {
                 }
             }
         });
-        images.setExtractAction(new ImageExportCommand(this));
+        images.setExtractAction(new ImageExportAction(this));
         images.setCoversAction(new AbstractAction("Set Cover & Thumbnail") {
 
             /* (non-Javadoc)
@@ -145,12 +145,12 @@ public class Controller {
                                 new BufferedImage[] { file.getCover(),
                                         file.getThumb() });
                 
-                //text.getEditorKit().setImageList(file.getImages());
-                text.setText(file.getText().getText());
-                text.setSelectedItem(file.getPalmDocHeader().getCompression()
-                        .toString());
+//                text.getEditorKit().setImageList(file.getImages());
+//                text.setText(file.getText().getText());
+                text.readFromStream(file.getText().getStream());
+//                text.setSelectedItem(file.getPalmDocHeader().getCompression()
+//                        .toString());
                 header.setHeader(file.getMobiDocHeader());
-                edit.repaint();
             }
         });
     }

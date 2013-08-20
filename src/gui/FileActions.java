@@ -26,12 +26,12 @@ import exceptions.InvalidHeaderException;
 import format.MobiFile;
 
 
-public class FileCommands {
+public class FileActions {
 
     @SuppressWarnings("serial")
-    public static class FileNewCommand extends BaseCommand {
+    public static class FileNewAction extends BaseAction {
 
-        public FileNewCommand(Controller c) {
+        public FileNewAction(Controller c) {
             super("New", ImageUtil.getImageIcon("images/New24.gif"), c);
         }
 
@@ -43,31 +43,37 @@ public class FileCommands {
     }
 
     @SuppressWarnings("serial")
-    public static class FileOpenCommand extends BaseCommand {
+    public static class FileOpenAction extends BaseAction {
 
-        public FileOpenCommand(Controller c) {
+        public FileOpenAction(Controller c) {
             super("Open...", ImageUtil.getImageIcon("images/Open24.gif"), c);
         }
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            if (jfc.showOpenDialog(controller.edit) == JFileChooser.APPROVE_OPTION)
-                try {
-                    controller.file = new MobiFile(jfc.getSelectedFile(),
-                            controller.codecs);
-                    controller.refresh();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InvalidHeaderException e) {
-                    e.printStackTrace();
+            if (jfc.showOpenDialog(controller.edit) == JFileChooser.APPROVE_OPTION) {
+//                    Thread t = new Thread(new Runnable() {
+//
+//                        @Override
+//                        public void run() {
+                            
+                            try {
+                                controller.file = new MobiFile(jfc.getSelectedFile(), controller.codecs);
+                                controller.refresh();
+                            } catch (InvalidHeaderException | IOException ex) {
+                                ex.printStackTrace();
+                            }
+                            
+//                        } });
+//                    t.start();
                 }
         }
     }
 
     @SuppressWarnings("serial")
-    public static class FileSaveAsCommand extends BaseCommand {
+    public static class FileSaveAsAction extends BaseAction {
 
-        public FileSaveAsCommand(Controller c) {
+        public FileSaveAsAction(Controller c) {
             super("Save As...", ImageUtil.getImageIcon("images/SaveAs24.gif"), c);
         }
         
@@ -82,9 +88,9 @@ public class FileCommands {
     }
 
     @SuppressWarnings("serial")
-    public static class FileSaveCommand extends BaseCommand {
+    public static class FileSaveAction extends BaseAction {
 
-        public FileSaveCommand(Controller c) {
+        public FileSaveAction(Controller c) {
             super("Save", ImageUtil.getImageIcon("images/Save24.gif"), c);
         }
         

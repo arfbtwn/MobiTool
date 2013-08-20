@@ -38,6 +38,7 @@ import javax.imageio.stream.ImageOutputStream;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
+
 import little.nj.util.StringUtil;
 
 import records.PdbRecord;
@@ -242,7 +243,7 @@ public class MobiFile extends PdbFile {
         return getHeader().getName();
     }
 
-    public void importFromHtml(File file) throws IOException {
+    public void importFromHtml(File file) {
         setTextCodec();
         
         HTMLEditorKit kit = new HTMLEditorKit();
@@ -253,6 +254,7 @@ public class MobiFile extends PdbFile {
         
         if (importer.readFromFile(file)) {
             importer.stripParagraphStyle();
+            importer.generateMobiToc();
             
             doc = importer.getDocument();
             
@@ -268,7 +270,7 @@ public class MobiFile extends PdbFile {
                 if (title != null)
                     setTitle((String)title);
                 
-            } catch (BadLocationException ex) {
+            } catch (BadLocationException | IOException ex) {
                 getText().setText(StringUtil.EMPTY_STRING);
             }
         }
