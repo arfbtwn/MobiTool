@@ -22,6 +22,8 @@ import java.nio.charset.Charset;
 
 public final class Enumerations {
 
+    protected final static String FMT_NOT_RECOGNISED = "Type '%d' not recognised";
+    
     /**
      * An enum to represent the compression types we know about
      */
@@ -78,7 +80,7 @@ public final class Enumerations {
                 if (i.value == x)
                     return i;
             throw new IllegalArgumentException(String.format(
-                    "Type %d not recognised",
+                    Enumerations.FMT_NOT_RECOGNISED,
                     new Object[] { Integer.valueOf(x) }));
         }
 
@@ -138,7 +140,7 @@ public final class Enumerations {
                 if (i.value == x)
                     return i;
             throw new IllegalArgumentException(String.format(
-                    "Type %d not recognised",
+                    Enumerations.FMT_NOT_RECOGNISED,
                     new Object[] { Integer.valueOf(x) }));
         }
 

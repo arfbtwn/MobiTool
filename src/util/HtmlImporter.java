@@ -74,7 +74,7 @@ public class HtmlImporter {
     
     public boolean readFromFile(File file) {
         
-        FileUtil futil = FileUtil.getInstance();
+        FileUtil futil = new FileUtil();
         
         return futil.read(file, readAction);
     }

@@ -19,15 +19,35 @@ package util;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
+import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+
 import org.junit.Test;
 
 import test.MobiBaseTest;
 
-
+/**
+ * FIXME: Sadly, this shows extending java's HTML parsing
+ * capabilities is rather difficult, and another way must
+ * be found.
+ */
 public class HtmlImporterTest extends MobiBaseTest {
 
+    HTMLEditorKit kit = new HTMLEditorKit();
+    
     HtmlImporter imp = new HtmlImporter();
+    
+    private void printDocument() {
+        try {
+            HTMLDocument doc = imp.getDocument();
+            kit.write(System.out, doc, 0, doc.getLength());
+        } catch (IOException | BadLocationException ex) {
+            ex.printStackTrace();
+        }
+    }
     
     /**
      * Test method for {@link util.HtmlImporter#readFromFile(java.io.File)}.
@@ -59,6 +79,8 @@ public class HtmlImporterTest extends MobiBaseTest {
         testReadFromFile();
         
         imp.generateMobiToc();
+        
+        printDocument();
     }
     
 }

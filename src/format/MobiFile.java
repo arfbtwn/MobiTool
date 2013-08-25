@@ -40,7 +40,6 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
 import little.nj.util.StringUtil;
-
 import records.PdbRecord;
 import util.HtmlImporter;
 import exceptions.InvalidHeaderException;
@@ -67,7 +66,7 @@ public class MobiFile extends PdbFile {
         mobi = new MobiDocHeader();
         text = new PalmDocText(mobi.getEncoding());
         codec_manager = codecs;
-        getToc().iterator().add(zero);
+        getToc().addRecord(0, zero);
     }
     
     public MobiFile(File in, IManageCodecs codecs) throws IOException,
@@ -157,6 +156,7 @@ public class MobiFile extends PdbFile {
             ByteArrayInputStream bis;
             ImageInputStream iis;
             BufferedImage img;
+            
             while (it.nextIndex() <= end)
                 try {
                     bis = new ByteArrayInputStream(it.next().getBytes());
@@ -246,31 +246,26 @@ public class MobiFile extends PdbFile {
     public void importFromHtml(File file) {
         setTextCodec();
         
-        HTMLEditorKit kit = new HTMLEditorKit();
+        final HTMLEditorKit kit = new HTMLEditorKit();
         
-        HTMLDocument doc;
+        final HTMLDocument doc;
         
         HtmlImporter importer = new HtmlImporter();
         
         if (importer.readFromFile(file)) {
             importer.stripParagraphStyle();
-            importer.generateMobiToc();
             
             doc = importer.getDocument();
             
-            StringWriter writer = new StringWriter(doc.getLength());
-            
-            try {
+            try (StringWriter writer = new StringWriter(doc.getLength())) {
                 kit.write(writer, doc, 0, doc.getLength());
-                
                 getText().setText(writer.toString());
                 
                 Object title = doc.getProperty(HTMLDocument.TitleProperty);
                 
                 if (title != null)
                     setTitle((String)title);
-                
-            } catch (BadLocationException | IOException ex) {
+            } catch (BadLocationException | IOException e) {
                 getText().setText(StringUtil.EMPTY_STRING);
             }
         }

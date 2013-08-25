@@ -272,7 +272,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
 
     public void parse(ByteBuffer raw) throws InvalidHeaderException {
         int offset = KmpSearch.indexOf(raw.array(),
-                new String("EXTH").getBytes(charset));
+                new String("EXTH").getBytes(Charset.forName("US-ASCII")));
         if (offset >= 0) {
             raw.position(offset - raw.arrayOffset());
             raw = raw.slice();
@@ -285,46 +285,35 @@ public class ExthHeader implements Iterable<ExthRecord> {
             records.add(new ExthRecord(raw));
     }
 
+    private void setRecord(int id, byte[] data) {
+        ExthRecord rec = getRecord(id);
+        
+        if (rec != null)
+            rec.setData(data);
+        else
+            addRecord(id, data);
+    }
+    
     public void setAuthor(String s) {
-        try {
-            getRecord(AUTHOR).setData(s.getBytes(charset));
-        } catch (NullPointerException e) {
-            addRecord(AUTHOR, s.getBytes(charset));
-        }
+        setRecord(AUTHOR, s.getBytes(charset));
     }
 
     public void setBlurb(String s) {
-        try {
-            getRecord(BLURB).setData(s.getBytes(charset));
-        } catch (NullPointerException e) {
-            addRecord(BLURB, s.getBytes(charset));
-        }
+        setRecord(BLURB, s.getBytes(charset));
     }
 
     public void setCover(int i) {
         byte[] data = ByteBuffer.allocate(4).putInt(i).array();
-        try {
-            getRecord(COVER).setData(data);
-        } catch (NullPointerException e) {
-            addRecord(COVER, data);
-        }
+        setRecord(COVER, data);
     }
 
     public void setThumb(int i) {
         byte[] data = ByteBuffer.allocate(4).putInt(i).array();
-        try {
-            getRecord(THUMB).setData(data);
-        } catch (NullPointerException e) {
-            addRecord(THUMB, data);
-        }
+        setRecord(THUMB, data);
     }
 
     public void setTitle(String s) {
-        try {
-            getRecord(TITLE).setData(s.getBytes(charset));
-        } catch (NullPointerException e) {
-            addRecord(TITLE, s.getBytes(charset));
-        }
+        setRecord(TITLE, s.getBytes(charset));
     }
 
     @Override

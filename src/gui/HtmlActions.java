@@ -32,7 +32,7 @@ public class HtmlActions extends FileActions {
     @SuppressWarnings("serial")
     public static class HtmlExportAction extends BaseAction {
 
-        FileUtil futil = FileUtil.getInstance();
+        FileUtil futil = new FileUtil();
         
         public HtmlExportAction(Controller c) {
             super("Extract Text to...", null, c);

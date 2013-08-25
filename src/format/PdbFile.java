@@ -21,16 +21,19 @@ import headers.PdbToc;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 import little.nj.util.FileUtil;
-import little.nj.util.Statics;
+import little.nj.util.StreamUtil.InputAction;
 import little.nj.util.StreamUtil.OutputAction;
 import records.PdbRecord;
 
 public class PdbFile {
 
+    private static FileUtil FUTIL = new FileUtil();
+    
     private File      file;
 
     private PdbHeader header;
@@ -41,9 +44,9 @@ public class PdbFile {
 
     public PdbFile(File in) throws IOException {
         file = in;
-        parse(ByteBuffer.wrap(Statics.readFile(file)));
+        reload();
     }
-
+    
     public int getFileLength() {
         return getToc().getTotalLength();
     }
@@ -70,7 +73,17 @@ public class PdbFile {
     }
 
     public void reload() throws IOException {
-        parse(ByteBuffer.wrap(Statics.readFile(file)));
+        final byte[] buf = new byte[(int)file.length()];
+        
+        if (FUTIL.read(file, new InputAction() {
+
+            @Override
+            public void act(InputStream stream) throws IOException {
+                stream.read(buf);
+            } }))
+        {
+            parse(ByteBuffer.wrap(buf));
+        } else throw FUTIL.getFirstException();
     }
     
     public boolean canSave() {
@@ -92,8 +105,7 @@ public class PdbFile {
         /*
          * Write the file
          */
-        FileUtil util = FileUtil.getInstance();
-        if (util.write(out, new OutputAction() {
+        if (FUTIL.write(out, new OutputAction() {
 
             @Override
             public void act(OutputStream stream) throws IOException {

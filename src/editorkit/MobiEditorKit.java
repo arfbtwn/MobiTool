@@ -42,10 +42,10 @@ public class MobiEditorKit extends HTMLEditorKit {
     private JComponent          parent;
     
     private MobiFactory factory = new MobiFactory();
-
+    
     @Override
     public HTMLDocument createDefaultDocument() {
-        return (HTMLDocument) super.createDefaultDocument();
+        return (HTMLDocument)super.createDefaultDocument();
     }
 
     @Override
