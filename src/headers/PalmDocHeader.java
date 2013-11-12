@@ -39,7 +39,7 @@ public class PalmDocHeader {
         ALL_FIELDS.add(new IntByteField("Current Position"));
     }
 
-    protected ByteFieldMapSet           fields;
+    protected ByteFieldMapSet fields;
 
     public PalmDocHeader() {
         fields = ALL_FIELDS.clone();

@@ -75,14 +75,12 @@ public class MobiDocHeader {
         ALL_FIELDS.add(new IntByteField("Huffman Table Offset"));
         ALL_FIELDS.add(new IntByteField("Huffman Table Length"));
         ALL_FIELDS.add(new IntByteField("EXTH Flags"));
-        ALL_FIELDS.add(new ByteField(32, ByteField.FieldType.BYTE,
-                "32 Unknown Bytes"));
+        ALL_FIELDS.add(new ByteField(32, "32 Unknown Bytes"));
         ALL_FIELDS.add(new IntByteField("DRM Offset", -1));
         ALL_FIELDS.add(new IntByteField("DRM Count", -1));
         ALL_FIELDS.add(new IntByteField("DRM Size"));
         ALL_FIELDS.add(new IntByteField("DRM Flags"));
-        ALL_FIELDS.add(new ByteField(12, ByteField.FieldType.BYTE,
-                "12 Unknown Bytes"));
+        ALL_FIELDS.add(new ByteField(12, "12 Unknown Bytes"));
         ALL_FIELDS.add(new ShortByteField("First Content Record", (short) -1));
         ALL_FIELDS.add(new ShortByteField("Last Content Record", (short) -1));
         ALL_FIELDS.add(new IntByteField("Unknown Integer", 1));
@@ -90,8 +88,7 @@ public class MobiDocHeader {
         ALL_FIELDS.add(new IntByteField("FCIS Count"));
         ALL_FIELDS.add(new IntByteField("FLIS Record", -1));
         ALL_FIELDS.add(new IntByteField("FLIS Count"));
-        ALL_FIELDS.add(new ByteField(8, ByteField.FieldType.BYTE,
-                "8 Unknown Bytes"));
+        ALL_FIELDS.add(new ByteField(8, "8 Unknown Bytes"));
         ALL_FIELDS.add(new IntByteField("Unknown Integer", -1));
         ALL_FIELDS.add(new IntByteField("Unknown Integer"));
         ALL_FIELDS.add(new IntByteField("Unknown Integer", -1));
@@ -100,9 +97,9 @@ public class MobiDocHeader {
         ALL_FIELDS.add(new IntByteField("INDX Record", -1));
     }
 
-    private ExthHeader               exth;
+    private ExthHeader exth;
 
-    private ByteFieldMapSet             fields;
+    private ByteFieldMapSet fields;
 
     public MobiDocHeader() {
         fields = ALL_FIELDS.clone();

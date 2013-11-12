@@ -26,14 +26,10 @@ public class EofRecord {
 
     private static final ByteFieldSet ALL_FIELDS = new ByteFieldSet();
     static {
-        ALL_FIELDS.add(new ByteField(1, ByteField.FieldType.BYTE, "Unknown",
-                new byte[] { -23 }));
-        ALL_FIELDS.add(new ByteField(1, ByteField.FieldType.BYTE, "Unknown",
-                new byte[] { -114 }));
-        ALL_FIELDS.add(new ByteField(1, ByteField.FieldType.BYTE, "Unknown",
-                new byte[] { 13 }));
-        ALL_FIELDS.add(new ByteField(1, ByteField.FieldType.BYTE, "Unknown",
-                new byte[] { 10 }));
+        ALL_FIELDS.add(new ByteField(1, "Unknown", new byte[] { -23 }));
+        ALL_FIELDS.add(new ByteField(1, "Unknown", new byte[] { -114 }));
+        ALL_FIELDS.add(new ByteField(1, "Unknown", new byte[] { 13 }));
+        ALL_FIELDS.add(new ByteField(1, "Unknown", new byte[] { 10 }));
     }
 
     public static ByteBuffer getBuffer() {

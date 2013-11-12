@@ -29,17 +29,42 @@ import little.nj.adts.StringByteField;
 
 public class PdbHeader {
 
+    /**
+     * A predefined, Cloneable set of fields
+     * 
+     * FIXME: This is not immutable
+     */
     public static final ByteFieldMapSet ALL_FIELDS;
     
+    /**
+     * Defined as Charset.forName("US-ASCII")
+     */
     public static final Charset      CHARSET;
 
+    /**
+     * January 1, 1904 Etc/UTC
+     * 
+     * FIXME: This is not immutable
+     */
     public static final Calendar     EPOCH_MAC;
 
+    /**
+     * January 1, 1970 Etc/UTC
+     * 
+     * FIXME: This is not immutable
+     */
     public static final Calendar     EPOCH_NIX;
 
+    /**
+     * Length of the Name String field
+     */
     public static final int          LENGTH_NAME = 32;
 
+    /**
+     * TimeZone.getTimeZone("Etc/UTC")
+     */
     public static final TimeZone     TIMEZONE;
+    
     static {
         CHARSET = Charset.forName("US-ASCII");
         TIMEZONE = TimeZone.getTimeZone("Etc/UTC");
@@ -69,7 +94,6 @@ public class PdbHeader {
 
     private static Calendar getDate(int i, boolean signed_date) {
         Calendar c = Calendar.getInstance();
-        c.setTimeZone(TIMEZONE);
         long time = i * 1000L;
         switch (signed_date ? 0 : 1) {
         case 0:

@@ -66,7 +66,7 @@ public class MobiFile extends PdbFile {
         mobi = new MobiDocHeader();
         text = new PalmDocText(mobi.getEncoding());
         codec_manager = codecs;
-        getToc().addRecord(0, zero);
+        getToc().iterator().add(zero);
     }
     
     public MobiFile(File in, IManageCodecs codecs) throws IOException,
@@ -323,7 +323,7 @@ public class MobiFile extends PdbFile {
     }
 
     protected void parse() throws InvalidHeaderException {
-        zero = getToc().getRecord(0);
+        zero = getToc().iterator().next();
         ByteBuffer _zero = zero.getBuffer();
         System.out.println("Extracting Palm Header...");
         palm = new PalmDocHeader(_zero);
@@ -340,8 +340,8 @@ public class MobiFile extends PdbFile {
      * @see format.PdbFile#reload()
      */
     @Override
-    public void reload() throws IOException {
-        super.reload();
+    public void load() throws IOException {
+        super.load();
         try {
             parse();
         } catch (Exception e) {

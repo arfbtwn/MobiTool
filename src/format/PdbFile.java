@@ -28,7 +28,6 @@ import java.nio.ByteBuffer;
 import little.nj.util.FileUtil;
 import little.nj.util.StreamUtil.InputAction;
 import little.nj.util.StreamUtil.OutputAction;
-import records.PdbRecord;
 
 public class PdbFile {
 
@@ -44,7 +43,7 @@ public class PdbFile {
 
     public PdbFile(File in) throws IOException {
         file = in;
-        reload();
+        load();
     }
     
     public int getFileLength() {
@@ -53,10 +52,6 @@ public class PdbFile {
 
     public PdbHeader getHeader() {
         return header;
-    }
-
-    public PdbRecord getRecord(int i) {
-        return getToc().getRecord(i);
     }
 
     public int getRecordCount() {
@@ -72,7 +67,7 @@ public class PdbFile {
         header = new PdbHeader(raw);
     }
 
-    public void reload() throws IOException {
+    public void load() throws IOException {
         final byte[] buf = new byte[(int)file.length()];
         
         if (FUTIL.read(file, new InputAction() {
