@@ -146,10 +146,11 @@ public class PdbHeader implements ByteFieldContainer {
         fields = ALL_FIELDS.clone();
         signed_date = true;
     }
-
-    public PdbHeader(ByteBuffer buffer) {
-        fields = ALL_FIELDS.clone();
-        parse(buffer.slice());
+    
+    public static PdbHeader parseBuffer(ByteBuffer raw) {
+    	PdbHeader header = new PdbHeader();
+    	header.parse(raw);
+    	return header;
     }
 
     public void parse(ByteBuffer raw) {

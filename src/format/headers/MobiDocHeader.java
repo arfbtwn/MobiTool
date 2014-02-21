@@ -180,10 +180,14 @@ public class MobiDocHeader implements ByteFieldContainer {
     public MobiDocHeader() {
         fields = ALL_FIELDS.clone();
     }
-
-    public MobiDocHeader(ByteBuffer in) throws InvalidHeaderException {
-        this();
-        parse(in);
+    
+    public static MobiDocHeader parseBuffer(ByteBuffer in) 
+    		throws InvalidHeaderException {
+    	
+    	MobiDocHeader header = new MobiDocHeader();
+    	header.parse(in);
+    	return header;
+    	
     }
 
     public void parse(ByteBuffer in) throws InvalidHeaderException {

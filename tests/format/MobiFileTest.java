@@ -76,7 +76,7 @@ public class MobiFileTest extends MobiBaseTest {
             assertEquals("FlisRecord", -1, _mobi.getFlisRecord());
             assertEquals("FcisRecord", -1, _mobi.getFcisRecord());
             assertEquals(1, _palm.getTextRecordCount());
-            assertEquals(2, _file.getRecordCount());
+            assertEquals(3, _file.getRecordCount());
             File out = getMobiOutputFile("LoremIpsum_compressed");
             _file.writeToFile(out);
         } catch (Exception e) {
@@ -106,7 +106,7 @@ public class MobiFileTest extends MobiBaseTest {
             assertEquals("FlisRecord", -1, _mobi.getFlisRecord());
             assertEquals("FcisRecord", -1, _mobi.getFcisRecord());
             assertEquals(1, _palm.getTextRecordCount());
-            assertEquals(3, _file.getRecordCount());
+            assertEquals(4, _file.getRecordCount());
             _file.writeToFile(getMobiOutputFile("LoremIpsum_Image"));
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -133,7 +133,7 @@ public class MobiFileTest extends MobiBaseTest {
             assertEquals("FlisRecord", -1, _mobi.getFlisRecord());
             assertEquals("FcisRecord", -1, _mobi.getFcisRecord());
             assertEquals(1, _palm.getTextRecordCount());
-            assertEquals(2, _file.getRecordCount());
+            assertEquals(3, _file.getRecordCount());
             File out = getMobiOutputFile("LoremIpsum");
             _file.writeToFile(out);
         } catch (Exception e) {
@@ -160,7 +160,7 @@ public class MobiFileTest extends MobiBaseTest {
             assertEquals("FlisRecord", -1, _mobi.getFlisRecord());
             assertEquals("FcisRecord", -1, _mobi.getFcisRecord());
             assertEquals(1, _palm.getTextRecordCount());
-            assertEquals(2, _file.getRecordCount());
+            assertEquals(3, _file.getRecordCount());
             File out = getMobiOutputFile(_filename + "_refresh");
             _file.writeToFile(out);
         } catch (Exception ex) {

@@ -42,10 +42,11 @@ public class PdbRecord implements Comparable<PdbRecord> {
         this();
         data = in;
     }
-
-    public PdbRecord(ByteBuffer input) {
-        this();
-        parse(input);
+    
+    public static PdbRecord parseBuffer(ByteBuffer raw) {
+    	PdbRecord record = new PdbRecord();
+    	record.parse(raw);
+    	return record;
     }
 
     public void parse(ByteBuffer raw) {
@@ -53,7 +54,6 @@ public class PdbRecord implements Comparable<PdbRecord> {
         flags = raw.get();
         raw.get(id);
     }
-
 
     @Override
     public int compareTo(PdbRecord r) {

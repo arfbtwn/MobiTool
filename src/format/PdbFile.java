@@ -67,8 +67,8 @@ public class PdbFile {
 
     public void parse(ByteBuffer raw) {
         System.out.println("Extracting PdbHeader...");
-        header = new PdbHeader(raw);
-        toc = new PdbToc(raw);
+        header = PdbHeader.parseBuffer(raw);
+        toc = PdbToc.parseBuffer(raw);
     }
 
     public void load() throws IOException {

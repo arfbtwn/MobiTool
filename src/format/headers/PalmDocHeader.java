@@ -58,10 +58,11 @@ public class PalmDocHeader implements ByteFieldContainer {
     public PalmDocHeader() {
         fields = ALL_FIELDS.clone();
     }
-
-    public PalmDocHeader(ByteBuffer in) {
-        fields = ALL_FIELDS.clone();
-        parse(in.slice());
+    
+    public static PalmDocHeader parseBuffer(ByteBuffer raw) {
+    	PalmDocHeader header = new PalmDocHeader();
+    	header.parse(raw);
+    	return header;
     }
 
     public void parse(ByteBuffer in) {

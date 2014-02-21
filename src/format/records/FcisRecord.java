@@ -17,6 +17,7 @@
 package format.records;
 
 import static format.headers.PdbHeader.CHARSET;
+import little.nj.adts.ByteFieldMapSet;
 import little.nj.adts.ByteFieldSet;
 import little.nj.adts.IntByteField;
 import little.nj.adts.ShortByteField;
@@ -25,7 +26,7 @@ import little.nj.adts.StringByteField;
 
 public class FcisRecord {
 
-    private static final ByteFieldSet ALL_FIELDS = new ByteFieldSet();
+    private static final ByteFieldMapSet ALL_FIELDS = new ByteFieldMapSet();
     static {
         ALL_FIELDS.add(new StringByteField(4, "Identifier", CHARSET, "FCIS"));
         ALL_FIELDS.add(new IntByteField("Unknown", 20));
@@ -40,5 +41,5 @@ public class FcisRecord {
         ALL_FIELDS.add(new IntByteField("Unknown", 0));
     }
     
-    public static final ByteFieldSet getFields() { return ALL_FIELDS.clone(); }
+    public static final ByteFieldMapSet getFields() { return ALL_FIELDS.clone(); }
 }

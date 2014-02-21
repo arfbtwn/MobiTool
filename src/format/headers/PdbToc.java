@@ -18,7 +18,6 @@ package format.headers;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -36,10 +35,12 @@ public class PdbToc implements Iterable<PdbRecord> {
     public PdbToc() {
         records = new LinkedList<PdbRecord>();
     }
-
-    public PdbToc(ByteBuffer toc) {
-        total_length = toc.capacity();
-        parse(toc);
+    
+    public static PdbToc parseBuffer(ByteBuffer raw) {
+    	PdbToc toc = new PdbToc();
+    	toc.total_length = raw.capacity();
+    	toc.parse(raw);
+    	return toc;
     }
     
     public void clear() {
@@ -56,7 +57,7 @@ public class PdbToc implements Iterable<PdbRecord> {
     }
     
     public List<PdbRecord> records() { 
-    	return Collections.unmodifiableList(records);
+    	return records;
     }
 
     @Override
@@ -73,7 +74,7 @@ public class PdbToc implements Iterable<PdbRecord> {
         int count = raw.getShort();
         records = new ArrayList<PdbRecord>();
         for (int i = 0; i < count; ++i)
-            records.add(new PdbRecord(raw));
+            records.add(PdbRecord.parseBuffer(raw));
         
         // Fill each one with it's data
         ListIterator<PdbRecord> it = records.listIterator(records.size());
