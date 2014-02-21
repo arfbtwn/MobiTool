@@ -30,12 +30,13 @@ import javax.swing.SwingUtilities;
 import exceptions.InvalidHeaderException;
 import format.CodecManager;
 import format.MobiFile;
+import format.headers.Enumerations.Compression;
 import gui.components.EditorFrame;
 import gui.components.HeaderPanel;
 import gui.components.ImagePanel;
 import gui.components.InfoPanel;
+import gui.components.PdbPanel;
 import gui.components.TextPanel;
-import headers.Enumerations.Compression;
 
 public class Controller {
 
@@ -44,35 +45,39 @@ public class Controller {
     EditorFrame  edit;
 
     MobiFile     file;
-
-    HeaderPanel  header;
-
-    ImagePanel   images;
-
+    
+    PdbPanel	 pdb;
+    
     InfoPanel    info;
 
     TextPanel    text;
 
+    ImagePanel   images;
+    
+    HeaderPanel  header;
+
     public Controller() {
         codecs = new CodecManager();
         file = new MobiFile(codecs);
-        edit = new EditorFrame();
-        info = edit.getInfo();
-        images = edit.getImages();
-        text = edit.getText();
-        header = edit.getHeader();
+        createComponents();
         init();
     }
 
     public Controller(File in) throws IOException, InvalidHeaderException {
         codecs = new CodecManager();
         file = new MobiFile(in, codecs);
-        edit = new EditorFrame();
+        createComponents();
+        init();
+        refresh();
+    }
+    
+    private void createComponents() {
+    	edit = new EditorFrame();
+        pdb = edit.getPdb();
         info = edit.getInfo();
         images = edit.getImages();
         text = edit.getText();
-        init();
-        refresh();
+        header = edit.getHeader();
     }
 
     public void apply() {
@@ -84,6 +89,18 @@ public class Controller {
 
     @SuppressWarnings("serial")
     public void init() {
+    	pdb.setExportAction(new AbstractAction("Export...") {
+
+    		@Override
+    		public boolean isEnabled() {
+    			return pdb.hasSelection();
+    		}
+    		
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			} });
         edit.setNewAction(new FileActions.FileNewAction(this));
         edit.setOpenAction(new FileActions.FileOpenAction(this));
         edit.setSaveAction(new FileActions.FileSaveAction(this));
@@ -97,7 +114,7 @@ public class Controller {
         });
         text.setExtractAction(new HtmlActions.HtmlExportAction(this));
         text.setReadAction(new HtmlActions.HtmlImportAction(this));
-        text.setCompressionComboItems(file.codec_manager.getKeys());
+        text.setCompressionComboItems(codecs.getKeys());
         text.addItemListener(new ItemListener() {
 
             @Override
@@ -135,6 +152,7 @@ public class Controller {
             public void run() {
                 MobiFile file = Controller.this.file;
                 edit.setTitle(file.getTitle());
+                pdb.setFile(file);
                 info.setTitle(file.getTitle());
                 info.setAuthor(file.getAuthor());
                 info.setBlurb(file.getBlurb());

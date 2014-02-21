@@ -14,9 +14,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package records;
-
-import java.nio.ByteBuffer;
+package format.records;
 
 import little.nj.adts.ByteField;
 import little.nj.adts.ByteFieldSet;
@@ -31,8 +29,5 @@ public class EofRecord {
         ALL_FIELDS.add(new ByteField(1, "Unknown", new byte[] { 13 }));
         ALL_FIELDS.add(new ByteField(1, "Unknown", new byte[] { 10 }));
     }
-
-    public static ByteBuffer getBuffer() {
-        return ALL_FIELDS.getBuffer();
-    }
+    public static final ByteFieldSet getFields() { return ALL_FIELDS.clone(); }
 }

@@ -14,15 +14,16 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package headers;
+package format.headers;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import records.PdbRecord;
+import format.records.PdbRecord;
 
 public class PdbToc implements Iterable<PdbRecord> {
 
@@ -40,6 +41,11 @@ public class PdbToc implements Iterable<PdbRecord> {
         total_length = toc.capacity();
         parse(toc);
     }
+    
+    public void clear() {
+    	records.clear();
+    	refresh();
+    }
 
     public short getCount() {
         return (short) records.size();
@@ -47,6 +53,10 @@ public class PdbToc implements Iterable<PdbRecord> {
 
     public int getTotalLength() {
         return total_length;
+    }
+    
+    public List<PdbRecord> records() { 
+    	return Collections.unmodifiableList(records);
     }
 
     @Override
@@ -70,7 +80,7 @@ public class PdbToc implements Iterable<PdbRecord> {
         int last_offset = total_length;
         while (it.hasPrevious()) {
             PdbRecord item = it.previous();
-            item.getData(raw, last_offset);
+            item.readData(raw, last_offset);
             last_offset = item.getOffset();
         }
     }

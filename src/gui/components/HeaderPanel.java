@@ -16,41 +16,14 @@
  */
 package gui.components;
 
-import headers.MobiDocHeader;
-
-import java.awt.Color;
-import java.awt.GridLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import little.nj.adts.ByteField;
-import little.nj.gui.components.FieldPanelFactory;
+import format.headers.MobiDocHeader;
 
 
 @SuppressWarnings("serial")
-public class HeaderPanel extends JPanel {
-
-    private MobiDocHeader model;
-
-    public HeaderPanel() {
-        super();
-        init();
-    }
-
-    private void init() {
-        setLayout(new GridLayout(0, 5));
-    }
-
-    public void setHeader(MobiDocHeader header) {
-        model = header;
-        
-        removeAll();
-        
-        for(ByteField i : model.getFields()) {
-            JComponent comp = FieldPanelFactory.create(i);
-            comp.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            add(comp);
-        }
+@Deprecated
+public class HeaderPanel extends FieldPanel {
+	
+	public void setHeader(MobiDocHeader header) {
+        setFields(header.getFields());
     }
 }

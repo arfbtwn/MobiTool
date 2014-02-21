@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package headers;
+package format.headers;
 
 import java.nio.charset.Charset;
 
@@ -25,7 +25,7 @@ public final class Enumerations {
     protected final static String FMT_NOT_RECOGNISED = "Type '%d' not recognised";
     
     /**
-     * An enum to represent the compression types we know about
+     * @see {@link PalmDocHeader}
      */
     public static enum Compression {
         HUFF_CDIC(17480), NONE(1), PALMDOC(2), UNKNOWN(15);
@@ -56,8 +56,7 @@ public final class Enumerations {
     }
     
     /**
-     * An enum to represent the character set encoding and translate
-     * between system and field value
+     * @see {@link MobiDocHeader}
      */
     public static enum Encoding {
         CP1252(1252) {
@@ -98,8 +97,8 @@ public final class Enumerations {
     }
 
     /**
-     * An enum to represent the Locale specified in the file header
-     * and translate the field value
+     * @see {@link MobiDocHeader}
+     *
      */
     public static enum Locale {
         UK_ENGLISH(2057), UNSPECIFIED(0), US_ENGLISH(1033);
@@ -128,12 +127,12 @@ public final class Enumerations {
     }
 
     /**
-     * An enum to represent the various types of mobi book formats available
+     * @see {@link MobiDocHeader}
      */
     public static enum MobiType {
-        AUDIO(4), HTML(518), KF8(248), MOBI_BOOK(2), MOBI_KINDLEGEN(232), NEWS(
-                257), NEWS_FEED(258), NEWS_MAGAZINE(259), PALM_BOOK(3), PICS(
-                513), PPT(516), TEXT(517), WORD(514), XLS(515);
+        AUDIO(4), KF8_KINDLEGEN2(248), MOBI_BOOK(2), MOBI_KINDLEGEN1_2(232), 
+        NEWS(257), NEWS_FEED(258), NEWS_MAGAZINE(259), PALM_BOOK(3), 
+        PICS(513), PPT(516), TEXT(517), WORD(514), XLS(515), HTML(518);
 
         public static final MobiType valueOf(int x) {
             for (MobiType i : values())

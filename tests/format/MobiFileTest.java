@@ -19,11 +19,12 @@ package format;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import headers.MobiDocHeader;
-import headers.PalmDocHeader;
-import headers.Enumerations.Compression;
+import format.headers.MobiDocHeader;
+import format.headers.PalmDocHeader;
+import format.headers.Enumerations.Compression;
 
 import java.io.File;
+
 import javax.imageio.ImageIO;
 
 import org.junit.Before;
@@ -55,46 +56,6 @@ public class MobiFileTest extends MobiBaseTest {
         _palm = _file.getPalmDocHeader();
     }
 
-    /**
-     * Test method for
-     * {@link format.MobiFile#adjustRecordPointers(int, int, int[])}.
-     */
-    @Test
-    public void test_AdjustRecordPointers() {
-        int[] idxs = { 10, // First Non-book
-                10, // Indx
-                11, // First Image
-                15, // Last Content
-                0,  // Huffman
-                16, // FLIS
-                17  // FCIS
-        };
-        _file.adjustRecordPointers(1, 10, idxs);
-        assertEquals(20, idxs[0]);
-        assertEquals(20, idxs[1]);
-        assertEquals(21, idxs[2]);
-        assertEquals(25, idxs[3]);
-        assertEquals(0, idxs[4]);
-        assertEquals(26, idxs[5]);
-        assertEquals(27, idxs[6]);
-        _file.adjustRecordPointers(1, -10, idxs);
-        assertEquals(10, idxs[0]);
-        assertEquals(10, idxs[1]);
-        assertEquals(11, idxs[2]);
-        assertEquals(15, idxs[3]);
-        assertEquals(0, idxs[4]);
-        assertEquals(16, idxs[5]);
-        assertEquals(17, idxs[6]);
-        _file.adjustRecordPointers(11, -7, idxs);
-        assertEquals(10, idxs[0]);
-        assertEquals(10, idxs[1]);
-        assertEquals(-1, idxs[2]);
-        assertEquals(-1, idxs[3]);
-        assertEquals(0, idxs[4]);
-        assertEquals(-1, idxs[5]);
-        assertEquals(-1, idxs[6]);
-    }
-
     @Test
     public void test_New_Compressed_TextRecordOnly_FilePointers() {
         try {
@@ -104,8 +65,7 @@ public class MobiFileTest extends MobiBaseTest {
             _file.setAuthor("Me");
             _file.setBlurb("Test Document");
             _palm.setCompression(Compression.PALMDOC);
-            _file.insertContent();
-            _file.buildRecordZero();
+            _file.refresh();
             assertEquals("FirstContentRecord", 1, _mobi.getFirstContentRecord());
             assertEquals("FirstNonBookRecord", -1,
                     _mobi.getFirstNonBookRecord());
@@ -136,8 +96,7 @@ public class MobiFileTest extends MobiBaseTest {
             _file.setTitle("Lorem Ipsum (Cover)");
             _file.setAuthor("Me");
             _file.setBlurb("Test Document");
-            _file.insertContent();
-            _file.buildRecordZero();
+            _file.refresh();
             assertEquals("FirstContentRecord", 1, _mobi.getFirstContentRecord());
             assertEquals("FirstNonBookRecord", 2, _mobi.getFirstNonBookRecord());
             assertEquals("IndxRecord", -1, _mobi.getIndxRecord());
@@ -163,8 +122,7 @@ public class MobiFileTest extends MobiBaseTest {
             _file.setTitle("Lorem Ipsum");
             _file.setAuthor("Me");
             _file.setBlurb("Test Document");
-            _file.insertContent();
-            _file.buildRecordZero();
+            _file.refresh();
             assertEquals("FirstContentRecord", 1, _mobi.getFirstContentRecord());
             assertEquals("FirstNonBookRecord", -1,
                     _mobi.getFirstNonBookRecord());

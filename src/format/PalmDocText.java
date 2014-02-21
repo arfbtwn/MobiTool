@@ -16,7 +16,7 @@
  */
 package format;
 
-import headers.Enumerations.Encoding;
+import format.headers.Enumerations.Encoding;
 import interfaces.ICodec;
 
 import java.io.ByteArrayInputStream;

@@ -14,29 +14,43 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package headers;
+package format.headers;
 
 import java.nio.ByteBuffer;
 
 import little.nj.adts.ByteFieldMapSet;
 import little.nj.adts.IntByteField;
 import little.nj.adts.ShortByteField;
+import format.ByteFieldContainer;
+import format.headers.Enumerations.Compression;
 
-import headers.Enumerations.Compression;
+public class PalmDocHeader implements ByteFieldContainer {
 
-public class PalmDocHeader {
+    public static final String CURRENT_POSITION = "Current Position";
 
-    public static final ByteFieldMapSet ALL_FIELDS = new ByteFieldMapSet();
+	public static final short RECORD_LENGTH = 4096;
+
+	public static final String RECORD_SIZE = "Record Size";
+
+	public static final String RECORD_COUNT = "Record Count";
+
+	public static final String UNCOMPRESSED_TEXT_LENGTH = "Uncompressed Text Length";
+
+	public static final String UNUSED = "Unused";
+
+	public static final String COMPRESSION = "Compression";
+
+	public static final ByteFieldMapSet ALL_FIELDS = new ByteFieldMapSet();
 
     public static final short        LENGTH     = 16;
     static {
-        ALL_FIELDS.add(new ShortByteField("Compression", Compression.NONE
+        ALL_FIELDS.add(new ShortByteField(COMPRESSION, Compression.NONE
                 .getValue()));
-        ALL_FIELDS.add(new ShortByteField("Unused"));
-        ALL_FIELDS.add(new IntByteField("Uncompressed Text Length"));
-        ALL_FIELDS.add(new ShortByteField("Record Count"));
-        ALL_FIELDS.add(new ShortByteField("Record Size", (short) 4096));
-        ALL_FIELDS.add(new IntByteField("Current Position"));
+        ALL_FIELDS.add(new ShortByteField(UNUSED));
+        ALL_FIELDS.add(new IntByteField(UNCOMPRESSED_TEXT_LENGTH));
+        ALL_FIELDS.add(new ShortByteField(RECORD_COUNT));
+        ALL_FIELDS.add(new ShortByteField(RECORD_SIZE, RECORD_LENGTH));
+        ALL_FIELDS.add(new IntByteField(CURRENT_POSITION));
     }
 
     protected ByteFieldMapSet fields;
@@ -50,44 +64,40 @@ public class PalmDocHeader {
         parse(in.slice());
     }
 
-    public ByteBuffer getBuffer() {
-        return fields.getBuffer();
-    }
-
-    public Compression getCompression() {
-        return Compression.valueOf(fields.<ShortByteField>getAs("Compression").getValue());
+    public void parse(ByteBuffer in) {
+        fields.parseAll(in);
     }
 
     public ByteFieldMapSet getFields() {
         return fields;
     }
 
+    public Compression getCompression() {
+        return Compression.valueOf(fields.<ShortByteField>getAs(COMPRESSION).getValue());
+    }
+
     public short getTextRecordCount() {
-        return fields.<ShortByteField>getAs("Record Count").getValue();
+        return fields.<ShortByteField>getAs(RECORD_COUNT).getValue();
     }
 
     public short getTextRecordLength() {
-        return fields.<ShortByteField>getAs("Record Size").getValue();
+        return fields.<ShortByteField>getAs(RECORD_SIZE).getValue();
     }
 
     public int getUncompressedTextLength() {
-        return fields.<IntByteField>getAs("Uncompressed Text Length").getValue();
-    }
-
-    public void parse(ByteBuffer in) {
-        fields.parseAll(in);
+        return fields.<IntByteField>getAs(UNCOMPRESSED_TEXT_LENGTH).getValue();
     }
 
     public void setCompression(Compression c) {
-        fields.<ShortByteField>getAs("Compression").setValue(c.getValue());
+        fields.<ShortByteField>getAs(COMPRESSION).setValue(c.getValue());
     }
 
     public void setTextRecordCount(int i) {
-        fields.<ShortByteField>getAs("Record Count").setValue((short) i);
+        fields.<ShortByteField>getAs(RECORD_COUNT).setValue((short) i);
     }
 
     public void setUncompressedTextLength(int i) {
-        fields.<IntByteField>getAs("Uncompressed Text Length").setValue(i);
+        fields.<IntByteField>getAs(UNCOMPRESSED_TEXT_LENGTH).setValue(i);
     }
 
     @Override

@@ -44,22 +44,25 @@ public class EditorFrame extends JFrame {
     private JButton            _save;
 
     private JButton            _saveas;
-
-    private HeaderPanel        header;
-
-    private ImagePanel         images;
+    
+    private JTabbedPane        tabs;
+    
+    private PdbPanel		   pdb;
 
     private InfoPanel          info;
 
-    private JTabbedPane        tabs;
-
     private TextPanel          text;
+
+    private ImagePanel         images;
+
+    private HeaderPanel        header;
 
     private JToolBar           tools;
 
     public EditorFrame() {
         tools = new JToolBar();
         tabs = new JTabbedPane();
+        pdb = new PdbPanel();
         info = new InfoPanel();
         images = new ImagePanel();
         text = new TextPanel();
@@ -72,24 +75,25 @@ public class EditorFrame extends JFrame {
         setLayout(new BorderLayout());
         init();
     }
-
-    /**
-     * @return
-     */
-    public HeaderPanel getHeader() {
-        return header;
+    
+    public PdbPanel getPdb() {
+    	return pdb;
     }
-
-    public ImagePanel getImages() {
-        return images;
-    }
-
+    
     public InfoPanel getInfo() {
         return info;
     }
 
     public TextPanel getText() {
         return text;
+    }
+    
+    public ImagePanel getImages() {
+        return images;
+    }
+    
+    public HeaderPanel getHeader() {
+        return header;
     }
 
     public void init() {
@@ -101,6 +105,7 @@ public class EditorFrame extends JFrame {
         tools.add(_saveas);
         add(tools, BorderLayout.PAGE_START);
         add(tabs, BorderLayout.CENTER);
+        tabs.addTab("Pdb", pdb);
         tabs.addTab("Info", info);
         tabs.addTab("Text", text);
         tabs.addTab("Images", images);

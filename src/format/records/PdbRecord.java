@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package records;
+package format.records;
 
 import java.nio.ByteBuffer;
 
@@ -33,7 +33,7 @@ public class PdbRecord implements Comparable<PdbRecord> {
     private int              offset;
 
     public PdbRecord() {
-        id = new byte[3];
+        id = new byte[LENGTH_ID];
         flags = 0;
         offset = 0;
     }
@@ -43,15 +43,17 @@ public class PdbRecord implements Comparable<PdbRecord> {
         data = in;
     }
 
-    public PdbRecord(byte[] in, int order) {
-        this(in);
-        offset = order;
-    }
-
     public PdbRecord(ByteBuffer input) {
         this();
         parse(input);
     }
+
+    public void parse(ByteBuffer raw) {
+        offset = raw.getInt();
+        flags = raw.get();
+        raw.get(id);
+    }
+
 
     @Override
     public int compareTo(PdbRecord r) {
@@ -62,11 +64,11 @@ public class PdbRecord implements Comparable<PdbRecord> {
         return ByteBuffer.wrap(data);
     }
 
-    public byte[] getBytes() {
+    public byte[] getData() {
         return data;
     }
 
-    public void getData(ByteBuffer raw, int end) {
+    public void readData(ByteBuffer raw, int end) {
         raw.position(offset);
         data = new byte[end - raw.position()];
         raw.get(data);
@@ -87,28 +89,13 @@ public class PdbRecord implements Comparable<PdbRecord> {
     public int getOffset() {
         return offset;
     }
-
-    public ByteBuffer getTocBuffer() {
-        ByteBuffer rtn = ByteBuffer.allocate(8);
-        rtn.putInt(offset);
-        rtn.put(flags);
-        rtn.put(id);
-        rtn.flip();
-        return rtn;
-    }
-
-    public void parse(ByteBuffer raw) {
-        offset = raw.getInt();
-        flags = raw.get();
-        raw.get(id, 0, 3);
-    }
-
-    public void setBytes(byte[] in) {
+    
+    public void setData(byte[] in) {
         data = in;
     }
 
-    public void setBytes(ByteBuffer in) {
-        data = in.array();
+    public void setData(ByteBuffer in) {
+        setData(in.array());
     }
 
     public void setFlags(byte b) {
@@ -118,6 +105,7 @@ public class PdbRecord implements Comparable<PdbRecord> {
     public void setID(int i) {
         if (i >>> 24 != 0)
             throw new IllegalArgumentException("ID Out of Range: " + i);
+        
         id[0] = (byte) ((i & 0xFF0000) >>> 16);
         id[1] = (byte) ((i & 0xFF00) >>> 8);
         id[2] = (byte) (i & 0xFF);
@@ -125,6 +113,21 @@ public class PdbRecord implements Comparable<PdbRecord> {
 
     public void setOffset(int i) {
         offset = i;
+    }
+
+    /**
+     * Gets a buffer containing this record's table of contents
+     * entry
+     * 
+     * @return
+     */
+    public ByteBuffer getTocBuffer() {
+        ByteBuffer rtn = ByteBuffer.allocate(LENGTH);
+        rtn.putInt(offset);
+        rtn.put(flags);
+        rtn.put(id);
+        rtn.flip();
+        return rtn;
     }
 
     @Override

@@ -16,12 +16,13 @@
  */
 package format;
 
-import headers.Enumerations.Compression;
+import format.headers.Enumerations.Compression;
 import interfaces.ICodec;
 import interfaces.IManageCodecs;
 
 import java.util.HashMap;
 
+import algorithms.HuffCdicCodec;
 import algorithms.PalmDocCodec;
 import algorithms.RawCodec;
 
@@ -31,6 +32,7 @@ public class CodecManager extends HashMap<String, ICodec> implements
         IManageCodecs {
 
     public CodecManager() {
+    	put(Compression.HUFF_CDIC.toString(), new HuffCdicCodec());
         put(Compression.PALMDOC.toString(), new PalmDocCodec());
         put(Compression.NONE.toString(), new RawCodec());
     }

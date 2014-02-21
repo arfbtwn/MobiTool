@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JPanel;
 
 import little.nj.gui.components.ImageListView;
@@ -37,6 +38,8 @@ public class ImagePanel extends JPanel {
     JButton       _set_covers;
 
     ImageListView content;
+    
+    JList<BufferedImage> list;
 
     JPanel        footer;
 

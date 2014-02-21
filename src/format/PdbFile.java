@@ -16,8 +16,8 @@
  */
 package format;
 
-import headers.PdbHeader;
-import headers.PdbToc;
+import format.headers.PdbHeader;
+import format.headers.PdbToc;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,9 +36,12 @@ public class PdbFile {
     private File      file;
 
     private PdbHeader header;
+    
+    private PdbToc	  toc;
 
     public PdbFile() {
         header = new PdbHeader();
+        toc = new PdbToc();
     }
 
     public PdbFile(File in) throws IOException {
@@ -59,12 +62,13 @@ public class PdbFile {
     }
 
     public PdbToc getToc() {
-        return header.getToc();
+        return toc;
     }
 
     public void parse(ByteBuffer raw) {
         System.out.println("Extracting PdbHeader...");
         header = new PdbHeader(raw);
+        toc = new PdbToc(raw);
     }
 
     public void load() throws IOException {
@@ -93,10 +97,10 @@ public class PdbFile {
         /*
          * Prepare the output buffer
          */
-        getToc().refresh();
+    	getToc().refresh();
         final ByteBuffer bb = ByteBuffer.allocate(getFileLength());
         header.write(bb);
-        
+        toc.write(bb);
         /*
          * Write the file
          */

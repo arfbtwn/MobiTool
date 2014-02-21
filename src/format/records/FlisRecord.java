@@ -14,35 +14,26 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package records;
+package format.records;
 
-import static headers.PdbHeader.CHARSET;
-import java.nio.ByteBuffer;
-
+import static format.headers.PdbHeader.CHARSET;
 import little.nj.adts.ByteFieldSet;
 import little.nj.adts.IntByteField;
-import little.nj.adts.ShortByteField;
 import little.nj.adts.StringByteField;
 
 
-public class FcisRecord {
+public class FlisRecord {
 
     private static final ByteFieldSet ALL_FIELDS = new ByteFieldSet();
     static {
-        ALL_FIELDS.add(new StringByteField(4, "Identifier", CHARSET, "FCIS"));
-        ALL_FIELDS.add(new IntByteField("Unknown", 20));
-        ALL_FIELDS.add(new IntByteField("Unknown", 16));
-        ALL_FIELDS.add(new IntByteField("Unknown", 1));
-        ALL_FIELDS.add(new IntByteField("Text Length"));
-        ALL_FIELDS.add(new IntByteField("Unknown", 0));
-        ALL_FIELDS.add(new IntByteField("Unknown", 32));
+        ALL_FIELDS.add(new StringByteField(4, "Identifier", CHARSET, "FLIS"));
         ALL_FIELDS.add(new IntByteField("Unknown", 8));
-        ALL_FIELDS.add(new ShortByteField("Unknown", (short) 1));
-        ALL_FIELDS.add(new ShortByteField("Unknown", (short) 1));
+        ALL_FIELDS.add(new IntByteField("Unknown", 65));
         ALL_FIELDS.add(new IntByteField("Unknown", 0));
+        ALL_FIELDS.add(new IntByteField("Unknown", 0));
+        ALL_FIELDS.add(new IntByteField("Unknown", -1));
+        ALL_FIELDS.add(new IntByteField("Unknown", 1));
+        ALL_FIELDS.add(new IntByteField("Unknown", 3));
     }
-
-    public static ByteBuffer getBuffer() {
-        return ALL_FIELDS.getBuffer();
-    }
+    public static final ByteFieldSet getFields() { return ALL_FIELDS.clone(); }
 }

@@ -14,22 +14,49 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package headers;
+package format.headers;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import format.ByteFieldContainer;
 import little.nj.adts.ByteFieldMapSet;
 import little.nj.adts.IntByteField;
 import little.nj.adts.ShortByteField;
 import little.nj.adts.StringByteField;
 
 
-public class PdbHeader {
+public class PdbHeader implements ByteFieldContainer {
 
-    /**
+    public static final String NEXT_RECORD_LIST_ID = "Next Record List ID";
+
+	public static final String UNIQUE_SEED_ID = "Unique Seed ID";
+
+	public static final String CREATOR = "Creator";
+
+	public static final String TYPE = "Type";
+
+	public static final String SORT_INFO_ID = "Sort Info ID";
+
+	public static final String APP_INFO_ID = "App Info ID";
+
+	public static final String MODIFICATION_NUMBER = "Modification Number";
+
+	public static final String BACKEDUP_TIME = "Backedup Time";
+
+	public static final String MODIFICATION_TIME = "Modification Time";
+
+	public static final String CREATION_TIME = "Creation Time";
+
+	public static final String VERSION = "Version";
+
+	public static final String ATTRIBUTES = "Attributes";
+
+	public static final String NAME = "Name";
+
+	/**
      * A predefined, Cloneable set of fields
      * 
      * FIXME: This is not immutable
@@ -67,6 +94,7 @@ public class PdbHeader {
     
     static {
         CHARSET = Charset.forName("US-ASCII");
+        
         TIMEZONE = TimeZone.getTimeZone("Etc/UTC");
         EPOCH_MAC = Calendar.getInstance(TIMEZONE);
         EPOCH_MAC.clear();
@@ -74,46 +102,38 @@ public class PdbHeader {
         EPOCH_NIX = Calendar.getInstance(TIMEZONE);
         EPOCH_NIX.clear();
         EPOCH_NIX.set(1970, 0, 1);
+        
         ALL_FIELDS = new ByteFieldMapSet();
-        ALL_FIELDS.add(new StringByteField(LENGTH_NAME, "Name", CHARSET));
-        ALL_FIELDS.add(new ShortByteField("Attributes"));
-        ALL_FIELDS.add(new ShortByteField("Version"));
-        ALL_FIELDS.add(new IntByteField("Creation Time", getPdbSeconds(
+        ALL_FIELDS.add(new StringByteField(LENGTH_NAME, NAME, CHARSET));
+        ALL_FIELDS.add(new ShortByteField(ATTRIBUTES));
+        ALL_FIELDS.add(new ShortByteField(VERSION));
+        ALL_FIELDS.add(new IntByteField(CREATION_TIME, getPdbSeconds(
                 Calendar.getInstance(), true)));
-        ALL_FIELDS.add(new IntByteField("Modification Time", getPdbSeconds(
+        ALL_FIELDS.add(new IntByteField(MODIFICATION_TIME, getPdbSeconds(
                 Calendar.getInstance(), true)));
-        ALL_FIELDS.add(new IntByteField("Backedup Time"));
-        ALL_FIELDS.add(new IntByteField("Modification Number"));
-        ALL_FIELDS.add(new IntByteField("App Info ID"));
-        ALL_FIELDS.add(new IntByteField("Sort Info ID"));
-        ALL_FIELDS.add(new StringByteField(4, "Type", CHARSET, "BOOK"));
-        ALL_FIELDS.add(new StringByteField(4, "Creator", CHARSET, "MOBI"));
-        ALL_FIELDS.add(new IntByteField("Unique Seed ID"));
-        ALL_FIELDS.add(new IntByteField("Next Record List ID"));
+        ALL_FIELDS.add(new IntByteField(BACKEDUP_TIME));
+        ALL_FIELDS.add(new IntByteField(MODIFICATION_NUMBER));
+        ALL_FIELDS.add(new IntByteField(APP_INFO_ID));
+        ALL_FIELDS.add(new IntByteField(SORT_INFO_ID));
+        ALL_FIELDS.add(new StringByteField(4, TYPE, CHARSET));
+        ALL_FIELDS.add(new StringByteField(4, CREATOR, CHARSET));
+        ALL_FIELDS.add(new IntByteField(UNIQUE_SEED_ID));
+        ALL_FIELDS.add(new IntByteField(NEXT_RECORD_LIST_ID));
     }
 
-    private static Calendar getDate(int i, boolean signed_date) {
+    private static Calendar getDate(int pdbsecs, boolean signed_date) {
         Calendar c = Calendar.getInstance();
-        long time = i * 1000L;
-        switch (signed_date ? 0 : 1) {
-        case 0:
-            c.setTimeInMillis(EPOCH_NIX.getTimeInMillis() + time);
-            break;
-        case 1:
-            c.setTimeInMillis(EPOCH_MAC.getTimeInMillis() + time);
-        }
+        Calendar epoch = signed_date ? EPOCH_NIX : EPOCH_MAC;
+        
+        long time = pdbsecs * 1000L;
+        c.setTimeInMillis(epoch.getTimeInMillis() + time);
         return c;
     }
 
     private static int getPdbSeconds(Calendar c, boolean signed_date) {
         long i = 0L;
-        switch (signed_date ? 0 : 1) {
-        case 0:
-            i = c.getTimeInMillis() - EPOCH_NIX.getTimeInMillis();
-            break;
-        case 1:
-            i = c.getTimeInMillis() - EPOCH_MAC.getTimeInMillis();
-        }
+        Calendar epoch = signed_date ? EPOCH_NIX : EPOCH_MAC;
+        i = c.getTimeInMillis() - epoch.getTimeInMillis();
         i = i / 1000L;
         return (int) i;
     }
@@ -122,11 +142,8 @@ public class PdbHeader {
 
     private boolean      signed_date;
 
-    private PdbToc       toc;
-
     public PdbHeader() {
         fields = ALL_FIELDS.clone();
-        toc = new PdbToc();
         signed_date = true;
     }
 
@@ -135,50 +152,56 @@ public class PdbHeader {
         parse(buffer.slice());
     }
 
+    public void parse(ByteBuffer raw) {
+        fields.parseAll(raw);
+        signed_date = fields.<IntByteField>getAs(CREATION_TIME).getValue() >>> 31 == 0;
+    }
+
+    @Override
+    public ByteFieldMapSet getFields() { return fields; }
+
     public Calendar getBackedupTime() {
-        return getDate(fields.<IntByteField>getAs("Backedup Time").getValue(), signed_date);
+        return getDate(fields.<IntByteField>getAs(BACKEDUP_TIME).getValue(), signed_date);
     }
 
     public Calendar getCreationTime() {
-        return getDate(fields.<IntByteField>getAs("Creation Time").getValue(), signed_date);
+        return getDate(fields.<IntByteField>getAs(CREATION_TIME).getValue(), signed_date);
     }
 
     public Calendar getModificationTime() {
-        return getDate(fields.<IntByteField>getAs("Modification Time").getValue(),
+        return getDate(fields.<IntByteField>getAs(MODIFICATION_TIME).getValue(),
                 signed_date);
     }
 
     public String getName() {
-        return fields.<StringByteField>getAs("Name").getValue().trim();
+        return fields.<StringByteField>getAs(NAME).getValue().trim();
     }
-
-    public PdbToc getToc() {
-        return toc;
-    }
-
-    public void parse(ByteBuffer raw) {
-        fields.parseAll(raw);
-        signed_date = fields.<IntByteField>getAs("Creation Time").getValue() >>> 31 == 0;
-        toc = new PdbToc(raw);
-    }
-
+    
     public void setBackedupTime(Calendar c) {
         int secs = getPdbSeconds(c, signed_date);
-        fields.<IntByteField>getAs("Backedup Time").setValue(secs);
+        fields.<IntByteField>getAs(BACKEDUP_TIME).setValue(secs);
     }
 
     public void setCreationTime(Calendar c) {
         int secs = getPdbSeconds(c, signed_date);
-        fields.<IntByteField>getAs("Creation Time").setValue(secs);
+        fields.<IntByteField>getAs(CREATION_TIME).setValue(secs);
     }
 
     public void setModificationTime(Calendar c) {
         int secs = getPdbSeconds(c, signed_date);
-        fields.<IntByteField>getAs("Modification Time").setValue(secs);
+        fields.<IntByteField>getAs(MODIFICATION_TIME).setValue(secs);
     }
 
     public void setName(String x) {
-        fields.<StringByteField>getAs("Name").setValue(x);
+        fields.<StringByteField>getAs(NAME).setValue(x);
+    }
+    
+    public void setBookType(String type) {
+    	fields.<StringByteField>getAs(TYPE).setValue(type);
+    }
+    
+    public void setCreator(String creator) {
+    	fields.<StringByteField>getAs(CREATOR).setValue(creator);
     }
 
     @Override
@@ -191,6 +214,5 @@ public class PdbHeader {
     public void write(ByteBuffer out) {
         setModificationTime(Calendar.getInstance());
         fields.write(out);
-        toc.write(out);
     }
 }
