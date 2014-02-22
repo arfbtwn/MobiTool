@@ -6,9 +6,14 @@
 *.war
 *.ear
 
+# Intellij Files
+*.eml
+*.iml
+
 # Eclipse files
 .classpath
 .project
+.settings/
 
 # Mobi files
 *.mobi

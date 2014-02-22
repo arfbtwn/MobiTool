@@ -53,7 +53,7 @@ public class ImagePanel extends JPanel {
     }
 
     public void init() {
-    	list.addComponentListener(componentListener);
+    	images.addComponentListener(componentListener);
     	list.setCellRenderer(new ImageCellRenderer());
     	list.setVisibleRowCount(-1);
     	
@@ -94,6 +94,8 @@ public class ImagePanel extends JPanel {
 		@Override
 		public void componentResized(ComponentEvent e) {
 			Component component = e.getComponent();
+			
+			System.out.printf("componentListener.componentResized: Height = %d, Width = %d%n", component.getHeight(), component.getWidth());
 			
 			if (component.getHeight() >= component.getWidth()) {
 				list.setLayoutOrientation(JList.VERTICAL);
