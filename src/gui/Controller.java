@@ -25,9 +25,9 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.AbstractAction;
+import javax.swing.JList;
 import javax.swing.SwingUtilities;
 
-import little.nj.gui.components.ListPanel;
 import exceptions.InvalidHeaderException;
 import format.CodecManager;
 import format.MobiFile;
@@ -39,6 +39,7 @@ import gui.components.InfoPanel;
 import gui.components.PdbPanel;
 import gui.components.TextPanel;
 
+@SuppressWarnings("deprecation")
 public class Controller {
 
     CodecManager codecs;
@@ -138,20 +139,21 @@ public class Controller {
                 return images.asJList().getSelectedIndices().length > 0;
             }
             
-            @Override
+            @SuppressWarnings("rawtypes")
+			@Override
             public void actionPerformed(ActionEvent arg0) {
-//            	JImageList list = images.getImageView();
-//                file.setCovers(list.getSelectedValuesList().toArray(new BufferedImage[0]));
-//                info.setThumb(file.getThumb());
+            	JList list = images.asJList();
+                file.setCovers((BufferedImage[])list.getSelectedValues());
+                info.setThumb(file.getThumb());
             }
         });
     }
 
     public void refresh() {
-//        SwingUtilities.invokeLater(new Runnable() {
-//
-//            @Override
-//            public void run() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
                 MobiFile file = Controller.this.file;
                 edit.setTitle(file.getTitle());
                 pdb.setFile(file);
@@ -165,13 +167,13 @@ public class Controller {
 //                                new BufferedImage[] { file.getCover(),
 //                                        file.getThumb() });
                 
-//                text.getEditorKit().setImageList(file.getImages());
-//                text.setText(file.getText().getText());
+                text.getEditorKit().setImageList(file.getImages());
+                text.setText(file.getText().getText());
                 text.readFromStream(file.getText().getStream());
-//                text.setSelectedItem(file.getPalmDocHeader().getCompression()
-//                        .toString());
+                text.setSelectedItem(file.getPalmDocHeader().getCompression()
+                        .toString());
                 header.setHeader(file.getMobiDocHeader());
-//            }
-//        });
+            }
+        });
     }
 }

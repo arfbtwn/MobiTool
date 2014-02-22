@@ -16,8 +16,7 @@
  */
 package util;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.awt.image.BufferedImage;
 import java.net.URL;

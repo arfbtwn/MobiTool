@@ -29,7 +29,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.border.Border;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "deprecation" })
 public class EditorFrame extends JFrame {
 
     public static final Border BORDER  = BorderFactory.createEmptyBorder(10,

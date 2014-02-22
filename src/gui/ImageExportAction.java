@@ -20,7 +20,6 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -33,7 +32,8 @@ public class ImageExportAction extends BaseAction {
         super("Extract Images to...", null, c);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void actionPerformed(ActionEvent e) {
         if (controller.file != null) {
             List<BufferedImage> list = controller.images.asJList().getSelectedValuesList();

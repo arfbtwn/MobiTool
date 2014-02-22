@@ -16,7 +16,7 @@
  */
 package algorithms;
 
-import junit.framework.Assert;
+import static org.junit.Assert.*;
 import little.nj.util.Statics;
 
 import org.junit.After;
@@ -88,10 +88,14 @@ public class PalmDocCodecTest extends MobiBaseTest {
         PalmDocCodec codec = new PalmDocCodec();
         compressed = codec.compress(uncompressed);
         byte[] result = codec.decompress(compressed);
-        Assert.assertEquals(uncompressed.length, result.length);
-        for (int i = 0; i < result.length; ++i)
-            Assert.assertEquals(String.format("Index %d Not Equal", i),
+        
+        assertEquals(uncompressed.length, result.length);
+        
+        for (int i = 0; i < result.length; ++i) {
+            assertEquals(String.format("Index %d Not Equal", i),
                     uncompressed[i], result[i]);
+        }
+        
         try {
             Statics.writeFile(getHtmlOutputFile(_filename + "_compressed"),
                     compressed);

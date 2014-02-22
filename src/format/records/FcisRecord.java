@@ -18,7 +18,6 @@ package format.records;
 
 import static format.headers.PdbHeader.CHARSET;
 import little.nj.adts.ByteFieldMapSet;
-import little.nj.adts.ByteFieldSet;
 import little.nj.adts.IntByteField;
 import little.nj.adts.ShortByteField;
 import little.nj.adts.StringByteField;
