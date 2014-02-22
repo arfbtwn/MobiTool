@@ -152,8 +152,8 @@ public class MobiEditorKit extends HTMLEditorKit {
              */
             @Override
             public float getMinimumSpan(int axis) {
-                int width = getContainer().getWidth();
-                int height = getContainer().getHeight();
+                int width = parent.getWidth();
+                int height = parent.getHeight();
                 
                 System.out.println(String.format("Width: %d, Height: %d", width, height));
                 
@@ -161,7 +161,7 @@ public class MobiEditorKit extends HTMLEditorKit {
                     
                     return width;
                 }
-                return 50;
+                return height;
             }
 
             @Override

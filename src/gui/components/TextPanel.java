@@ -40,10 +40,10 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
 
 import little.nj.util.StringUtil;
-
 import editorkit.MobiEditorKit;
 
 @SuppressWarnings("serial")
@@ -185,7 +185,10 @@ public class TextPanel extends JPanel implements HyperlinkListener {
     
     public void readFromStream(InputStream in) {
         try {
-            _content.read(in, _content.getDocument());
+        	Document doc = _content.getEditorKit().createDefaultDocument();
+            _content.read(in, doc);
+            
+            _content.setDocument(doc);
         } catch (IOException e) {
             e.printStackTrace();
         }

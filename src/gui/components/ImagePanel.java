@@ -17,70 +17,56 @@
 package gui.components;
 
 import java.awt.BorderLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.Component;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
 import javax.swing.Action;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 
-import little.nj.gui.components.ImageListView;
-import little.nj.util.StringUtil;
+import little.nj.gui.components.ImageCellRenderer;
+import little.nj.gui.components.ListPanel;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unchecked", "rawtypes" })
 public class ImagePanel extends JPanel {
-
-    JButton       _extract;
-
-    JButton       _set_covers;
-
-    ImageListView content;
+	
+    JPanel        header = new JPanel();
     
-    JList<BufferedImage> list;
+    DefaultListModel model = new DefaultListModel();
 
-    JPanel        footer;
+    ListPanel 	  images = new ListPanel(model);
+    
+    JList		  list	 = images.asJList();
+    
+    JButton       _extract = new JButton();
+
+    JButton       _set_covers = new JButton();
 
     public ImagePanel() {
-        content = new ImageListView();
-        footer = new JPanel();
-        _extract = new JButton("Extract Images to...");
-        _set_covers = new JButton("Set Cover & Thumbnail");
         init();
     }
 
-    public ImageListView getImageView() {
-        return content;
-    }
-
     public void init() {
+    	list.addComponentListener(componentListener);
+    	list.setCellRenderer(new ImageCellRenderer());
+    	list.setVisibleRowCount(-1);
+    	
         setLayout(new BorderLayout());
-        content.setModifiable(true);
-        content.setMode(ImageListView.Mode.MULTI);
-        footer.add(_extract);
-        footer.add(_set_covers);
-        content.addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                int sel = content.getSelectedItems().length;
-                                
-                if (e.getStateChange() == ItemEvent.DESELECTED)
-                    content.setText((BufferedImage)e.getItem(), StringUtil.EMPTY_STRING);
-                
-                if (sel > 0)
-                    content.setText(content.getSelectedItems()[0],
-                            sel < 2 ? "Cover & Thumbnail Image" : "Cover Image");
-                if (sel > 1)
-                    content.setText(content.getSelectedItems()[1],
-                            "Thumbnail Image");
-            }
-        });
-        add(content, BorderLayout.CENTER);
-        add(footer, BorderLayout.PAGE_END);
+        
+        header.add(_extract);
+        header.add(_set_covers);
+        
+        add(header, BorderLayout.PAGE_START);
+        add(images, BorderLayout.CENTER);
     }
+    
+    public JList asJList() { return list; }
 
     public void setCoversAction(Action a) {
         _set_covers.setAction(a);
@@ -91,6 +77,29 @@ public class ImagePanel extends JPanel {
     }
 
     public void setImages(List<BufferedImage> list) {
-        content.setList(list);
+    	model.clear();
+    	for(BufferedImage i : list) {
+    		model.addElement(i);
+    	}
     }
+    
+    /**
+	 * Listens for component display and resize events
+	 */
+	private ComponentListener componentListener = new ComponentAdapter() {
+		@Override
+		public void componentShown(ComponentEvent e) {
+			componentResized(e);
+		}
+		@Override
+		public void componentResized(ComponentEvent e) {
+			Component component = e.getComponent();
+			
+			if (component.getHeight() >= component.getWidth()) {
+				list.setLayoutOrientation(JList.VERTICAL);
+			} else {
+				list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+			}
+		}
+	};
 }

@@ -36,8 +36,7 @@ public class ImageExportAction extends BaseAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (controller.file != null) {
-            List<BufferedImage> list = Arrays.asList(controller.images
-                    .getImageView().getSelectedItems());
+            List<BufferedImage> list = controller.images.asJList().getSelectedValuesList();
             int j = 1;
             File file = null;
             for (BufferedImage i : list) {

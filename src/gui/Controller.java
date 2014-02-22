@@ -27,6 +27,7 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 
+import little.nj.gui.components.ListPanel;
 import exceptions.InvalidHeaderException;
 import format.CodecManager;
 import format.MobiFile;
@@ -134,22 +135,23 @@ public class Controller {
              */
             @Override
             public boolean isEnabled() {
-                return images.getImageView().getSelectedItems().length > 0;
+                return images.asJList().getSelectedIndices().length > 0;
             }
             
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                file.setCovers(images.getImageView().getSelectedItems());
-                info.setThumb(file.getThumb());
+//            	JImageList list = images.getImageView();
+//                file.setCovers(list.getSelectedValuesList().toArray(new BufferedImage[0]));
+//                info.setThumb(file.getThumb());
             }
         });
     }
 
     public void refresh() {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
+//        SwingUtilities.invokeLater(new Runnable() {
+//
+//            @Override
+//            public void run() {
                 MobiFile file = Controller.this.file;
                 edit.setTitle(file.getTitle());
                 pdb.setFile(file);
@@ -158,10 +160,10 @@ public class Controller {
                 info.setBlurb(file.getBlurb());
                 info.setThumb(file.getCoverOrThumb());
                 images.setImages(file.getImages());
-                images.getImageView()
-                        .setSelectedItems(
-                                new BufferedImage[] { file.getCover(),
-                                        file.getThumb() });
+//                images.getImageView()
+//                        .setSelectedItems(
+//                                new BufferedImage[] { file.getCover(),
+//                                        file.getThumb() });
                 
 //                text.getEditorKit().setImageList(file.getImages());
 //                text.setText(file.getText().getText());
@@ -169,7 +171,7 @@ public class Controller {
 //                text.setSelectedItem(file.getPalmDocHeader().getCompression()
 //                        .toString());
                 header.setHeader(file.getMobiDocHeader());
-            }
-        });
+//            }
+//        });
     }
 }
