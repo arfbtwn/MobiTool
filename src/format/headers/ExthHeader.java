@@ -142,7 +142,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
         return null != rec ? rec.asString() : StringUtil.EMPTY_STRING;
     }
 
-    protected int getIntRecord(int id) {
+    protected int getIntValue(int id) {
         ExthRecord rec = getRecord(id);
 
         if (null == rec)
@@ -182,7 +182,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
     }
 
     public int getCover() {
-        return getIntRecord(COVER);
+        return getIntValue(COVER);
     }
 
     public int getLength() {
@@ -193,7 +193,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
     }
 
     public int getThumb() {
-        return getIntRecord(THUMB);
+        return getIntValue(THUMB);
     }
 
     public String getTitle() {
