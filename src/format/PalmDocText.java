@@ -92,8 +92,7 @@ public class PalmDocText {
     }
 
     public int getRecordCount() {
-        return (int) Math
-                .ceil(getUncompressedLength() / (double) record_length);
+        return (int) Math.ceil(getUncompressedLength() / (double) record_length);
     }
 
     public int getUncompressedLength() {

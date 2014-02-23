@@ -30,18 +30,16 @@ import little.nj.algorithms.KmpSearch;
 public class PalmDocCodec implements ICodec {
 
     /**
-     * The default back track distance for repeated string compression (0x7ff ==
-     * 2047)
+     * The default back track distance for repeated string 
+     * compression (0x7ff == 2047)
      */
     public static final int DEFAULT_DISTANCE = 0x7ff;
 
     /**
-     * The default set of techniques, all of them FIXME: There is a problem on
-     * kindle at the end of records when using repeated sequences technique.
-     * Disabled for now.
+     * The default set of techniques, all of them
      */
-    public static final EnumSet<Technique> DEFAULT_TECHNIQUES = EnumSet
-            .allOf(Technique.class);
+    public static final EnumSet<Technique> DEFAULT_TECHNIQUES = 
+            EnumSet.allOf(Technique.class);
 
     /**
      * A class to set options pertaining to PalmDoc compression
@@ -262,7 +260,7 @@ public class PalmDocCodec implements ICodec {
                 ++i;
             }
         }
-        o_stream.write(0x0);
+        o_stream.write(0x0); // HACK: Finish off with a null byte
 
         stats.o_length = o_stream.size();
 
@@ -312,17 +310,18 @@ public class PalmDocCodec implements ICodec {
                      * Distance - Length pairs (see compression for detail)
                      */
                     b = (short) (b << 8);
-                    b = (short) (b | (in.get() & 0xff));
-                    short back = (short) ((b >>> 3) & 0x7ff); // 11 bits
+                    b = (short) (b | in.get() & 0xff);
+                    
+                    short back = (short) (b >>> 3 & 0x7ff); // 11 bits
                     byte length = (byte) (b & 0x7); // 3 bits
+                    
                     int pos = raw.position();
-                    if (pos >= back) {
-                        raw.position(pos - back);
-                        byte[] tmp = new byte[length + 3];
-                        raw.get(tmp);
-                        raw.position(pos);
-                        raw.put(tmp);
-                    }
+                    raw.position(pos - back);
+                    byte[] tmp = new byte[length + 3];
+                    raw.get(tmp);
+                    raw.position(pos);
+                    raw.put(tmp);
+                    
                 } else if (b >= 0xc0 && b <= 0xff) {
                     /*
                      * Collapsed space
@@ -331,12 +330,16 @@ public class PalmDocCodec implements ICodec {
                     b = (short) (b ^ 0x80);
                     raw.put((byte) b);
                 }
+                
                 if (!in.hasRemaining())
                     break;
+                
             } while (in.position() < in.capacity());
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
         return raw.position();
     }
 
