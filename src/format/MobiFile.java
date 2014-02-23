@@ -131,9 +131,7 @@ public class MobiFile extends PdbFile {
             ListIterator<PdbRecord> it = getToc().iterator(record);
 
             while (count-- > 0) {
-                ByteBuffer data = it.next().getBuffer();
-                byte[] dbg = data.array();
-                text.addToFile(data);
+                text.addToFile(it.next().getBuffer());
             }
         }
     }

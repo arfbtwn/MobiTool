@@ -39,8 +39,6 @@ public class ExthHeader implements Iterable<ExthRecord> {
 
     private static final int INT_SIZE = 4;
 
-    private static final String US_ASCII = "US-ASCII";
-
     private static final String EXTH = "EXTH";
 
     private static final String COUNT = "Count";
@@ -115,7 +113,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
 
     public void parse(ByteBuffer raw) throws InvalidHeaderException {
         int offset = KmpSearch.indexOf(raw.array(),
-                new String(EXTH).getBytes(Charset.forName(US_ASCII)));
+                new String(EXTH).getBytes(CHARSET));
         if (offset >= 0) {
             raw.position(offset - raw.arrayOffset());
             raw = raw.slice();
@@ -261,10 +259,6 @@ public class ExthHeader implements Iterable<ExthRecord> {
 
         private byte[] data;
 
-        private Integer integer_data;
-
-        private String string_data;
-
         private DataType type;
 
         public ExthRecord(ByteBuffer in) {
@@ -296,6 +290,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
             return data.length + STATIC_DATA;
         }
 
+        @Deprecated
         protected DataType getType() {
             if (null == type) {
                 type = ENCODE_MAP.get(id);
@@ -341,13 +336,10 @@ public class ExthHeader implements Iterable<ExthRecord> {
         public String toString() {
             StringBuilder sb = new StringBuilder();
             sb.append("ID: " + id + ", Length: " + getData().length);
-            switch (getType()) {
-            case INT:
-                sb.append("\nInteger: " + integer_data);
-                break;
-            case STRING:
-                sb.append("\nString: " + string_data);
-            }
+            sb.append(String.format(
+                    "ID: %d, Length: %d%nAs Integer: %d%nAs String: %s",
+                    id, getLength(), asInt(), asString()
+                    ));
             return sb.toString();
         }
     }
