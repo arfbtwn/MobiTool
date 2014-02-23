@@ -32,12 +32,12 @@ import little.nj.util.StreamUtil.OutputAction;
 public class PdbFile {
 
     private static FileUtil FUTIL = new FileUtil();
-    
-    private File      file;
+
+    private File file;
 
     private PdbHeader header;
-    
-    private PdbToc	  toc;
+
+    private PdbToc toc;
 
     public PdbFile() {
         header = new PdbHeader();
@@ -48,7 +48,7 @@ public class PdbFile {
         file = in;
         load();
     }
-    
+
     public int getFileLength() {
         return getToc().getTotalLength();
     }
@@ -72,19 +72,20 @@ public class PdbFile {
     }
 
     public void load() throws IOException {
-        final byte[] buf = new byte[(int)file.length()];
-        
+        final byte[] buf = new byte[(int) file.length()];
+
         if (FUTIL.read(file, new InputAction() {
 
             @Override
             public void act(InputStream stream) throws IOException {
                 stream.read(buf);
-            } }))
-        {
+            }
+        })) {
             parse(ByteBuffer.wrap(buf));
-        } else throw FUTIL.getFirstException();
+        } else
+            throw FUTIL.getFirstException();
     }
-    
+
     public boolean canSave() {
         return file != null;
     }
@@ -97,7 +98,7 @@ public class PdbFile {
         /*
          * Prepare the output buffer
          */
-    	getToc().refresh();
+        getToc().refresh();
         final ByteBuffer bb = ByteBuffer.allocate(getFileLength());
         header.write(bb);
         toc.write(bb);
@@ -109,8 +110,9 @@ public class PdbFile {
             @Override
             public void act(OutputStream stream) throws IOException {
                 stream.write(bb.array());
-                
-            }})) {
+
+            }
+        })) {
             file = out;
             return true;
         }

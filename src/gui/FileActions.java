@@ -25,7 +25,6 @@ import little.nj.util.ImageUtil;
 import exceptions.InvalidHeaderException;
 import format.MobiFile;
 
-
 public class FileActions {
 
     @SuppressWarnings("serial")
@@ -52,21 +51,22 @@ public class FileActions {
         @Override
         public void actionPerformed(ActionEvent arg0) {
             if (jfc.showOpenDialog(controller.edit) == JFileChooser.APPROVE_OPTION) {
-//                    Thread t = new Thread(new Runnable() {
-//
-//                        @Override
-//                        public void run() {
-                            
-                            try {
-                                controller.file = new MobiFile(jfc.getSelectedFile(), controller.codecs);
-                                controller.refresh();
-                            } catch (InvalidHeaderException | IOException ex) {
-                                ex.printStackTrace();
-                            }
-                            
-//                        } });
-//                    t.start();
+                // Thread t = new Thread(new Runnable() {
+                //
+                // @Override
+                // public void run() {
+
+                try {
+                    controller.file = new MobiFile(jfc.getSelectedFile(),
+                            controller.codecs);
+                    controller.refresh();
+                } catch (InvalidHeaderException | IOException ex) {
+                    ex.printStackTrace();
                 }
+
+                // } });
+                // t.start();
+            }
         }
     }
 
@@ -74,9 +74,10 @@ public class FileActions {
     public static class FileSaveAsAction extends BaseAction {
 
         public FileSaveAsAction(Controller c) {
-            super("Save As...", ImageUtil.getImageIcon("images/SaveAs24.gif"), c);
+            super("Save As...", ImageUtil.getImageIcon("images/SaveAs24.gif"),
+                    c);
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             if (controller.file != null)
@@ -93,8 +94,10 @@ public class FileActions {
         public FileSaveAction(Controller c) {
             super("Save", ImageUtil.getImageIcon("images/Save24.gif"), c);
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.AbstractAction#isEnabled()
          */
         @Override
@@ -112,5 +115,5 @@ public class FileActions {
     }
 
     static protected JFileChooser jfc = new JFileChooser(
-                                              System.getProperty("user.dir"));
+            System.getProperty("user.dir"));
 }

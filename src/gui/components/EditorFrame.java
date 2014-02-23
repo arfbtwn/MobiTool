@@ -32,32 +32,32 @@ import javax.swing.border.Border;
 @SuppressWarnings({ "serial", "deprecation" })
 public class EditorFrame extends JFrame {
 
-    public static final Border BORDER  = BorderFactory.createEmptyBorder(10,
-                                               10, 10, 10);
+    public static final Border BORDER = BorderFactory.createEmptyBorder(10, 10,
+            10, 10);
 
-    public static final int    MARGINS = 10;
+    public static final int MARGINS = 10;
 
-    private JButton            _new;
+    private JButton _new;
 
-    private JButton            _open;
+    private JButton _open;
 
-    private JButton            _save;
+    private JButton _save;
 
-    private JButton            _saveas;
-    
-    private JTabbedPane        tabs;
-    
-    private PdbPanel		   pdb;
+    private JButton _saveas;
 
-    private InfoPanel          info;
+    private JTabbedPane tabs;
 
-    private TextPanel          text;
+    private PdbPanel pdb;
 
-    private ImagePanel         images;
+    private InfoPanel info;
 
-    private HeaderPanel        header;
+    private TextPanel text;
 
-    private JToolBar           tools;
+    private ImagePanel images;
+
+    private HeaderPanel header;
+
+    private JToolBar tools;
 
     public EditorFrame() {
         tools = new JToolBar();
@@ -75,11 +75,11 @@ public class EditorFrame extends JFrame {
         setLayout(new BorderLayout());
         init();
     }
-    
+
     public PdbPanel getPdb() {
-    	return pdb;
+        return pdb;
     }
-    
+
     public InfoPanel getInfo() {
         return info;
     }
@@ -87,11 +87,11 @@ public class EditorFrame extends JFrame {
     public TextPanel getText() {
         return text;
     }
-    
+
     public ImagePanel getImages() {
         return images;
     }
-    
+
     public HeaderPanel getHeader() {
         return header;
     }

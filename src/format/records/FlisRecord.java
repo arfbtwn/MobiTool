@@ -21,7 +21,6 @@ import little.nj.adts.ByteFieldSet;
 import little.nj.adts.IntByteField;
 import little.nj.adts.StringByteField;
 
-
 public class FlisRecord {
 
     private static final ByteFieldSet ALL_FIELDS = new ByteFieldSet();
@@ -35,5 +34,8 @@ public class FlisRecord {
         ALL_FIELDS.add(new IntByteField("Unknown", 1));
         ALL_FIELDS.add(new IntByteField("Unknown", 3));
     }
-    public static final ByteFieldSet getFields() { return ALL_FIELDS.clone(); }
+
+    public static final ByteFieldSet getFields() {
+        return ALL_FIELDS.clone();
+    }
 }

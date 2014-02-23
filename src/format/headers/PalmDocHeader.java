@@ -28,21 +28,21 @@ public class PalmDocHeader implements ByteFieldContainer {
 
     public static final String CURRENT_POSITION = "Current Position";
 
-	public static final short RECORD_LENGTH = 4096;
+    public static final short RECORD_LENGTH = 4096;
 
-	public static final String RECORD_SIZE = "Record Size";
+    public static final String RECORD_SIZE = "Record Size";
 
-	public static final String RECORD_COUNT = "Record Count";
+    public static final String RECORD_COUNT = "Record Count";
 
-	public static final String UNCOMPRESSED_TEXT_LENGTH = "Uncompressed Text Length";
+    public static final String UNCOMPRESSED_TEXT_LENGTH = "Uncompressed Text Length";
 
-	public static final String UNUSED = "Unused";
+    public static final String UNUSED = "Unused";
 
-	public static final String COMPRESSION = "Compression";
+    public static final String COMPRESSION = "Compression";
 
-	public static final ByteFieldMapSet ALL_FIELDS = new ByteFieldMapSet();
+    public static final ByteFieldMapSet ALL_FIELDS = new ByteFieldMapSet();
 
-    public static final short        LENGTH     = 16;
+    public static final short LENGTH = 16;
     static {
         ALL_FIELDS.add(new ShortByteField(COMPRESSION, Compression.NONE
                 .getValue()));
@@ -58,11 +58,11 @@ public class PalmDocHeader implements ByteFieldContainer {
     public PalmDocHeader() {
         fields = ALL_FIELDS.clone();
     }
-    
+
     public static PalmDocHeader parseBuffer(ByteBuffer raw) {
-    	PalmDocHeader header = new PalmDocHeader();
-    	header.parse(raw);
-    	return header;
+        PalmDocHeader header = new PalmDocHeader();
+        header.parse(raw);
+        return header;
     }
 
     public void parse(ByteBuffer in) {
@@ -74,31 +74,32 @@ public class PalmDocHeader implements ByteFieldContainer {
     }
 
     public Compression getCompression() {
-        return Compression.valueOf(fields.<ShortByteField>getAs(COMPRESSION).getValue());
+        return Compression.valueOf(fields.<ShortByteField> getAs(COMPRESSION)
+                .getValue());
     }
 
     public short getTextRecordCount() {
-        return fields.<ShortByteField>getAs(RECORD_COUNT).getValue();
+        return fields.<ShortByteField> getAs(RECORD_COUNT).getValue();
     }
 
     public short getTextRecordLength() {
-        return fields.<ShortByteField>getAs(RECORD_SIZE).getValue();
+        return fields.<ShortByteField> getAs(RECORD_SIZE).getValue();
     }
 
     public int getUncompressedTextLength() {
-        return fields.<IntByteField>getAs(UNCOMPRESSED_TEXT_LENGTH).getValue();
+        return fields.<IntByteField> getAs(UNCOMPRESSED_TEXT_LENGTH).getValue();
     }
 
     public void setCompression(Compression c) {
-        fields.<ShortByteField>getAs(COMPRESSION).setValue(c.getValue());
+        fields.<ShortByteField> getAs(COMPRESSION).setValue(c.getValue());
     }
 
     public void setTextRecordCount(int i) {
-        fields.<ShortByteField>getAs(RECORD_COUNT).setValue((short) i);
+        fields.<ShortByteField> getAs(RECORD_COUNT).setValue((short) i);
     }
 
     public void setUncompressedTextLength(int i) {
-        fields.<IntByteField>getAs(UNCOMPRESSED_TEXT_LENGTH).setValue(i);
+        fields.<IntByteField> getAs(UNCOMPRESSED_TEXT_LENGTH).setValue(i);
     }
 
     @Override

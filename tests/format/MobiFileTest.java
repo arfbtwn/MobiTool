@@ -32,12 +32,11 @@ import org.junit.Test;
 
 import test.MobiBaseTest;
 
-
 public class MobiFileTest extends MobiBaseTest {
 
-    CodecManager  _codecs = new CodecManager();
+    CodecManager _codecs = new CodecManager();
 
-    MobiFile      _file;
+    MobiFile _file;
 
     MobiDocHeader _mobi;
 
@@ -47,7 +46,7 @@ public class MobiFileTest extends MobiBaseTest {
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception {        
+    public void setUp() throws Exception {
         if (_filename != null)
             _file = new MobiFile(getMobiContentFile(_filename), _codecs);
         else
@@ -70,13 +69,13 @@ public class MobiFileTest extends MobiBaseTest {
             assertEquals("FirstNonBookRecord", -1,
                     _mobi.getFirstNonBookRecord());
             assertEquals("IndxRecord", -1, _mobi.getIndxRecord());
-            assertEquals("HuffmanRecord", -1, _mobi.getHuffmanRecord());
+            assertEquals("HuffmanRecord", 0, _mobi.getHuffmanRecord());
             assertEquals("FirstImageRecord", -1, _mobi.getFirstImageRecord());
             assertEquals("LastContentRecord", 1, _mobi.getLastContentRecord());
             assertEquals("FlisRecord", -1, _mobi.getFlisRecord());
             assertEquals("FcisRecord", -1, _mobi.getFcisRecord());
             assertEquals(1, _palm.getTextRecordCount());
-            assertEquals(3, _file.getRecordCount());
+            assertEquals(2, _file.getRecordCount());
             File out = getMobiOutputFile("LoremIpsum_compressed");
             _file.writeToFile(out);
         } catch (Exception e) {

@@ -27,35 +27,34 @@ import java.util.Map;
 
 import little.nj.algorithms.KmpSearch;
 
-
 public class PalmDocCodec implements ICodec {
 
     /**
-     * The default back track distance for repeated string
-     * compression (0x7ff == 2047)
+     * The default back track distance for repeated string compression (0x7ff ==
+     * 2047)
      */
     public static final int DEFAULT_DISTANCE = 0x7ff;
-    
+
     /**
-     * The default set of techniques, all of them
-     * FIXME: There is a problem on kindle at the end of records
-     * when using repeated sequences technique. Disabled for now.
+     * The default set of techniques, all of them FIXME: There is a problem on
+     * kindle at the end of records when using repeated sequences technique.
+     * Disabled for now.
      */
-    public static final EnumSet<Technique> DEFAULT_TECHNIQUES =
-            EnumSet.allOf(Technique.class);
-    
+    public static final EnumSet<Technique> DEFAULT_TECHNIQUES = EnumSet
+            .allOf(Technique.class);
+
     /**
      * A class to set options pertaining to PalmDoc compression
+     * 
      * @author Nicholas Little
-     *
+     * 
      */
     public static class CompressionOptions {
-        
+
         private EnumSet<Technique> techniques = DEFAULT_TECHNIQUES;
-        
+
         private int distance = DEFAULT_DISTANCE;
 
-        
         /**
          * @return the techniques
          */
@@ -63,15 +62,14 @@ public class PalmDocCodec implements ICodec {
             return techniques;
         }
 
-        
         /**
-         * @param techniques the techniques to set
+         * @param techniques
+         *            the techniques to set
          */
         public void setTechniques(EnumSet<Technique> techniques) {
             this.techniques = techniques;
         }
 
-        
         /**
          * @return the distance
          */
@@ -79,16 +77,16 @@ public class PalmDocCodec implements ICodec {
             return distance;
         }
 
-        
         /**
-         * @param distance the distance to set
+         * @param distance
+         *            the distance to set
          */
         public void setDistance(int distance) {
             this.distance = distance;
         }
-                
+
     }
-    
+
     /**
      * An object to track the compression job
      * 
@@ -97,15 +95,15 @@ public class PalmDocCodec implements ICodec {
      */
     public static class CompressionStats {
 
-        int                          i_length   = 0;
+        int i_length = 0;
 
-        int                          o_length   = 0;
+        int o_length = 0;
 
         private Map<Byte[], Integer> rep_ba_pos = new HashMap<>();
 
-        int                          repeats    = 0;
+        int repeats = 0;
 
-        int                          spaces     = 0;
+        int spaces = 0;
 
         public int getPosition(byte[] bytes) {
             Byte[] barr = convert(bytes);
@@ -126,12 +124,11 @@ public class PalmDocCodec implements ICodec {
         @Override
         public String toString() {
             double ratio = (double) i_length / o_length;
-            return String.format("Repeats: %3d, Unique Strings: %3d, Spaces: %3d\n" + 
-                                 "Input: %,d, Output: %,d\n" +
-                                 "Compression Ratio: %2.1f", 
-                                 repeats, rep_ba_pos.size(), spaces, 
-                                 i_length, o_length,
-                                 ratio);
+            return String.format(
+                    "Repeats: %3d, Unique Strings: %3d, Spaces: %3d\n"
+                            + "Input: %,d, Output: %,d\n"
+                            + "Compression Ratio: %2.1f", repeats,
+                    rep_ba_pos.size(), spaces, i_length, o_length, ratio);
         }
     }
 
@@ -148,10 +145,10 @@ public class PalmDocCodec implements ICodec {
     /*
      * Fields
      */
-    private ByteBuffer       raw;
+    private ByteBuffer raw;
     private CompressionStats stats;
     private CompressionOptions options;
-    
+
     /**
      * Default construction
      */
@@ -159,8 +156,7 @@ public class PalmDocCodec implements ICodec {
         options = new CompressionOptions();
         stats = new CompressionStats();
     }
-    
-    
+
     /**
      * @return the options
      */
@@ -168,9 +164,9 @@ public class PalmDocCodec implements ICodec {
         return options;
     }
 
-    
     /**
-     * @param options the options to set
+     * @param options
+     *            the options to set
      */
     public void setOptions(CompressionOptions options) {
         this.options = options;
@@ -193,24 +189,25 @@ public class PalmDocCodec implements ICodec {
              */
             if (options.techniques.contains(Technique.REPEATS))
                 repeats: for (int j = 10; j >= 3; --j) {
-                    
+
                     if (i + j >= input.length || i < j)
                         continue repeats;
-                    
+
                     byte[] pattern = new byte[j];
                     System.arraycopy(input, i, pattern, 0, pattern.length);
-                    
+
                     /*
                      * 0x7ff == 2047 == 11 bits of length
                      */
                     int res = stats.getPosition(pattern);
                     if (res < 0 || i - res > options.distance)
-                        res = KmpSearch.indexOf(input, pattern, i - options.distance, i);
-                    
+                        res = KmpSearch.indexOf(input, pattern, i
+                                - options.distance, i);
+
                     if (res > -1 && res < i) {
                         // Make a note of this one for later
                         stats.putBytes(pattern, res);
-                        
+
                         // Encode distance & length
                         int dis = i - res, len = j - 3;
                         b = (short) (0x8000 + (dis << 3) + len);
@@ -245,7 +242,7 @@ public class PalmDocCodec implements ICodec {
                         break;
                     s = (short) (input[++j] & 0xff);
                 } while (s >= 0x80 && s <= 0xff);
-                
+
                 if (j - i > 0) {
                     o_stream.write(j - i);
                     for (; i < j; ++i)
@@ -265,10 +262,12 @@ public class PalmDocCodec implements ICodec {
                 ++i;
             }
         }
+        o_stream.write(0x0);
+
         stats.o_length = o_stream.size();
-        
+
         System.out.println(stats.toString());
-        
+
         return o_stream.toByteArray();
     }
 
@@ -291,12 +290,13 @@ public class PalmDocCodec implements ICodec {
         try {
             do {
                 short b = (short) (in.get() & 0xff);
-                if (b == 0x00)
+                if (b == 0x00) {
+                    break;
                     /*
                      * Null represents itself
                      */
-                    raw.put((byte) b);
-                else if (b >= 0x1 && b <= 0x8)
+                    // raw.put((byte) b);
+                } else if (b >= 0x1 && b <= 0x8)
                     /*
                      * 1 - 8 Literals (high range characters)
                      */
@@ -312,8 +312,8 @@ public class PalmDocCodec implements ICodec {
                      * Distance - Length pairs (see compression for detail)
                      */
                     b = (short) (b << 8);
-                    b = (short) (b | in.get() & 0xff);
-                    short back = (short) (b >>> 3 & 0x7ff); // 11 bits
+                    b = (short) (b | (in.get() & 0xff));
+                    short back = (short) ((b >>> 3) & 0x7ff); // 11 bits
                     byte length = (byte) (b & 0x7); // 3 bits
                     int pos = raw.position();
                     if (pos >= back) {
@@ -335,7 +335,7 @@ public class PalmDocCodec implements ICodec {
                     break;
             } while (in.position() < in.capacity());
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         return raw.position();
     }

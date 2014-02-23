@@ -39,13 +39,13 @@ public class MobiEditorKit extends HTMLEditorKit {
 
     private List<BufferedImage> images;
 
-    private JComponent          parent;
-    
+    private JComponent parent;
+
     private MobiFactory factory = new MobiFactory();
-    
+
     @Override
     public HTMLDocument createDefaultDocument() {
-        return (HTMLDocument)super.createDefaultDocument();
+        return (HTMLDocument) super.createDefaultDocument();
     }
 
     @Override
@@ -65,14 +65,14 @@ public class MobiEditorKit extends HTMLEditorKit {
     public void setParent(JComponent parent) {
         this.parent = parent;
     }
-    
+
     class MobiFactory extends HTMLFactory {
 
         class ImgView extends ImageView {
 
             BufferedImage image;
 
-            boolean       parse_tried = false;
+            boolean parse_tried = false;
 
             public ImgView(Element elem) {
                 super(elem);
@@ -138,27 +138,32 @@ public class MobiEditorKit extends HTMLEditorKit {
             public PageBreakView(Element elem) {
                 super(elem);
             }
-            
-            /* (non-Javadoc)
+
+            /*
+             * (non-Javadoc)
+             * 
              * @see javax.swing.text.ComponentView#getPreferredSpan(int)
              */
             @Override
             public float getPreferredSpan(int axis) {
                 return getMinimumSpan(axis);
             }
-            
-            /* (non-Javadoc)
+
+            /*
+             * (non-Javadoc)
+             * 
              * @see javax.swing.text.ComponentView#getMinimumSpan(int)
              */
             @Override
             public float getMinimumSpan(int axis) {
                 int width = parent.getWidth();
                 int height = parent.getHeight();
-                
-                System.out.println(String.format("Width: %d, Height: %d", width, height));
-                
+
+                System.out.println(String.format("Width: %d, Height: %d",
+                        width, height));
+
                 if (axis == X_AXIS) {
-                    
+
                     return width;
                 }
                 return height;

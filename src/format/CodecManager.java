@@ -26,13 +26,12 @@ import algorithms.HuffCdicCodec;
 import algorithms.PalmDocCodec;
 import algorithms.RawCodec;
 
-
 @SuppressWarnings("serial")
 public class CodecManager extends HashMap<String, ICodec> implements
         IManageCodecs {
 
     public CodecManager() {
-    	put(Compression.HUFF_CDIC.toString(), new HuffCdicCodec());
+        put(Compression.HUFF_CDIC.toString(), new HuffCdicCodec());
         put(Compression.PALMDOC.toString(), new PalmDocCodec());
         put(Compression.NONE.toString(), new RawCodec());
     }
@@ -59,6 +58,7 @@ public class CodecManager extends HashMap<String, ICodec> implements
 
     /*
      * (non-Javadoc)
+     * 
      * @see interfaces.IManageCodecs#getValues()
      */
     @Override

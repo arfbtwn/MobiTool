@@ -27,7 +27,6 @@ import org.junit.Test;
 
 import test.MobiBaseTest;
 
-
 public class PalmDocCodecTest extends MobiBaseTest {
 
     /**
@@ -54,7 +53,7 @@ public class PalmDocCodecTest extends MobiBaseTest {
     @Before
     public void setUp() throws Exception {
         _filename = "LoremIpsum";
-        //_filename = "cpp-style-technique";
+        // _filename = "cpp-style-technique";
         try {
             uncompressed = Statics.readFile(getHtmlContentFile(_filename));
         } catch (Exception e) {
@@ -88,14 +87,14 @@ public class PalmDocCodecTest extends MobiBaseTest {
         PalmDocCodec codec = new PalmDocCodec();
         compressed = codec.compress(uncompressed);
         byte[] result = codec.decompress(compressed);
-        
+
         assertEquals(uncompressed.length, result.length);
-        
+
         for (int i = 0; i < result.length; ++i) {
             assertEquals(String.format("Index %d Not Equal", i),
                     uncompressed[i], result[i]);
         }
-        
+
         try {
             Statics.writeFile(getHtmlOutputFile(_filename + "_compressed"),
                     compressed);

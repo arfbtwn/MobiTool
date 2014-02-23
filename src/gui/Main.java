@@ -26,13 +26,13 @@ public class Main {
         try {
             // Read style from somewhere
             String style = StringUtil.EMPTY_STRING;
-            
+
             LookAndFeelDialog.setStyle(style);
-            
+
         } catch (IllegalArgumentException e) {
             LookAndFeelDialog.showDialog();
         }
-        
+
         Controller c = new Controller();
     }
 }

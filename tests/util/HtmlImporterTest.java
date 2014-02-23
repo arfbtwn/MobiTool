@@ -30,16 +30,15 @@ import org.junit.Test;
 import test.MobiBaseTest;
 
 /**
- * FIXME: Sadly, this shows extending java's HTML parsing
- * capabilities is rather difficult, and another way must
- * be found.
+ * FIXME: Sadly, this shows extending java's HTML parsing capabilities is rather
+ * difficult, and another way must be found.
  */
 public class HtmlImporterTest extends MobiBaseTest {
 
     HTMLEditorKit kit = new HTMLEditorKit();
-    
+
     HtmlImporter imp = new HtmlImporter();
-    
+
     private void printDocument() {
         try {
             HTMLDocument doc = imp.getDocument();
@@ -48,16 +47,16 @@ public class HtmlImporterTest extends MobiBaseTest {
             ex.printStackTrace();
         }
     }
-    
+
     /**
      * Test method for {@link util.HtmlImporter#readFromFile(java.io.File)}.
      */
     @Test
     public void testReadFromFile() {
         imp.readFromFile(getHtmlContentFile("LoremIpsum"));
-        
+
         HTMLDocument doc = imp.getDocument();
-        
+
         assertTrue(doc.getLength() > 0);
     }
 
@@ -67,7 +66,7 @@ public class HtmlImporterTest extends MobiBaseTest {
     @Test
     public void testStripParagraphStyle() {
         testReadFromFile();
-        
+
         imp.stripParagraphStyle();
     }
 
@@ -77,10 +76,10 @@ public class HtmlImporterTest extends MobiBaseTest {
     @Test
     public void testGenerateMobiToc() {
         testReadFromFile();
-        
+
         imp.generateMobiToc();
-        
+
         printDocument();
     }
-    
+
 }

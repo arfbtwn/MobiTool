@@ -35,38 +35,40 @@ import little.nj.gui.components.ListPanel;
 
 @SuppressWarnings({ "serial", "unchecked", "rawtypes" })
 public class ImagePanel extends JPanel {
-	
-    JPanel        header = new JPanel();
-    
+
+    JPanel header = new JPanel();
+
     DefaultListModel model = new DefaultListModel();
 
-    ListPanel 	  images = new ListPanel(model);
-    
-    JList		  list	 = images.asJList();
-    
-    JButton       _extract = new JButton();
+    ListPanel images = new ListPanel(model);
 
-    JButton       _set_covers = new JButton();
+    JList list = images.asJList();
+
+    JButton _extract = new JButton();
+
+    JButton _set_covers = new JButton();
 
     public ImagePanel() {
         init();
     }
 
     public void init() {
-    	images.addComponentListener(componentListener);
-    	list.setCellRenderer(new ImageCellRenderer());
-    	list.setVisibleRowCount(-1);
-    	
+        images.addComponentListener(componentListener);
+        list.setCellRenderer(new ImageCellRenderer());
+        list.setVisibleRowCount(-1);
+
         setLayout(new BorderLayout());
-        
+
         header.add(_extract);
         header.add(_set_covers);
-        
+
         add(header, BorderLayout.PAGE_START);
         add(images, BorderLayout.CENTER);
     }
-    
-    public JList asJList() { return list; }
+
+    public JList asJList() {
+        return list;
+    }
 
     public void setCoversAction(Action a) {
         _set_covers.setAction(a);
@@ -77,31 +79,34 @@ public class ImagePanel extends JPanel {
     }
 
     public void setImages(List<BufferedImage> list) {
-    	model.clear();
-    	for(BufferedImage i : list) {
-    		model.addElement(i);
-    	}
+        model.clear();
+        for (BufferedImage i : list) {
+            model.addElement(i);
+        }
     }
-    
+
     /**
-	 * Listens for component display and resize events
-	 */
-	private ComponentListener componentListener = new ComponentAdapter() {
-		@Override
-		public void componentShown(ComponentEvent e) {
-			componentResized(e);
-		}
-		@Override
-		public void componentResized(ComponentEvent e) {
-			Component component = e.getComponent();
-			
-			System.out.printf("componentListener.componentResized: Height = %d, Width = %d%n", component.getHeight(), component.getWidth());
-			
-			if (component.getHeight() >= component.getWidth()) {
-				list.setLayoutOrientation(JList.VERTICAL);
-			} else {
-				list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-			}
-		}
-	};
+     * Listens for component display and resize events
+     */
+    private ComponentListener componentListener = new ComponentAdapter() {
+        @Override
+        public void componentShown(ComponentEvent e) {
+            componentResized(e);
+        }
+
+        @Override
+        public void componentResized(ComponentEvent e) {
+            Component component = e.getComponent();
+
+            System.out
+                    .printf("componentListener.componentResized: Height = %d, Width = %d%n",
+                            component.getHeight(), component.getWidth());
+
+            if (component.getHeight() >= component.getWidth()) {
+                list.setLayoutOrientation(JList.VERTICAL);
+            } else {
+                list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+            }
+        }
+    };
 }

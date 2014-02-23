@@ -18,12 +18,11 @@ package gui.components;
 
 import format.headers.MobiDocHeader;
 
-
 @SuppressWarnings("serial")
 @Deprecated
 public class HeaderPanel extends FieldPanel {
-	
-	public void setHeader(MobiDocHeader header) {
+
+    public void setHeader(MobiDocHeader header) {
         setFields(header.getFields());
     }
 }

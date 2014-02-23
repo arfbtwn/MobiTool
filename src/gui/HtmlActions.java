@@ -26,14 +26,13 @@ import javax.swing.JFileChooser;
 import little.nj.util.FileUtil;
 import little.nj.util.StreamUtil.OutputAction;
 
-
 public class HtmlActions extends FileActions {
-    
+
     @SuppressWarnings("serial")
     public static class HtmlExportAction extends BaseAction {
 
         FileUtil futil = new FileUtil();
-        
+
         public HtmlExportAction(Controller c) {
             super("Extract Text to...", null, c);
         }
@@ -41,18 +40,20 @@ public class HtmlActions extends FileActions {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (jfc.showSaveDialog(controller.edit) == JFileChooser.APPROVE_OPTION) {
-                
+
                 futil.write(jfc.getSelectedFile(), new OutputAction() {
 
                     @Override
                     public void act(OutputStream stream) throws IOException {
-                        ByteArrayInputStream bis = controller.file.getText().getStream();
-                        
+                        ByteArrayInputStream bis = controller.file.getText()
+                                .getStream();
+
                         byte[] buf = new byte[bis.available()];
                         bis.read(buf);
-                        
+
                         stream.write(buf);
-                    }});
+                    }
+                });
             }
         }
     }

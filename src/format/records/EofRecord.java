@@ -19,7 +19,6 @@ package format.records;
 import little.nj.adts.ByteField;
 import little.nj.adts.ByteFieldSet;
 
-
 public class EofRecord {
 
     private static final ByteFieldSet ALL_FIELDS = new ByteFieldSet();
@@ -29,5 +28,8 @@ public class EofRecord {
         ALL_FIELDS.add(new ByteField(1, "Unknown", new byte[] { 13 }));
         ALL_FIELDS.add(new ByteField(1, "Unknown", new byte[] { 10 }));
     }
-    public static final ByteFieldSet getFields() { return ALL_FIELDS.clone(); }
+
+    public static final ByteFieldSet getFields() {
+        return ALL_FIELDS.clone();
+    }
 }

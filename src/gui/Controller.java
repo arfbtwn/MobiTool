@@ -44,19 +44,19 @@ public class Controller {
 
     CodecManager codecs;
 
-    EditorFrame  edit;
+    EditorFrame edit;
 
-    MobiFile     file;
-    
-    PdbPanel	 pdb;
-    
-    InfoPanel    info;
+    MobiFile file;
 
-    TextPanel    text;
+    PdbPanel pdb;
 
-    ImagePanel   images;
-    
-    HeaderPanel  header;
+    InfoPanel info;
+
+    TextPanel text;
+
+    ImagePanel images;
+
+    HeaderPanel header;
 
     public Controller() {
         codecs = new CodecManager();
@@ -72,9 +72,9 @@ public class Controller {
         init();
         refresh();
     }
-    
+
     private void createComponents() {
-    	edit = new EditorFrame();
+        edit = new EditorFrame();
         pdb = edit.getPdb();
         info = edit.getInfo();
         images = edit.getImages();
@@ -91,18 +91,19 @@ public class Controller {
 
     @SuppressWarnings("serial")
     public void init() {
-    	pdb.setExportAction(new AbstractAction("Export...") {
+        pdb.setExportAction(new AbstractAction("Export...") {
 
-    		@Override
-    		public boolean isEnabled() {
-    			return pdb.hasSelection();
-    		}
-    		
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
-			} });
+            @Override
+            public boolean isEnabled() {
+                return pdb.hasSelection();
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+        });
         edit.setNewAction(new FileActions.FileNewAction(this));
         edit.setOpenAction(new FileActions.FileOpenAction(this));
         edit.setSaveAction(new FileActions.FileSaveAction(this));
@@ -131,19 +132,21 @@ public class Controller {
         images.setExtractAction(new ImageExportAction(this));
         images.setCoversAction(new AbstractAction("Set Cover & Thumbnail") {
 
-            /* (non-Javadoc)
+            /*
+             * (non-Javadoc)
+             * 
              * @see javax.swing.AbstractAction#isEnabled()
              */
             @Override
             public boolean isEnabled() {
                 return images.asJList().getSelectedIndices().length > 0;
             }
-            
+
             @SuppressWarnings("rawtypes")
-			@Override
+            @Override
             public void actionPerformed(ActionEvent arg0) {
-            	JList list = images.asJList();
-                file.setCovers((BufferedImage[])list.getSelectedValues());
+                JList list = images.asJList();
+                file.setCovers((BufferedImage[]) list.getSelectedValues());
                 info.setThumb(file.getThumb());
             }
         });
@@ -162,11 +165,11 @@ public class Controller {
                 info.setBlurb(file.getBlurb());
                 info.setThumb(file.getCoverOrThumb());
                 images.setImages(file.getImages());
-//                images.getImageView()
-//                        .setSelectedItems(
-//                                new BufferedImage[] { file.getCover(),
-//                                        file.getThumb() });
-                
+                // images.getImageView()
+                // .setSelectedItems(
+                // new BufferedImage[] { file.getCover(),
+                // file.getThumb() });
+
                 text.getEditorKit().setImageList(file.getImages());
                 text.setText(file.getText().getText());
                 text.readFromStream(file.getText().getStream());

@@ -11,9 +11,9 @@ import little.nj.gui.components.FieldPanelFactory;
 
 @SuppressWarnings("serial")
 public class FieldPanel extends JPanel {
-	
-	ByteFieldSet model;
-	
+
+    ByteFieldSet model;
+
     public FieldPanel() {
         super();
         init();
@@ -24,10 +24,10 @@ public class FieldPanel extends JPanel {
 
     public void setFields(ByteFieldSet fields) {
         model = fields;
-        
+
         removeAll();
-        
-        for(ByteField i : model) {
+
+        for (ByteField i : model) {
             JComponent comp = FieldPanelFactory.create(i);
             comp.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             add(comp);

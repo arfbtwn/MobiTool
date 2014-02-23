@@ -20,11 +20,10 @@ package gui;
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 
-
 @SuppressWarnings("serial")
 public abstract class BaseAction extends AbstractAction {
 
-    protected final Controller controller;    
+    protected final Controller controller;
 
     public BaseAction(Controller c) {
         controller = c;

@@ -52,21 +52,21 @@ import format.records.PdbRecord;
 
 public class MobiFile extends PdbFile {
 
-    public static final String  IMAGE_EXT = "jpg";
+    public static final String IMAGE_EXT = "jpg";
 
-    public IManageCodecs        codec_manager;
+    public IManageCodecs codec_manager;
 
-    private List<BufferedImage> images    = new LinkedList<BufferedImage>();
+    private List<BufferedImage> images = new LinkedList<BufferedImage>();
 
-    private MobiDocHeader       mobi;
+    private MobiDocHeader mobi;
 
-    private PalmDocHeader       palm;
+    private PalmDocHeader palm;
 
-    private PalmDocText         text;
+    private PalmDocText text;
 
-    private PdbRecord           zero;
-    
-    private boolean 			write_flis, write_fcis;
+    private PdbRecord zero;
+
+    private boolean write_flis, write_fcis;
 
     public MobiFile(IManageCodecs codecs) {
         zero = new PdbRecord();
@@ -75,14 +75,14 @@ public class MobiFile extends PdbFile {
         text = new PalmDocText(mobi.getEncoding());
         codec_manager = codecs;
     }
-    
+
     public MobiFile(File in, IManageCodecs codecs) throws IOException,
             InvalidHeaderException {
         super(in);
         codec_manager = codecs;
         parse();
     }
-    
+
     protected void parse() throws InvalidHeaderException {
         zero = getToc().iterator().next();
         ByteBuffer _zero = zero.getBuffer();
@@ -93,9 +93,9 @@ public class MobiFile extends PdbFile {
         text = new PalmDocText(palm.getTextRecordLength(), mobi.getEncoding());
         extractContent();
     }
-    
+
     protected void extractContent() {
-    	System.out.println("Extracting Text...");
+        System.out.println("Extracting Text...");
         extractText();
         System.out.println("Extracting Images...");
         extractImages();
@@ -109,7 +109,7 @@ public class MobiFile extends PdbFile {
             ByteArrayInputStream bis;
             ImageInputStream iis;
             BufferedImage img;
-            
+
             while (it.nextIndex() <= end)
                 try {
                     bis = new ByteArrayInputStream(it.next().getData());
@@ -128,10 +128,13 @@ public class MobiFile extends PdbFile {
         int count = palm.getTextRecordCount();
         if (record > 0) {
             setTextCodec();
-            ListIterator<?> it = getToc().iterator(record);
-            
-            while (count-- > 0)
-                text.addToFile(((PdbRecord) it.next()).getBuffer());
+            ListIterator<PdbRecord> it = getToc().iterator(record);
+
+            while (count-- > 0) {
+                ByteBuffer data = it.next().getBuffer();
+                byte[] dbg = data.array();
+                text.addToFile(data);
+            }
         }
     }
 
@@ -150,37 +153,33 @@ public class MobiFile extends PdbFile {
     public PalmDocText getText() {
         return text;
     }
-    
+
     public String getAuthor() {
-        try {
-            return mobi.getExthHeader().getAuthor();
-        } catch (Exception e) {
-        }
-        return "";
+        if (null == mobi.getExthHeader())
+            return StringUtil.EMPTY_STRING;
+
+        return mobi.getExthHeader().getAuthor();
     }
 
     public String getTitle() {
-        try {
-            return mobi.getExthHeader().getTitle();
-        } catch (Exception e) {
-        }
-        return getHeader().getName();
+        if (null == mobi.getExthHeader())
+            return getHeader().getName();
+
+        return mobi.getExthHeader().getTitle();
     }
-    
+
     public String getBlurb() {
-        try {
-            return mobi.getExthHeader().getBlurb();
-        } catch (Exception e) {
-        }
-        return "";
+        if (null == mobi.getExthHeader())
+            return StringUtil.EMPTY_STRING;
+
+        return mobi.getExthHeader().getBlurb();
     }
 
     public BufferedImage getCover() {
-        try {
-            return images.get(mobi.getExthHeader().getCover());
-        } catch (Exception e) {
-        }
-        return null;
+        if (images.size() == 0 || null == mobi.getExthHeader())
+            return null;
+
+        return images.get(mobi.getExthHeader().getCover());
     }
 
     public BufferedImage getThumb() {
@@ -203,8 +202,8 @@ public class MobiFile extends PdbFile {
 
     public void setTitle(String x) {
         getHeader().setName(x);
-        if (mobi.getExthHeader() != null)
-            mobi.getExthHeader().setTitle(x);
+        mobi.setExthHeader(true);
+        mobi.getExthHeader().setTitle(x);
     }
 
     public void setBlurb(String x) {
@@ -241,26 +240,26 @@ public class MobiFile extends PdbFile {
 
     public void importFromHtml(File file) {
         setTextCodec();
-        
+
         final HTMLEditorKit kit = new HTMLEditorKit();
-        
+
         final HTMLDocument doc;
-        
+
         HtmlImporter importer = new HtmlImporter();
-        
+
         if (importer.readFromFile(file)) {
             importer.stripParagraphStyle();
-            
+
             doc = importer.getDocument();
-            
+
             try (StringWriter writer = new StringWriter(doc.getLength())) {
                 kit.write(writer, doc, 0, doc.getLength());
                 getText().setText(writer.toString());
-                
+
                 Object title = doc.getProperty(HTMLDocument.TitleProperty);
-                
+
                 if (title != null)
-                    setTitle((String)title);
+                    setTitle((String) title);
             } catch (BadLocationException | IOException e) {
                 getText().setText(StringUtil.EMPTY_STRING);
             }
@@ -276,93 +275,89 @@ public class MobiFile extends PdbFile {
     public final void refresh() {
         buildFile();
     }
-    
+
     protected void buildFile() {
-    	getHeader().setBookType("BOOK");
-    	getHeader().setCreator(MobiDocHeader.MOBI);
-    	
-    	getToc().clear(); // Clear the toc
-    	getToc().iterator().add(zero); // Place record zero
-    	int curr = 1; // Start placing from first record
-    	
-    	/*
-    	 * Set any unsupported record pointers
-    	 * as they will have been stripped
-    	 */
-    	setUnsupportedRecordPointers();
-    	
-    	/*
-    	 *  Insert text, set pointers:
-    	 *   - First Content Record
-    	 *   - First Non Book Record
-    	 *  
-    	 */
-    	curr += insertText(curr);
-    	
-    	int fnonbook = curr;
-    	/*
-    	 * Insert images, set pointers:
-    	 *  - First Image Record
-    	 */
-    	curr += insertImages(curr);
-    	
-    	/*
-    	 * If we inserted anything after the book we need to set
-    	 * the first non book record
-    	 */
-    	if (fnonbook < curr) {
+        getHeader().setBookType("BOOK");
+        getHeader().setCreator(MobiDocHeader.MOBI);
+
+        getToc().clear(); // Clear the toc
+        getToc().iterator().add(zero); // Place record zero
+        int curr = 1; // Start placing from first record
+
+        /*
+         * Set any unsupported record pointers as they will have been stripped
+         */
+        setUnsupportedRecordPointers();
+
+        /*
+         * Insert text, set pointers: - First Content Record - First Non Book
+         * Record
+         */
+        curr += insertText(curr);
+
+        int fnonbook = curr;
+        /*
+         * Insert images, set pointers: - First Image Record
+         */
+        curr += insertImages(curr);
+
+        /*
+         * If we inserted anything after the book we need to set the first non
+         * book record
+         */
+        if (fnonbook < curr) {
             mobi.setFirstNonBookRecord(fnonbook);
-    	}
-    	
-    	/*
-    	 * Done inserting content
-    	 */
-    	mobi.setLastContentRecord(curr - 1);
-    	
-    	curr += insertFlis(curr);
-    	
-    	curr += insertFcis(curr);
-    	
-    	insertEof(curr);
-    	
-    	buildRecordZero();
+        }
+
+        /*
+         * Done inserting content
+         */
+        mobi.setLastContentRecord(curr - 1);
+
+        curr += insertFlis(curr);
+
+        curr += insertFcis(curr);
+
+        insertEof(curr);
+
+        buildRecordZero();
     }
-    
+
     protected void setUnsupportedRecordPointers() {
-    	/*
-    	 * FIXME: Deal with these records
-    	 */
-    	mobi.setFcisRecord(-1);
-    	mobi.setFlisRecord(-1);
-    	mobi.setHuffmanRecord(-1);
-    	mobi.setIndxRecord(-1);
-    	mobi.setHuffmanCount(0);
+        /*
+         * FIXME: Deal with these records
+         */
+        mobi.setFcisRecord(-1);
+        mobi.setFlisRecord(-1);
+        mobi.setHuffmanRecord(0);
+        mobi.setIndxRecord(-1);
+        mobi.setHuffmanCount(0);
     }
 
     protected int insertText(int record) {
-    	setTextCodec();
-        byte[][] records = text.getRecords();
+        setTextCodec();
+        byte[][] records = text.getCompressedRecords();
         ListIterator<PdbRecord> it = getToc().iterator(record);
         for (byte[] i : records)
             it.add(new PdbRecord(i));
-        
+
         /*
          * Update mobi header
          */
         mobi.setEncoding(text.getEncoding());
         mobi.setFirstContentRecord(record);
-        
+
         /*
          * And palm
          */
         palm.setUncompressedTextLength(text.getUncompressedLength());
         palm.setTextRecordCount(records.length);
-        
+
         return records.length;
     }
-    
+
     protected void setTextCodec() {
-    	ICodec codec = codec_manager.getCodec(palm.getCompression().toString());
+        ICodec codec = codec_manager.getCodec(palm.getCompression().toString());
         getText().setCodec(codec);
     }
 
@@ -379,68 +374,67 @@ public class MobiFile extends PdbFile {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        
+
         /*
          * Update Mobi image record pointer
          */
-    	mobi.setFirstImageRecord(images.size() > 0 ? record : -1);
-        
+        mobi.setFirstImageRecord(images.size() > 0 ? record : -1);
+
         return images.size();
     }
-    
+
     protected int insertFlis(int record) {
-    	if (write_flis) {
-    		mobi.setFlisRecord(record);
-    		PdbRecord flis = new PdbRecord(
-    				FlisRecord.getFields().getBuffer().array()
-    				);
-    		getToc().iterator(record).add(flis);
-    		
-    		return 1;
-    	}
-    	
-    	return 0;
+        if (write_flis) {
+            mobi.setFlisRecord(record);
+            PdbRecord flis = new PdbRecord(FlisRecord.getFields().getBuffer()
+                    .array());
+            getToc().iterator(record).add(flis);
+
+            return 1;
+        }
+
+        return 0;
     }
-    
+
     protected int insertFcis(int record) {
-    	if (write_fcis) {
-    		mobi.setFcisRecord(record);
-    		ByteFieldMapSet fcis = FcisRecord.getFields();
-    		
-    		fcis.<IntByteField>getAs("Text Length")
-    			.setValue(palm.getUncompressedTextLength());
-    		
-    		PdbRecord rec = new PdbRecord(fcis.getBuffer().array());
-    		getToc().iterator(record).add(rec);
-    		
-    		return 1;
-    	}
-    	
-    	return 0;
+        if (write_fcis) {
+            mobi.setFcisRecord(record);
+            ByteFieldMapSet fcis = FcisRecord.getFields();
+
+            fcis.<IntByteField> getAs("Text Length").setValue(
+                    palm.getUncompressedTextLength());
+
+            PdbRecord rec = new PdbRecord(fcis.getBuffer().array());
+            getToc().iterator(record).add(rec);
+
+            return 1;
+        }
+
+        return 0;
     }
-    
+
     protected int insertEof(int record) {
-    	PdbRecord eof = new PdbRecord(EofRecord.getFields().getBuffer().array());
-    	
-    	getToc().iterator(record).add(eof);
-    	
-    	return 1;
+        PdbRecord eof = new PdbRecord(EofRecord.getFields().getBuffer().array());
+
+        getToc().iterator(record).add(eof);
+
+        return 1;
     }
-    
+
     /**
-     * Populate record zero with the 
-     * {@link PalmDocHeader}, {@link MobiDocHeader} and Book Title
+     * Populate record zero with the {@link PalmDocHeader},
+     * {@link MobiDocHeader} and Book Title
      */
     protected void buildRecordZero() {
         int length = PalmDocHeader.LENGTH + mobi.getLength();
-        
+
         /*
          * Update mobi header information
          */
         byte[] title = getTitle().getBytes(mobi.getEncoding().getCharset());
         mobi.setFullNameOffset(length);
         mobi.setFullNameLength(title.length);
-        
+
         /*
          * Calculate extra length for padding
          */
@@ -448,7 +442,7 @@ public class MobiFile extends PdbFile {
         if (length % 4 != 0)
             length += 4 - length % 4;
         ByteBuffer buf = ByteBuffer.allocate(length);
-        
+
         /*
          * Write palm and mobi headers to buffer
          */

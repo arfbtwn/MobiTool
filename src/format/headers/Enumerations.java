@@ -19,11 +19,10 @@ package format.headers;
 
 import java.nio.charset.Charset;
 
-
 public final class Enumerations {
 
     protected final static String FMT_NOT_RECOGNISED = "Type '%d' not recognised";
-    
+
     /**
      * @see {@link PalmDocHeader}
      */
@@ -54,7 +53,7 @@ public final class Enumerations {
             return value;
         }
     }
-    
+
     /**
      * @see {@link MobiDocHeader}
      */
@@ -98,7 +97,7 @@ public final class Enumerations {
 
     /**
      * @see {@link MobiDocHeader}
-     *
+     * 
      */
     public static enum Locale {
         UK_ENGLISH(2057), UNSPECIFIED(0), US_ENGLISH(1033);
@@ -130,9 +129,9 @@ public final class Enumerations {
      * @see {@link MobiDocHeader}
      */
     public static enum MobiType {
-        AUDIO(4), KF8_KINDLEGEN2(248), MOBI_BOOK(2), MOBI_KINDLEGEN1_2(232), 
-        NEWS(257), NEWS_FEED(258), NEWS_MAGAZINE(259), PALM_BOOK(3), 
-        PICS(513), PPT(516), TEXT(517), WORD(514), XLS(515), HTML(518);
+        AUDIO(4), KF8_KINDLEGEN2(248), MOBI_BOOK(2), MOBI_KINDLEGEN1_2(232), NEWS(
+                257), NEWS_FEED(258), NEWS_MAGAZINE(259), PALM_BOOK(3), PICS(
+                513), PPT(516), TEXT(517), WORD(514), XLS(515), HTML(518);
 
         public static final MobiType valueOf(int x) {
             for (MobiType i : values())
@@ -153,5 +152,5 @@ public final class Enumerations {
             return value;
         }
     }
-    
+
 }

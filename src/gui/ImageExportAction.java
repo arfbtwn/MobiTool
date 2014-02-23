@@ -33,18 +33,16 @@ public class ImageExportAction extends BaseAction {
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (controller.file != null) {
-            List<BufferedImage> list = controller.images.asJList().getSelectedValuesList();
+            List<BufferedImage> list = controller.images.asJList()
+                    .getSelectedValuesList();
             int j = 1;
             File file = null;
             for (BufferedImage i : list) {
-                file = new File(
-                        String.format("%s%s%sImage%d.jpg", 
-                                System.getProperty("user.dir"),
-                                File.separator,
-                                j++));
+                file = new File(String.format("%s%sImage%d.jpg",
+                        System.getProperty("user.dir"), File.separator, j++));
                 try {
                     ImageIO.write(i, "jpg", file);
                 } catch (IOException e1) {
@@ -54,7 +52,7 @@ public class ImageExportAction extends BaseAction {
             if (file != null)
                 JOptionPane.showMessageDialog(controller.edit,
                         "Images Extracted to: " + file.getParentFile()
-                                + "\\Image*.jpg");
+                                + File.separator + "Image*.jpg");
         }
     }
 }

@@ -51,22 +51,21 @@ public class TextPanel extends JPanel implements HyperlinkListener {
 
     public static final int[] FONT_SIZES = { 8, 10, 14, 18, 22, 30, 38, 46 };
 
-    private JEditorPane       _content;
+    private JEditorPane _content;
 
-    private JButton           _extract, _read, _prev, _next, _tsize_a,
-            _tsize_b;
+    private JButton _extract, _read, _prev, _next, _tsize_a, _tsize_b;
 
-    private MobiEditorKit     _kit;
+    private MobiEditorKit _kit;
 
-    private JScrollPane       _scroller;
+    private JScrollPane _scroller;
 
     private JComboBox<Object> compression;
 
-    private int               font_size  = FONT_SIZES.length / 2;
+    private int font_size = FONT_SIZES.length / 2;
 
-    private JPanel            footer;
+    private JPanel footer;
 
-    private JPanel            header, controls;
+    private JPanel header, controls;
 
     public TextPanel() {
         header = new JPanel();
@@ -145,8 +144,8 @@ public class TextPanel extends JPanel implements HyperlinkListener {
         _scroller.setViewportView(_content);
         _scroller
                 .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-//        _scroller
-//                .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        // _scroller
+        // .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         _content.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         _content.setEditable(false);
         _kit.setParent(_scroller);
@@ -182,12 +181,12 @@ public class TextPanel extends JPanel implements HyperlinkListener {
     public void setSelectedItem(Object item) {
         compression.setSelectedItem(item);
     }
-    
+
     public void readFromStream(InputStream in) {
         try {
-        	Document doc = _content.getEditorKit().createDefaultDocument();
+            Document doc = _content.getEditorKit().createDefaultDocument();
             _content.read(in, doc);
-            
+
             _content.setDocument(doc);
         } catch (IOException e) {
             e.printStackTrace();
@@ -196,11 +195,11 @@ public class TextPanel extends JPanel implements HyperlinkListener {
 
     public void setText(String in) {
         StringReader reader = new StringReader(in);
-        
+
         HTMLDocument doc = _kit.createDefaultDocument();
-        
+
         doc.putProperty("IgnoreCharsetDirective", Boolean.TRUE);
-        
+
         try {
             _kit.read(reader, doc, 0);
             _content.setDocument(doc);

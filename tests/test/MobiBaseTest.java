@@ -20,7 +20,6 @@ import java.io.File;
 
 import little.nj.core.tests.TestBase;
 
-
 public class MobiBaseTest extends TestBase {
 
     protected static String _filename = null;

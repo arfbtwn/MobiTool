@@ -20,17 +20,17 @@ import java.nio.ByteBuffer;
 
 public class PdbRecord implements Comparable<PdbRecord> {
 
-    public static final byte LENGTH    = 8;
+    public static final byte LENGTH = 8;
 
     public static final byte LENGTH_ID = 3;
 
-    private byte[]           data;
+    private byte[] data;
 
-    private byte             flags;
+    private byte flags;
 
-    private byte[]           id;
+    private byte[] id;
 
-    private int              offset;
+    private int offset;
 
     public PdbRecord() {
         id = new byte[LENGTH_ID];
@@ -42,11 +42,11 @@ public class PdbRecord implements Comparable<PdbRecord> {
         this();
         data = in;
     }
-    
+
     public static PdbRecord parseBuffer(ByteBuffer raw) {
-    	PdbRecord record = new PdbRecord();
-    	record.parse(raw);
-    	return record;
+        PdbRecord record = new PdbRecord();
+        record.parse(raw);
+        return record;
     }
 
     public void parse(ByteBuffer raw) {
@@ -89,7 +89,7 @@ public class PdbRecord implements Comparable<PdbRecord> {
     public int getOffset() {
         return offset;
     }
-    
+
     public void setData(byte[] in) {
         data = in;
     }
@@ -105,7 +105,7 @@ public class PdbRecord implements Comparable<PdbRecord> {
     public void setID(int i) {
         if (i >>> 24 != 0)
             throw new IllegalArgumentException("ID Out of Range: " + i);
-        
+
         id[0] = (byte) ((i & 0xFF0000) >>> 16);
         id[1] = (byte) ((i & 0xFF00) >>> 8);
         id[2] = (byte) (i & 0xFF);
@@ -116,8 +116,7 @@ public class PdbRecord implements Comparable<PdbRecord> {
     }
 
     /**
-     * Gets a buffer containing this record's table of contents
-     * entry
+     * Gets a buffer containing this record's table of contents entry
      * 
      * @return
      */

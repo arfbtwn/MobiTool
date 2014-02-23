@@ -26,16 +26,18 @@ import java.nio.ByteBuffer;
 
 public class PalmDocText {
 
-    private ICodec                codec;
+    public static final short DEFAULT_RECORD_LENGTH = 4096;
 
-    private Encoding              encoding;
+    private ICodec codec;
 
-    private ByteArrayOutputStream o_stream      = new ByteArrayOutputStream();
+    private Encoding encoding;
 
-    private short                 record_length = 4096;
+    private short record_length;
+
+    private ByteArrayOutputStream o_stream = new ByteArrayOutputStream();
 
     public PalmDocText(Encoding enc) {
-        encoding = enc;
+        this(DEFAULT_RECORD_LENGTH, enc);
     }
 
     public PalmDocText(short r_length, Encoding enc) {
@@ -51,7 +53,7 @@ public class PalmDocText {
             e.printStackTrace();
         }
     }
-    
+
     public ICodec getCodec() {
         return codec;
     }
@@ -60,35 +62,8 @@ public class PalmDocText {
         return encoding;
     }
 
-    public int getRecordCount() {
-        return (int) Math.ceil((double) o_stream.size() / record_length);
-    }
-
-    public byte[][] getRecords() {
-        byte[][] rtn = new byte[getRecordCount()][];
-        byte[] bytes = o_stream.toByteArray();
-        for (int i = 0; i < bytes.length; i += record_length) {
-            byte[] record;
-            if (bytes.length - i < record_length)
-                record = new byte[bytes.length - i];
-            else
-                record = new byte[record_length];
-            System.arraycopy(bytes, i, record, 0, record.length);
-            rtn[i / record_length] = codec.compress(record);
-        }
-        return rtn;
-    }
-
     public String getText() {
         return new String(o_stream.toByteArray(), encoding.getCharset());
-    }
-    
-    public ByteArrayInputStream getStream() {
-        return new ByteArrayInputStream(o_stream.toByteArray());
-    }
-
-    public int getUncompressedLength() {
-        return o_stream.size();
     }
 
     public void setCodec(ICodec codec) {
@@ -110,5 +85,33 @@ public class PalmDocText {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public ByteArrayInputStream getStream() {
+        return new ByteArrayInputStream(o_stream.toByteArray());
+    }
+
+    public int getRecordCount() {
+        return (int) Math
+                .ceil(getUncompressedLength() / (double) record_length);
+    }
+
+    public int getUncompressedLength() {
+        return o_stream.size();
+    }
+
+    public byte[][] getCompressedRecords() {
+        byte[][] rtn = new byte[getRecordCount()][];
+        byte[] bytes = o_stream.toByteArray();
+        for (int i = 0; i < bytes.length; i += record_length) {
+            byte[] record;
+            if (bytes.length - i < record_length)
+                record = new byte[bytes.length - i];
+            else
+                record = new byte[record_length];
+            System.arraycopy(bytes, i, record, 0, record.length);
+            rtn[i / record_length] = codec.compress(record);
+        }
+        return rtn;
     }
 }

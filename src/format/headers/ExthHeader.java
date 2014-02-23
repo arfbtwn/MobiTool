@@ -39,17 +39,17 @@ public class ExthHeader implements Iterable<ExthRecord> {
 
     private static final int INT_SIZE = 4;
 
-	private static final String US_ASCII = "US-ASCII";
+    private static final String US_ASCII = "US-ASCII";
 
-	private static final String EXTH = "EXTH";
+    private static final String EXTH = "EXTH";
 
-	private static final String COUNT = "Count";
+    private static final String COUNT = "Count";
 
-	private static final String LENGTH = "Length";
+    private static final String LENGTH = "Length";
 
-	private static final String IDENTIFIER = "Identifier";
+    private static final String IDENTIFIER = "Identifier";
 
-	public static enum DataType {
+    public static enum DataType {
         INT, STRING;
     }
 
@@ -77,19 +77,19 @@ public class ExthHeader implements Iterable<ExthRecord> {
      * Used by the {@link ExthRecord#getType()} function
      */
     public static final Map<Integer, DataType> ENCODE_MAP;
-    
+
     static {
         ALL_FIELDS.add(new StringByteField(4, IDENTIFIER, CHARSET, EXTH));
         ALL_FIELDS.add(new IntByteField(LENGTH));
         ALL_FIELDS.add(new IntByteField(COUNT));
-        
+
         ENCODE_MAP = new TreeMap<Integer, DataType>();
         ENCODE_MAP.put(AUTHOR, DataType.STRING);
         ENCODE_MAP.put(BLURB, DataType.STRING);
         ENCODE_MAP.put(ISBN, DataType.STRING);
         ENCODE_MAP.put(CREATOR_STRING, DataType.STRING);
         ENCODE_MAP.put(TITLE, DataType.STRING);
-        
+
         ENCODE_MAP.put(COVER, DataType.INT);
         ENCODE_MAP.put(THUMB, DataType.INT);
         ENCODE_MAP.put(FAKECOVER, DataType.INT);
@@ -101,7 +101,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
     private ByteFieldMapSet fields;
 
     private List<ExthRecord> records;
-    
+
     public ExthHeader(Charset ch) {
         fields = ALL_FIELDS.clone();
         records = new LinkedList<ExthRecord>();
@@ -112,7 +112,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
         this(ch);
         parse(in);
     }
-    
+
     public void parse(ByteBuffer raw) throws InvalidHeaderException {
         int offset = KmpSearch.indexOf(raw.array(),
                 new String(EXTH).getBytes(Charset.forName(US_ASCII)));
@@ -121,7 +121,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
             raw = raw.slice();
         } else
             throw new InvalidHeaderException();
-        
+
         fields.parseAll(raw);
         int count = fields.<IntByteField> getAs(COUNT).getValue();
         for (int i = 0; i < count; i++)
@@ -137,14 +137,38 @@ public class ExthHeader implements Iterable<ExthRecord> {
         }
         return null;
     }
-    
-    private void setRecord(int id, byte[] data) {
+
+    protected String getStringValue(int id) {
         ExthRecord rec = getRecord(id);
-        
+
+        return null != rec ? rec.asString() : StringUtil.EMPTY_STRING;
+    }
+
+    protected int getIntRecord(int id) {
+        ExthRecord rec = getRecord(id);
+
+        if (null == rec)
+            return -1;
+
+        return rec.asInt();
+    }
+
+    protected void setRecord(int id, byte[] data) {
+        ExthRecord rec = getRecord(id);
+
         if (rec != null)
             rec.setData(data);
         else
             addRecord(id, data);
+    }
+
+    protected void setRecord(int id, int value) {
+        ExthRecord rec = getRecord(id);
+
+        if (null == rec)
+            addRecord(id, ByteBuffer.allocate(INT_SIZE).putInt(value).array());
+        else
+            rec.set(value);
     }
 
     private void addRecord(int id, byte[] data) {
@@ -152,29 +176,15 @@ public class ExthHeader implements Iterable<ExthRecord> {
     }
 
     public String getAuthor() {
-    	return getRecordValue(AUTHOR);
+        return getStringValue(AUTHOR);
     }
 
     public String getBlurb() {
-    	return getRecordValue(BLURB);
-    }
-    
-    private String getRecordValue(int id) {
-    	ExthRecord rec = getRecord(id);
-    	
-    	return null != rec ? rec.getValue() : StringUtil.EMPTY_STRING;
-    }
-
-    public int getCount() {
-        return records.size();
+        return getStringValue(BLURB);
     }
 
     public int getCover() {
-        try {
-            return ByteBuffer.wrap(getRecord(COVER).getData()).getInt();
-        } catch (NullPointerException e) {
-        }
-        return -1;
+        return getIntRecord(COVER);
     }
 
     public int getLength() {
@@ -185,17 +195,13 @@ public class ExthHeader implements Iterable<ExthRecord> {
     }
 
     public int getThumb() {
-        try {
-            return ByteBuffer.wrap(getRecord(THUMB).getData()).getInt();
-        } catch (NullPointerException e) {
-            return getCover();
-        }
+        return getIntRecord(THUMB);
     }
 
     public String getTitle() {
-    	return getRecordValue(TITLE);
+        return getStringValue(TITLE);
     }
-    
+
     public void setAuthor(String s) {
         setRecord(AUTHOR, s.getBytes(charset));
     }
@@ -205,27 +211,19 @@ public class ExthHeader implements Iterable<ExthRecord> {
     }
 
     public void setCover(int i) {
-        byte[] data = ByteBuffer.allocate(INT_SIZE).putInt(i).array();
-        setRecord(COVER, data);
+        setRecord(COVER, i);
     }
 
     public void setThumb(int i) {
-        byte[] data = ByteBuffer.allocate(INT_SIZE).putInt(i).array();
-        setRecord(THUMB, data);
+        setRecord(THUMB, i);
     }
 
     public void setTitle(String s) {
         setRecord(TITLE, s.getBytes(charset));
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("[::::EXTH Header:::]\n");
-        sb.append(fields.toString() + "\n");
-        Iterator<ExthRecord> it = records.iterator();
-        while (it.hasNext())
-            sb.append(it.next() + "\n");
-        return sb.toString();
+    public int getCount() {
+        return records.size();
     }
 
     @Override
@@ -244,14 +242,24 @@ public class ExthHeader implements Iterable<ExthRecord> {
         for (ExthRecord i : records)
             out.put(i.getBuffer());
     }
-    
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[::::EXTH Header:::]\n");
+        sb.append(fields.toString() + "\n");
+        Iterator<ExthRecord> it = records.iterator();
+        while (it.hasNext())
+            sb.append(it.next() + "\n");
+        return sb.toString();
+    }
+
     public class ExthRecord {
 
-    	private static final int STATIC_DATA = 8;
+        private static final int STATIC_DATA = 8;
 
-		private final int id;
-		
-		private byte[] cache;
+        private final int id;
+
+        private byte[] data;
 
         private Integer integer_data;
 
@@ -260,85 +268,62 @@ public class ExthHeader implements Iterable<ExthRecord> {
         private DataType type;
 
         public ExthRecord(ByteBuffer in) {
-    		id = in.getInt();
+            id = in.getInt();
             int length = in.getInt();
-            
-            byte[] data = new byte[length - STATIC_DATA];
-            in.get(data, 0, length - STATIC_DATA);
-            setData(data);
+
+            data = new byte[length - STATIC_DATA];
+            in.get(data);
         }
 
         public ExthRecord(int id, byte[] data) {
-    		this.id = id;
-            setData(data);
+            this.id = id;
+            this.data = data;
         }
-        
+
         public int getId() {
             return id;
         }
-        
+
         public byte[] getData() {
-        	if (null == cache) {
-	        	switch (getType()) {
-		        case INT:
-		            cache = ByteBuffer.allocate(INT_SIZE)
-		            		.putInt(integer_data.intValue())
-		                    .array();
-		        case STRING:
-		            cache = string_data.getBytes(charset);
-		        }
-        	}
-	        return cache;
+            return data;
         }
 
         public void setData(byte[] data) {
-        	this.cache = data;
-        	switch (getType()) {
-            case INT:
-                integer_data = ByteBuffer.wrap(data).getInt();
-                break;
-            case STRING:
-                string_data = new String(data, charset);
-            }
+            this.data = data;
         }
 
         public int getLength() {
-            return getData().length + STATIC_DATA;
-        }        
-        
+            return data.length + STATIC_DATA;
+        }
+
         protected DataType getType() {
             if (null == type) {
                 type = ENCODE_MAP.get(id);
-                
+
                 /*
                  * HACK: Unknown ID, let's take a look as a string
                  */
                 if (null == type) {
-                	type = DataType.STRING;
+                    type = DataType.STRING;
                 }
             }
             return type;
         }
 
-        public String getValue() {
-            switch (getType()) {
-            case INT:
-                return integer_data.toString();
-            case STRING:
-                return string_data;
-            }
-            return null;
+        public String asString() {
+            return new String(data, charset);
         }
 
-        public void setValue(String s) {
-        	cache = null;
-            switch (getType()) {
-            case INT:
-                integer_data = Integer.parseInt(s);
-                break;
-            case STRING:
-                string_data = s;
-            }
+        public int asInt() {
+            return ByteBuffer.wrap(data).getInt();
+        }
+
+        public void set(String in) {
+            setData(in.getBytes(charset));
+        }
+
+        public void set(int in) {
+            ByteBuffer.wrap(data).putInt(in);
         }
 
         public byte[] getBytes() {
@@ -346,13 +331,10 @@ public class ExthHeader implements Iterable<ExthRecord> {
         }
 
         public ByteBuffer getBuffer() {
-        	int length = getLength();
+            int length = getLength();
             byte[] data = getData();
-            return (ByteBuffer) ByteBuffer.allocate(length)
-            		.putInt(id)
-                    .putInt(length)
-                    .put(data)
-                    .rewind();
+            return (ByteBuffer) ByteBuffer.allocate(length).putInt(id)
+                    .putInt(length).put(data).rewind();
         }
 
         @Override

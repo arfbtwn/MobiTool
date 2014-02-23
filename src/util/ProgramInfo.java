@@ -18,12 +18,12 @@ package util;
 
 public class ProgramInfo {
 
-    public static final String PROG_NAME  = "MobiTool";
+    public static final String PROG_NAME = "MobiTool";
 
-    public static final int    PROG_V_MAJ = 0;
+    public static final int PROG_V_MAJ = 0;
 
-    public static final int    PROG_V_MIN = 3;
+    public static final int PROG_V_MIN = 3;
 
-    public static final String PROG_VER   = String.format("%1d.%02d",
-                                                  PROG_V_MAJ, PROG_V_MIN);
+    public static final String PROG_VER = String.format("%1d.%02d", PROG_V_MAJ,
+            PROG_V_MIN);
 }

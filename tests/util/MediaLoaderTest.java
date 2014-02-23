@@ -27,9 +27,7 @@ import org.junit.Test;
 
 import test.MobiBaseTest;
 
-
-public class MediaLoaderTest extends MobiBaseTest
-{
+public class MediaLoaderTest extends MobiBaseTest {
     MediaLoader _loader;
 
     /**

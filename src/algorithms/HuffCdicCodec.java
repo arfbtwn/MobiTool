@@ -19,7 +19,6 @@ package algorithms;
 import little.nj.exceptions.NotImplementedException;
 import interfaces.ICodec;
 
-
 public class HuffCdicCodec implements ICodec {
 
     /*
@@ -41,5 +40,5 @@ public class HuffCdicCodec implements ICodec {
     public byte[] decompress(byte[] input) {
         throw new NotImplementedException();
     }
-    
+
 }

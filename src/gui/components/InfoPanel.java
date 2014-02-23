@@ -40,27 +40,27 @@ public class InfoPanel extends JPanel {
 
     private static final Dimension PLACE_SIZE = new Dimension(100, 150);
 
-    private JButton                _apply;
+    private JButton _apply;
 
-    private JTextField             _author;
+    private JTextField _author;
 
-    private JScrollPane            _blb;
+    private JScrollPane _blb;
 
-    private JTextArea              _blurb;
+    private JTextArea _blurb;
 
-    private ImageIcon              _thumb;
+    private ImageIcon _thumb;
 
-    private JTextField             _title;
+    private JTextField _title;
 
-    private JLabel                 author;
+    private JLabel author;
 
-    private JLabel                 blurb;
+    private JLabel blurb;
 
-    private JPanel                 controls;
+    private JPanel controls;
 
-    private JButton                thumb;
+    private JButton thumb;
 
-    private JLabel                 title;
+    private JLabel title;
 
     public InfoPanel() {
         init();

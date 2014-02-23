@@ -30,22 +30,22 @@ public class PdbToc implements Iterable<PdbRecord> {
 
     private List<PdbRecord> records;
 
-    private int             total_length;
+    private int total_length;
 
     public PdbToc() {
         records = new LinkedList<PdbRecord>();
     }
-    
+
     public static PdbToc parseBuffer(ByteBuffer raw) {
-    	PdbToc toc = new PdbToc();
-    	toc.total_length = raw.capacity();
-    	toc.parse(raw);
-    	return toc;
+        PdbToc toc = new PdbToc();
+        toc.total_length = raw.capacity();
+        toc.parse(raw);
+        return toc;
     }
-    
+
     public void clear() {
-    	records.clear();
-    	refresh();
+        records.clear();
+        refresh();
     }
 
     public short getCount() {
@@ -55,16 +55,16 @@ public class PdbToc implements Iterable<PdbRecord> {
     public int getTotalLength() {
         return total_length;
     }
-    
-    public List<PdbRecord> records() { 
-    	return records;
+
+    public List<PdbRecord> records() {
+        return records;
     }
 
     @Override
     public ListIterator<PdbRecord> iterator() {
         return records.listIterator();
     }
-    
+
     public ListIterator<PdbRecord> iterator(int i) {
         return records.listIterator(i);
     }
@@ -75,7 +75,7 @@ public class PdbToc implements Iterable<PdbRecord> {
         records = new ArrayList<PdbRecord>();
         for (int i = 0; i < count; ++i)
             records.add(PdbRecord.parseBuffer(raw));
-        
+
         // Fill each one with it's data
         ListIterator<PdbRecord> it = records.listIterator(records.size());
         int last_offset = total_length;
@@ -110,22 +110,22 @@ public class PdbToc implements Iterable<PdbRecord> {
     }
 
     public void write(ByteBuffer out) {
-        
+
         out.position(START_OFFSET);
-        
+
         // Place count
         out.putShort(getCount());
         for (PdbRecord i : records) {
             // Place the record TOC entry
             out.put(i.getTocBuffer());
-            
+
             // Save position
             int pos = out.position();
-            
+
             // Place the record data
             out.position(i.getOffset());
             out.put(i.getBuffer());
-            
+
             // Return to pos for next record
             out.position(pos);
         }

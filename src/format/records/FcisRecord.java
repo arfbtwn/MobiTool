@@ -22,7 +22,6 @@ import little.nj.adts.IntByteField;
 import little.nj.adts.ShortByteField;
 import little.nj.adts.StringByteField;
 
-
 public class FcisRecord {
 
     private static final ByteFieldMapSet ALL_FIELDS = new ByteFieldMapSet();
@@ -39,6 +38,8 @@ public class FcisRecord {
         ALL_FIELDS.add(new ShortByteField("Unknown", (short) 1));
         ALL_FIELDS.add(new IntByteField("Unknown", 0));
     }
-    
-    public static final ByteFieldMapSet getFields() { return ALL_FIELDS.clone(); }
+
+    public static final ByteFieldMapSet getFields() {
+        return ALL_FIELDS.clone();
+    }
 }
