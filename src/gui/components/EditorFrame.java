@@ -29,11 +29,13 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.border.Border;
 
+import little.nj.util.StringUtil;
+
 @SuppressWarnings({ "serial" })
 public class EditorFrame extends JFrame {
 
-    public static final Border BORDER = BorderFactory.createEmptyBorder(10, 10,
-            10, 10);
+    public static final Border BORDER = 
+            BorderFactory.createEmptyBorder(10, 10, 10, 10);
 
     public static final int MARGINS = 10;
 
@@ -133,10 +135,14 @@ public class EditorFrame extends JFrame {
 
     @Override
     public void setTitle(String title) {
-        StringBuilder app = new StringBuilder(String.format("%s %s", PROG_NAME,
-                PROG_VER));
-        if (title != null)
+        StringBuilder app = new StringBuilder(DEFAULT_TITLE);
+        
+        if (!StringUtil.isNullOrWhiteSpace(title))
             app.append(": " + title);
+        
         super.setTitle(app.toString());
     }
+    
+    private static final String DEFAULT_TITLE = 
+            PROG_NAME + StringUtil.EMPTY_STRING + PROG_VER;
 }
