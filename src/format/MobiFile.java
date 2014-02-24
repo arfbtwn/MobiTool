@@ -434,7 +434,8 @@ public class MobiFile extends PdbFile {
         mobi.setFullNameLength(title.length);
 
         /*
-         * Calculate extra length for padding
+         * Calculate extra length for padding, 2 bytes
+         * after the title to a multiple of 4
          */
         length += title.length + 2;
         if (length % 4 != 0)

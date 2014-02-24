@@ -87,15 +87,31 @@ public class PdbToc implements Iterable<PdbRecord> {
     }
 
     public void refresh() {
-        total_length = START_OFFSET + 4 + records.size() * 8;
+        /*
+         *  Calculate the offset into the file for each record, starting 
+         *  from the end of the PDB header; accounting for
+         *  two bytes count, eight per record and two padding
+         */
+        int offset = START_OFFSET + 4 + records.size() * 8;
         int j = 0;
         for (PdbRecord i : records) {
-            i.setOffset(total_length);
+            i.setOffset(offset);
+            
+            offset += i.getLength();
+            
+            /*
+             *  HACK: If not set, make the record ID its ordinal
+             *  FIXME: I guess these should be unique, but we don't
+             *  check for that
+             */
             if (i.getID() == 0 && j > 0)
                 i.setID(j);
+            
             ++j;
-            total_length += i.getLength();
         }
+        
+        // Update the length attribute
+        total_length = offset;
     }
 
     @Override
@@ -103,9 +119,11 @@ public class PdbToc implements Iterable<PdbRecord> {
         StringBuilder sb = new StringBuilder(
                 "[::::PDB Table of Contents::::]\n");
         sb.append("Records: " + records.size() + "\n");
+        
         int j = 0;
         for (PdbRecord i : records)
             sb.append(String.format("%-3d. %s\n", j++, i.toString()));
+        
         return sb.toString();
     }
 
