@@ -16,13 +16,33 @@
  */
 package gui.components;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 import format.headers.MobiDocHeader;
 
 @SuppressWarnings("serial")
-@Deprecated
-public class HeaderPanel extends FieldPanel {
+public class HeaderPanel extends JPanel {
+    
+    private FieldPanel palm = new FieldPanel();
+    private FieldPanel mobi = new FieldPanel();
+    private FieldPanel exth = new FieldPanel();
+    
+    public HeaderPanel() { super(); init(); }
+    
+    private void init() {
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        
+        palm.setBorder(BorderFactory.createTitledBorder("Palm Doc Header"));
+        mobi.setBorder(BorderFactory.createTitledBorder("Mobi Doc Header"));
+        exth.setBorder(BorderFactory.createTitledBorder("EXTH Header"));
+        
+        add(palm);
+        add(mobi);
+        add(exth);
+    }
 
     public void setHeader(MobiDocHeader header) {
-        setFields(header.getFields());
+        mobi.setFields(header.getFields());
     }
 }
