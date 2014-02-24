@@ -144,5 +144,5 @@ public class EditorFrame extends JFrame {
     }
     
     private static final String DEFAULT_TITLE = 
-            PROG_NAME + StringUtil.EMPTY_STRING + PROG_VER;
+            PROG_NAME + " " + PROG_VER;
 }
