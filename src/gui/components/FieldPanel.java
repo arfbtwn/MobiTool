@@ -26,7 +26,7 @@ import javax.swing.JTable;
 
 import little.nj.adts.ByteField;
 import little.nj.adts.ByteFieldSet;
-import little.nj.gui.components.EditableTableModel;
+import little.nj.gui.EditableTableModel;
 import little.nj.gui.components.FieldPanelEditor;
 
 @SuppressWarnings({ "serial" })

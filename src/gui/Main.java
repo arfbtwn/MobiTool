@@ -16,7 +16,7 @@
  */
 package gui;
 
-import little.nj.gui.LookAndFeelDialog;
+import little.nj.gui.components.LookAndFeelDialog;
 import little.nj.util.StringUtil;
 
 public class Main {
