@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2013 Nicholas J. Little <arealityfarbetween@googlemail.com>
+ * Copyright (C) 2013 
+ * Nicholas J. Little <arealityfarbetween@googlemail.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -208,15 +209,15 @@ public class PdbHeader implements ByteFieldContainer {
         fields.<StringByteField> getAs(CREATOR).setValue(creator);
     }
 
+    public void write(ByteBuffer out) {
+        setModificationTime(Calendar.getInstance());
+        fields.write(out);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[::::PDB Header::::]\n");
         sb.append(fields);
         return sb.toString();
-    }
-
-    public void write(ByteBuffer out) {
-        setModificationTime(Calendar.getInstance());
-        fields.write(out);
     }
 }

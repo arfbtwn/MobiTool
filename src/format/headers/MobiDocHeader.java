@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2013 Nicholas J. Little <arealityfarbetween@googlemail.com>
+ * Copyright (C) 2013 
+ * Nicholas J. Little <arealityfarbetween@googlemail.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -178,6 +179,7 @@ public class MobiDocHeader implements ByteFieldContainer {
 
     public MobiDocHeader() {
         fields = ALL_FIELDS.clone();
+        exth = new ExthHeader(CHARSET);
     }
 
     public static MobiDocHeader parseBuffer(ByteBuffer in)
@@ -208,6 +210,7 @@ public class MobiDocHeader implements ByteFieldContainer {
 
         // And the rest
         fields.parseBetween(in, 8, len);
+        
         try {
             System.out.println("Extracting ExthHeader...");
             exth = new ExthHeader(in, getEncoding().getCharset());
@@ -216,9 +219,9 @@ public class MobiDocHeader implements ByteFieldContainer {
         }
     }
 
-    public ByteFieldMapSet getFields() {
-        return fields;
-    }
+    public ByteFieldMapSet getFields() { return fields; }
+
+    public ExthHeader getExthHeader() { return exth; }
 
     public Encoding getEncoding() {
         return Encoding.valueOf(fields.<IntByteField> getAs(ENCODING)
@@ -228,11 +231,7 @@ public class MobiDocHeader implements ByteFieldContainer {
     public int getExtendedFlags() {
         return fields.<IntByteField> getAs(EXTRA_RECORD_FLAGS).getValue();
     }
-
-    public ExthHeader getExthHeader() {
-        return exth;
-    }
-
+    
     public int getFcisRecord() {
         return fields.<IntByteField> getAs(FCIS_RECORD).getValue();
     }
@@ -276,14 +275,7 @@ public class MobiDocHeader implements ByteFieldContainer {
     public short getLastContentRecord() {
         return fields.<ShortByteField> getAs(LAST_CONTENT_RECORD).getValue();
     }
-
-    public int getLength() {
-        int len = fields.length();
-        if (exth != null)
-            len += exth.getLength();
-        return len;
-    }
-
+    
     public MobiType getType() {
         return MobiType.valueOf(fields.<IntByteField> getAs(MOBI_TYPE)
                 .getValue());
@@ -298,13 +290,12 @@ public class MobiDocHeader implements ByteFieldContainer {
     }
 
     public void setExthHeader(boolean enable) {
-        if (enable && null == exth) {
-            fields.<IntByteField> getAs(EXTH_FLAGS).setValue(0x50);
-            exth = new ExthHeader(getEncoding().getCharset());
-        } else if (!enable) {
-            fields.<IntByteField> getAs(EXTH_FLAGS).setValue(0x0);
-            exth = null;
-        }
+        int value = enable ? 0x50 : 0x0;
+        fields.<IntByteField> getAs(EXTH_FLAGS).setValue(value);
+    }
+    
+    public boolean hasExthHeader() { 
+        return (fields.<IntByteField> getAs(EXTH_FLAGS).getValue() & 0x50) != 0; 
     }
 
     public void setFcisRecord(int i) {
@@ -354,18 +345,28 @@ public class MobiDocHeader implements ByteFieldContainer {
     public void setType(MobiType i) {
         fields.<IntByteField> getAs(MOBI_TYPE).setValue(i.getValue());
     }
+    
+    public int getLength() {
+        int len = fields.length();
+        
+        if (hasExthHeader())
+            len += exth.getLength();
+        
+        return len;
+    }
+    
+    public void write(ByteBuffer out) {
+        fields.<IntByteField> getAs(LENGTH).setValue(fields.length());
+        fields.write(out);
+        
+        if (hasExthHeader())
+            exth.write(out);
+    }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[::::MobiDocHeader::::]\n");
         sb.append(fields);
         return sb.toString();
-    }
-
-    public void write(ByteBuffer out) {
-        fields.<IntByteField> getAs(LENGTH).setValue(fields.length());
-        fields.write(out);
-        if (exth != null)
-            exth.write(out);
     }
 }

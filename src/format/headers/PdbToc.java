@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2013 Nicholas J. Little <arealityfarbetween@googlemail.com>
+ * Copyright (C) 2013 
+ * Nicholas J. Little <arealityfarbetween@googlemail.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -43,9 +44,26 @@ public class PdbToc implements Iterable<PdbRecord> {
         return toc;
     }
 
+    private void parse(ByteBuffer raw) {
+        raw.position(START_OFFSET);
+        int count = raw.getShort();
+        records = new ArrayList<PdbRecord>();
+        for (int i = 0; i < count; ++i)
+            records.add(PdbRecord.parseBuffer(raw));
+
+        // Fill each one with it's data
+        ListIterator<PdbRecord> it = records.listIterator(records.size());
+        int last_offset = total_length;
+        while (it.hasPrevious()) {
+            PdbRecord item = it.previous();
+            item.readData(raw, last_offset);
+            last_offset = item.getOffset();
+        }
+    }
+
     public void clear() {
         records.clear();
-        refresh();
+        total_length = START_OFFSET + 4;
     }
 
     public short getCount() {
@@ -67,23 +85,6 @@ public class PdbToc implements Iterable<PdbRecord> {
 
     public ListIterator<PdbRecord> iterator(int i) {
         return records.listIterator(i);
-    }
-
-    private void parse(ByteBuffer raw) {
-        raw.position(START_OFFSET);
-        int count = raw.getShort();
-        records = new ArrayList<PdbRecord>();
-        for (int i = 0; i < count; ++i)
-            records.add(PdbRecord.parseBuffer(raw));
-
-        // Fill each one with it's data
-        ListIterator<PdbRecord> it = records.listIterator(records.size());
-        int last_offset = total_length;
-        while (it.hasPrevious()) {
-            PdbRecord item = it.previous();
-            item.readData(raw, last_offset);
-            last_offset = item.getOffset();
-        }
     }
 
     public void refresh() {
@@ -114,20 +115,8 @@ public class PdbToc implements Iterable<PdbRecord> {
         total_length = offset;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder(
-                "[::::PDB Table of Contents::::]\n");
-        sb.append("Records: " + records.size() + "\n");
-        
-        int j = 0;
-        for (PdbRecord i : records)
-            sb.append(String.format("%-3d. %s\n", j++, i.toString()));
-        
-        return sb.toString();
-    }
-
     public void write(ByteBuffer out) {
+        refresh();
 
         out.position(START_OFFSET);
 
@@ -149,5 +138,18 @@ public class PdbToc implements Iterable<PdbRecord> {
         }
         // Two bytes padding
         out.putShort((short) 0);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(
+                "[::::PDB Table of Contents::::]\n");
+        sb.append("Records: " + records.size() + "\n");
+        
+        int j = 0;
+        for (PdbRecord i : records)
+            sb.append(String.format("%-3d. %s\n", j++, i.toString()));
+        
+        return sb.toString();
     }
 }

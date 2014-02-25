@@ -92,7 +92,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
         ENCODE_MAP.put(CREATOR_ID, DataType.INT);
     }
 
-    Charset charset;
+    private Charset charset;
 
     private ByteFieldMapSet fields;
 
@@ -112,13 +112,13 @@ public class ExthHeader implements Iterable<ExthRecord> {
     }
 
     public void parse(ByteBuffer raw) throws InvalidHeaderException {
-        int offset = KmpSearch.indexOf(raw.array(),
-                new String(EXTH).getBytes(CHARSET));
-        if (offset >= 0) {
-            raw.position(offset - raw.arrayOffset());
-            raw = raw.slice();
-        } else
+        int offset = KmpSearch.indexOf(raw.array(), EXTH.getBytes(CHARSET));
+        
+        if (offset < 0)
             throw new InvalidHeaderException();
+        
+        raw.position(offset - raw.arrayOffset());
+        raw = raw.slice();
 
         fields.parseAll(raw);
         int count = fields.<IntByteField> getAs(COUNT).getValue();

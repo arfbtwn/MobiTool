@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2013 Nicholas J. Little <arealityfarbetween@googlemail.com>
+ * Copyright (C) 2013 
+ * Nicholas J. Little <arealityfarbetween@googlemail.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -144,48 +145,56 @@ public class MobiFile extends PdbFile {
         return palm;
     }
 
-    public List<BufferedImage> getImages() {
-        return images;
-    }
-
     public PalmDocText getText() {
         return text;
     }
 
-    public String getAuthor() {
-        if (null == mobi.getExthHeader())
-            return StringUtil.EMPTY_STRING;
-
-        return mobi.getExthHeader().getAuthor();
+    public List<BufferedImage> getImages() {
+        return images;
     }
 
     public String getTitle() {
-        if (null == mobi.getExthHeader())
+        if (!mobi.hasExthHeader())
             return getHeader().getName();
 
         return mobi.getExthHeader().getTitle();
     }
 
+    public String getAuthor() {
+        if (!mobi.hasExthHeader())
+            return StringUtil.EMPTY_STRING;
+
+        return mobi.getExthHeader().getAuthor();
+    }
+
     public String getBlurb() {
-        if (null == mobi.getExthHeader())
+        if (!mobi.hasExthHeader())
             return StringUtil.EMPTY_STRING;
 
         return mobi.getExthHeader().getBlurb();
     }
 
     public BufferedImage getCover() {
-        if (images.size() == 0 || null == mobi.getExthHeader())
+        if (!mobi.hasExthHeader())
             return null;
-
-        return images.get(mobi.getExthHeader().getCover());
+        
+        int x = mobi.getExthHeader().getCover();
+        
+        if (x < 0)
+            return null;
+        
+        return images.get(x);
     }
 
     public BufferedImage getThumb() {
-        try {
-            return images.get(mobi.getExthHeader().getThumb());
-        } catch (Exception e) {
-        }
-        return null;
+        if (!mobi.hasExthHeader())
+            return null;
+        
+        int x = mobi.getExthHeader().getThumb();
+        if (x < 0)
+            return null;
+        
+        return images.get(x);
     }
 
     public BufferedImage getCoverOrThumb() {
@@ -193,15 +202,14 @@ public class MobiFile extends PdbFile {
         return cover != null ? cover : getThumb();
     }
 
+    public void setTitle(String x) {
+        getHeader().setName(x);
+        mobi.getExthHeader().setTitle(x);
+    }
+
     public void setAuthor(String x) {
         mobi.setExthHeader(true);
         mobi.getExthHeader().setAuthor(x);
-    }
-
-    public void setTitle(String x) {
-        getHeader().setName(x);
-        mobi.setExthHeader(true);
-        mobi.getExthHeader().setTitle(x);
     }
 
     public void setBlurb(String x) {
@@ -283,25 +291,28 @@ public class MobiFile extends PdbFile {
         int curr = 1; // Start placing from first record
 
         /*
-         * Set any unsupported record pointers as they will have been stripped
+         * Set any unsupported record pointers as they 
+         * will have been stripped
          */
         setUnsupportedRecordPointers();
 
         /*
-         * Insert text, set pointers: - First Content Record - First Non Book
-         * Record
+         * Insert text, set pointers: 
+         * - First Content Record 
+         * - First Non Book Record
          */
         curr += insertText(curr);
 
         int fnonbook = curr;
         /*
-         * Insert images, set pointers: - First Image Record
+         * Insert images, set pointers: 
+         * - First Image Record
          */
         curr += insertImages(curr);
 
         /*
-         * If we inserted anything after the book we need to set the first non
-         * book record
+         * If we inserted anything after the book we 
+         * need to set the first non book record
          */
         if (fnonbook < curr) {
             mobi.setFirstNonBookRecord(fnonbook);
