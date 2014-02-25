@@ -132,6 +132,14 @@ public class ExthHeader implements Iterable<ExthRecord> {
         return records.get(id);
     }
 
+    public void addRecord(int id, byte[] data) {
+        records.put(id, new ExthRecord(id, data));
+    }
+    
+    public void removeRecord(int id) {
+        records.remove(id);
+    }
+
     protected String getStringValue(int id) {
         ExthRecord rec = getRecord(id);
 
@@ -150,10 +158,10 @@ public class ExthHeader implements Iterable<ExthRecord> {
     protected void setRecord(int id, byte[] data) {
         ExthRecord rec = getRecord(id);
 
-        if (rec != null)
-            rec.setData(data);
-        else
+        if (rec == null)
             addRecord(id, data);
+        else
+            rec.setData(data);
     }
 
     protected void setRecord(int id, int value) {
@@ -163,10 +171,6 @@ public class ExthHeader implements Iterable<ExthRecord> {
             addRecord(id, ByteBuffer.allocate(INT_SIZE).putInt(value).array());
         else
             rec.set(value);
-    }
-
-    private void addRecord(int id, byte[] data) {
-        records.put(id, new ExthRecord(id, data));
     }
 
     public String getAuthor() {
@@ -179,13 +183,6 @@ public class ExthHeader implements Iterable<ExthRecord> {
 
     public int getCover() {
         return getIntValue(COVER);
-    }
-
-    public int getLength() {
-        int rtn = fields.length();
-        for (ExthRecord i : records.values())
-            rtn += i.getLength();
-        return rtn;
     }
 
     public int getThumb() {
@@ -219,6 +216,13 @@ public class ExthHeader implements Iterable<ExthRecord> {
     public int getCount() {
         return records.size();
     }
+    
+    public int getLength() {
+        int rtn = fields.length();
+        for (ExthRecord i : records.values())
+            rtn += i.getLength();
+        return rtn;
+    }
 
     @Override
     public Iterator<ExthRecord> iterator() {
@@ -237,9 +241,11 @@ public class ExthHeader implements Iterable<ExthRecord> {
     public String toString() {
         StringBuilder sb = new StringBuilder("[::::EXTH Header:::]\n");
         sb.append(fields.toString() + "\n");
+        
         Iterator<ExthRecord> it = iterator();
         while (it.hasNext())
             sb.append(it.next() + "\n");
+        
         return sb.toString();
     }
 
