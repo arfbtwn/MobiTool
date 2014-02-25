@@ -16,13 +16,12 @@
  */
 package gui.components;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+
 import format.headers.MobiDocHeader;
 
 @SuppressWarnings("serial")
-public class HeaderPanel extends JPanel {
+public class HeaderPanel extends JTabbedPane {
     
     private FieldPanel palm = new FieldPanel();
     private FieldPanel mobi = new FieldPanel();
@@ -31,15 +30,12 @@ public class HeaderPanel extends JPanel {
     public HeaderPanel() { super(); init(); }
     
     private void init() {
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        setTabPlacement(JTabbedPane.BOTTOM);
+        setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         
-        palm.setBorder(BorderFactory.createTitledBorder("Palm Doc Header"));
-        mobi.setBorder(BorderFactory.createTitledBorder("Mobi Doc Header"));
-        exth.setBorder(BorderFactory.createTitledBorder("EXTH Header"));
-        
-        add(palm);
-        add(mobi);
-        add(exth);
+        add("Palm Doc Header", palm);
+        add("Mobi Doc Header", mobi);
+        add("EXTH Header", exth);
     }
 
     public void setHeader(MobiDocHeader header) {

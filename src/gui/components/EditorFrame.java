@@ -105,13 +105,14 @@ public class EditorFrame extends JFrame {
         tools.add(_open);
         tools.add(_save);
         tools.add(_saveas);
-        add(tools, BorderLayout.PAGE_START);
-        add(tabs, BorderLayout.CENTER);
-        tabs.addTab("Pdb", pdb);
+        tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabs.addTab("Info", info);
         tabs.addTab("Text", text);
         tabs.addTab("Images", images);
+        tabs.addTab("Pdb", pdb);
         tabs.addTab("Header", header);
+        add(tools, BorderLayout.PAGE_START);
+        add(tabs, BorderLayout.CENTER);
         pack();
         setTitle(null);
         setVisible(true);
