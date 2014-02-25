@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2013 Nicholas J. Little <arealityfarbetween@googlemail.com>
+ * Copyright (C) 2013 
+ * Nicholas J. Little <arealityfarbetween@googlemail.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -20,12 +21,9 @@ import static format.headers.PdbHeader.CHARSET;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.TreeMap;
 
 import little.nj.adts.ByteFieldMapSet;
 import little.nj.adts.IntByteField;
@@ -81,7 +79,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
         ALL_FIELDS.add(new IntByteField(LENGTH));
         ALL_FIELDS.add(new IntByteField(COUNT));
 
-        ENCODE_MAP = new TreeMap<Integer, DataType>();
+        ENCODE_MAP = new HashMap<Integer, DataType>();
         ENCODE_MAP.put(AUTHOR, DataType.STRING);
         ENCODE_MAP.put(BLURB, DataType.STRING);
         ENCODE_MAP.put(ISBN, DataType.STRING);
@@ -98,15 +96,17 @@ public class ExthHeader implements Iterable<ExthRecord> {
 
     private ByteFieldMapSet fields;
 
-    private List<ExthRecord> records;
+    private Map<Integer, ExthRecord> records;
 
     public ExthHeader(Charset ch) {
         fields = ALL_FIELDS.clone();
-        records = new LinkedList<ExthRecord>();
+        records = new HashMap<Integer, ExthRecord>();
         charset = ch;
     }
 
-    public ExthHeader(ByteBuffer in, Charset ch) throws InvalidHeaderException {
+    public ExthHeader(ByteBuffer in, Charset ch) 
+            throws InvalidHeaderException {
+        
         this(ch);
         parse(in);
     }
@@ -122,18 +122,14 @@ public class ExthHeader implements Iterable<ExthRecord> {
 
         fields.parseAll(raw);
         int count = fields.<IntByteField> getAs(COUNT).getValue();
-        for (int i = 0; i < count; i++)
-            records.add(new ExthRecord(raw));
+        for (int i = 0; i < count; i++) {
+            ExthRecord rec = new ExthRecord(raw);
+            records.put(rec.id, rec);
+        }
     }
 
     public ExthRecord getRecord(int id) {
-        ListIterator<ExthRecord> it = iterator();
-        while (it.hasNext()) {
-            ExthRecord i = it.next();
-            if (i.getId() == id)
-                return i;
-        }
-        return null;
+        return records.get(id);
     }
 
     protected String getStringValue(int id) {
@@ -170,7 +166,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
     }
 
     private void addRecord(int id, byte[] data) {
-        iterator().add(new ExthRecord(id, data));
+        records.put(id, new ExthRecord(id, data));
     }
 
     public String getAuthor() {
@@ -187,7 +183,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
 
     public int getLength() {
         int rtn = fields.length();
-        for (ExthRecord i : records)
+        for (ExthRecord i : records.values())
             rtn += i.getLength();
         return rtn;
     }
@@ -225,19 +221,15 @@ public class ExthHeader implements Iterable<ExthRecord> {
     }
 
     @Override
-    public ListIterator<ExthRecord> iterator() {
-        return records.listIterator();
-    }
-
-    public ListIterator<ExthRecord> iterator(int i) {
-        return records.listIterator(i);
+    public Iterator<ExthRecord> iterator() {
+        return records.values().iterator();
     }
 
     public void write(ByteBuffer out) {
         fields.<IntByteField> getAs(LENGTH).setValue(getLength());
         fields.<IntByteField> getAs(COUNT).setValue(records.size());
         fields.write(out);
-        for (ExthRecord i : records)
+        for (ExthRecord i : records.values())
             out.put(i.getBuffer());
     }
 
@@ -245,7 +237,7 @@ public class ExthHeader implements Iterable<ExthRecord> {
     public String toString() {
         StringBuilder sb = new StringBuilder("[::::EXTH Header:::]\n");
         sb.append(fields.toString() + "\n");
-        Iterator<ExthRecord> it = records.iterator();
+        Iterator<ExthRecord> it = iterator();
         while (it.hasNext())
             sb.append(it.next() + "\n");
         return sb.toString();
