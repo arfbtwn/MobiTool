@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2013 Nicholas J. Little <arealityfarbetween@googlemail.com>
+ * Copyright (C) 2013 
+ * Nicholas J. Little <arealityfarbetween@googlemail.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -26,8 +27,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -41,8 +40,6 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import javax.swing.text.html.HTMLDocument;
-
 import little.nj.util.StringUtil;
 import editorkit.MobiEditorKit;
 
@@ -185,25 +182,14 @@ public class TextPanel extends JPanel implements HyperlinkListener {
     public void readFromStream(InputStream in) {
         try {
             Document doc = _content.getEditorKit().createDefaultDocument();
-            _content.read(in, doc);
-
+            
+            doc.putProperty("IgnoreCharsetDirective", Boolean.TRUE);
+            
+            _kit.read(in, doc, 0);
             _content.setDocument(doc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setText(String in) {
-        StringReader reader = new StringReader(in);
-
-        HTMLDocument doc = _kit.createDefaultDocument();
-
-        doc.putProperty("IgnoreCharsetDirective", Boolean.TRUE);
-
-        try {
-            _kit.read(reader, doc, 0);
-            _content.setDocument(doc);
+            
         } catch (IOException | BadLocationException e) {
+            e.printStackTrace();
             _content.setText(StringUtil.EMPTY_STRING);
         }
     }

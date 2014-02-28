@@ -30,7 +30,6 @@ import little.nj.adts.IntByteField;
 import little.nj.adts.StringByteField;
 import little.nj.algorithms.KmpSearch;
 import little.nj.util.StringUtil;
-import exceptions.InvalidHeaderException;
 import format.headers.ExthHeader.ExthRecord;
 
 public class ExthHeader implements Iterable<ExthRecord> {

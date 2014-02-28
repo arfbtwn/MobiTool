@@ -27,7 +27,6 @@ import little.nj.adts.IntByteField;
 import little.nj.adts.ShortByteField;
 import little.nj.adts.StringByteField;
 import little.nj.algorithms.KmpSearch;
-import exceptions.InvalidHeaderException;
 import format.ByteFieldContainer;
 import format.headers.Enumerations.Encoding;
 import format.headers.Enumerations.Locale;

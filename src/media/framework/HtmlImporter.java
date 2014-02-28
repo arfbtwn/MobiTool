@@ -15,32 +15,31 @@
  *  You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package util;
+package media.framework;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Element;
 import javax.swing.text.Style;
 import javax.swing.text.html.CSS;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
-import javax.swing.text.Element;
 
-import little.nj.util.FileUtil;
-import little.nj.util.StringUtil;
+import little.nj.util.StreamUtil;
 import little.nj.util.StreamUtil.InputAction;
+import little.nj.util.StringUtil;
 
-public class HtmlImporter {
-
-    private String title;
+public class HtmlImporter extends AbstractImporter {
 
     private static final Comparator<Element> offsetComparator = new Comparator<Element>() {
 
@@ -61,7 +60,7 @@ public class HtmlImporter {
         doc.putProperty("IgnoreCharsetDirective", Boolean.TRUE);
     }
 
-    public String getTitle() {
+    private String getTitle() {
         if (title == null) {
             Object fromDoc = doc.getProperty(HTMLDocument.TitleProperty);
             title = fromDoc == null ? StringUtil.EMPTY_STRING
@@ -72,13 +71,6 @@ public class HtmlImporter {
 
     public HTMLDocument getDocument() {
         return doc;
-    }
-
-    public boolean readFromFile(File file) {
-
-        FileUtil futil = new FileUtil();
-
-        return futil.read(file, readAction);
     }
 
     public void stripParagraphStyle() {
@@ -190,6 +182,37 @@ public class HtmlImporter {
         }
     }
 
+    /* (non-Javadoc)
+     * @see media.framework.MediaLoader.Importer#doImport(byte[])
+     */
+    @Override
+    public boolean doImport(byte[] data) {
+        
+        ByteArrayInputStream bis = new ByteArrayInputStream(data);
+        
+        StreamUtil util = new StreamUtil();
+        
+        if (!util.read(bis, readAction))
+            return false;
+        
+        walkTree(doc.getDefaultRootElement());
+        
+        title(getTitle());
+        
+        StringWriter writer = new StringWriter();
+        
+        try {
+            kit.write(writer, doc, 0, doc.getLength());
+        } catch (IOException | BadLocationException e) {
+            e.printStackTrace();
+            return false;
+        }
+        
+        text = writer.toString();
+        
+        return true;
+    }
+
     private final InputAction readAction = new InputAction() {
         @Override
         public void act(InputStream stream) throws IOException {
@@ -201,5 +224,4 @@ public class HtmlImporter {
             }
         }
     };
-
 }

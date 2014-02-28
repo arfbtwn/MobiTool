@@ -14,16 +14,31 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package util;
+package format.codecs;
 
-public class ProgramInfo {
+import java.util.Arrays;
 
-    public static final String PROG_NAME = "MobiTool";
+import format.Codec;
 
-    public static final int PROG_V_MAJ = 0;
+public class RawCodec implements Codec {
 
-    public static final int PROG_V_MIN = 4;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see algorithms.ICodec#compress(byte[])
+     */
+    @Override
+    public byte[] compress(byte[] input) {
+        return Arrays.copyOf(input, input.length);
+    }
 
-    public static final String PROG_VER = String.format("%1d.%02d", PROG_V_MAJ,
-            PROG_V_MIN);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see algorithms.ICodec#decompress(byte[])
+     */
+    @Override
+    public byte[] decompress(byte[] input) {
+        return Arrays.copyOf(input, input.length);
+    }
 }

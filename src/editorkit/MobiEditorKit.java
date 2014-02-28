@@ -45,7 +45,8 @@ public class MobiEditorKit extends HTMLEditorKit {
 
     @Override
     public HTMLDocument createDefaultDocument() {
-        return (HTMLDocument) super.createDefaultDocument();
+        return new MobiDocument();
+        //return (HTMLDocument) super.createDefaultDocument();
     }
 
     @Override
@@ -72,6 +73,7 @@ public class MobiEditorKit extends HTMLEditorKit {
 
             BufferedImage image;
 
+            int idx = 0;
             boolean parse_tried = false;
 
             public ImgView(Element elem) {
@@ -80,19 +82,20 @@ public class MobiEditorKit extends HTMLEditorKit {
 
             @Override
             public Image getImage() {
-                AttributeSet set = getElement().getAttributes();
-                int idx = 0;
-                if (!parse_tried)
-                    try {
-                        parse_tried = true;
-                        idx = Integer.parseInt(
-                                (String) set.getAttribute("recindex"), 10);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                if (idx == 0 || idx > images.size())
-                    return null;
-                image = images.get(idx - 1);
+                if (parse_tried)
+                    return image;
+                
+                parse_tried = true;
+                try {
+                    AttributeSet set = getElement().getAttributes();
+                    Object att = set.getAttribute("recindex");
+                    idx = Integer.parseInt((String) att, 10);
+                    image = images.get(idx - 1);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    image = null;
+                }
+                
                 return image;
             }
 
@@ -146,7 +149,13 @@ public class MobiEditorKit extends HTMLEditorKit {
              */
             @Override
             public float getPreferredSpan(int axis) {
-                return getMinimumSpan(axis);
+                switch(axis) {
+                case X_AXIS:
+                    return parent.getWidth();
+                default:
+                case Y_AXIS:
+                    return parent.getHeight();
+                }
             }
 
             /*
@@ -156,29 +165,25 @@ public class MobiEditorKit extends HTMLEditorKit {
              */
             @Override
             public float getMinimumSpan(int axis) {
-                int width = parent.getWidth();
-                int height = parent.getHeight();
-
-                System.out.println(String.format("Width: %d, Height: %d",
-                        width, height));
-
-                if (axis == X_AXIS) {
-
-                    return width;
+                switch(axis) {
+                case X_AXIS:
+                    return parent.getWidth();
+                default:
+                case Y_AXIS:
+                    return 0;
                 }
-                return height;
             }
 
             @Override
             public void paint(Graphics g, Shape allocation) {
                 Rectangle a = allocation.getBounds();
                 System.out.println(a.toString());
-                g.drawLine(a.x, a.y, a.x + a.width, a.y);
+                g.drawRect(a.x, a.y, a.width, a.height);
             }
         }
 
         @Override
-        public View create(Element elem) {
+        public View create(Element elem) {            
             if (elem.getName().equalsIgnoreCase("mbp"))
                 return new PageBreakView(elem);
             else if (elem.getName().equalsIgnoreCase("img"))

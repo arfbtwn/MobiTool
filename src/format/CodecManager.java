@@ -17,53 +17,12 @@
  */
 package format;
 
-import format.headers.Enumerations.Compression;
-import interfaces.ICodec;
-import interfaces.IManageCodecs;
 
-import java.util.HashMap;
+public interface CodecManager {
 
-import algorithms.HuffCdicCodec;
-import algorithms.PalmDocCodec;
-import algorithms.RawCodec;
+    Codec getCodec(String codec);
 
-@SuppressWarnings("serial")
-public class CodecManager extends HashMap<String, ICodec> implements
-        IManageCodecs {
+    String[] getKeys();
 
-    public CodecManager() {
-        put(Compression.HUFF_CDIC.toString(), new HuffCdicCodec());
-        put(Compression.PALMDOC.toString(), new PalmDocCodec());
-        put(Compression.NONE.toString(), new RawCodec());
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see interfaces.IManageCodecs#get(java.lang.String)
-     */
-    @Override
-    public ICodec getCodec(String codec) {
-        return get(codec);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see interfaces.IManageCodecs#getKeys()
-     */
-    @Override
-    public String[] getKeys() {
-        return keySet().toArray(new String[0]);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see interfaces.IManageCodecs#getValues()
-     */
-    @Override
-    public ICodec[] getValues() {
-        return values().toArray(new ICodec[0]);
-    }
+    Codec[] getValues();
 }

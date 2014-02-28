@@ -76,7 +76,9 @@ public class MobiDocument extends HTMLDocument {
         }
 
         protected void registerActions() {
-            super.registerTag(new ReferenceTag(), new HiddenAction());
+            registerTag(new ReferenceTag(), new HiddenAction());
+            registerTag(new Tag("guide", false, false) {
+            }, new HiddenAction());
         }
 
         /*

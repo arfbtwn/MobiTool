@@ -25,6 +25,7 @@ import javax.swing.JFileChooser;
 
 import little.nj.util.FileUtil;
 import little.nj.util.StreamUtil.OutputAction;
+import media.framework.MediaLoader;
 
 public class HtmlActions extends FileActions {
 
@@ -69,9 +70,17 @@ public class HtmlActions extends FileActions {
         public void actionPerformed(ActionEvent e) {
             Controller c = controller;
             if (jfc.showOpenDialog(c.edit) == JFileChooser.APPROVE_OPTION) {
-                c.file.importFromHtml(jfc.getSelectedFile());
+                
+                if (loader.load(jfc.getSelectedFile().toURI())) {
+                    controller.file.getText().setText(loader.data().text());
+                }
+                
                 c.refresh();
             }
         }
+
+        private MediaLoader loader = new MediaLoader();
     }
+    
+    protected HtmlActions() { }
 }

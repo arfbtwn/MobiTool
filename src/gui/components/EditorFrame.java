@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2013 Nicholas J. Little <arealityfarbetween@googlemail.com>
+ * Copyright (C) 2013 
+ * Nicholas J. Little <arealityfarbetween@googlemail.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -16,8 +17,8 @@
  */
 package gui.components;
 
-import static util.ProgramInfo.PROG_NAME;
-import static util.ProgramInfo.PROG_VER;
+import static gui.ProgramInfo.PROG_NAME;
+import static gui.ProgramInfo.PROG_VER;
 
 import java.awt.BorderLayout;
 

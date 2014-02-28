@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2013 Nicholas J. Little <arealityfarbetween@googlemail.com>
+ * Copyright (C) 2013 
+ * Nicholas J. Little <arealityfarbetween@googlemail.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -23,15 +24,20 @@ import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.SwingUtilities;
 
-import exceptions.InvalidHeaderException;
-import format.CodecManager;
+import little.nj.util.FileUtil;
+import little.nj.util.StreamUtil.OutputAction;
+import format.DefaultCodecManager;
 import format.MobiFile;
 import format.headers.Enumerations.Compression;
+import format.records.PdbRecord;
 import gui.components.EditorFrame;
 import gui.components.HeaderPanel;
 import gui.components.ImagePanel;
@@ -42,7 +48,7 @@ import gui.components.TextPanel;
 @SuppressWarnings("deprecation")
 public class Controller {
 
-    CodecManager codecs;
+    DefaultCodecManager codecs;
 
     EditorFrame edit;
 
@@ -59,18 +65,10 @@ public class Controller {
     HeaderPanel header;
 
     public Controller() {
-        codecs = new CodecManager();
+        codecs = new DefaultCodecManager();
         file = new MobiFile(codecs);
         createComponents();
         init();
-    }
-
-    public Controller(File in) throws IOException, InvalidHeaderException {
-        codecs = new CodecManager();
-        file = new MobiFile(in, codecs);
-        createComponents();
-        init();
-        refresh();
     }
 
     private void createComponents() {
@@ -85,8 +83,8 @@ public class Controller {
     public void apply() {
         file.getMobiDocHeader().setExthHeader(true);
         file.setTitle(info.getTitle());
-        file.getMobiDocHeader().getExthHeader().setAuthor(info.getAuthor());
-        file.getMobiDocHeader().getExthHeader().setBlurb(info.getBlurb());
+        file.setAuthor(info.getAuthor());
+        file.setBlurb(info.getBlurb());
     }
 
     @SuppressWarnings("serial")
@@ -94,14 +92,34 @@ public class Controller {
         pdb.setExportAction(new AbstractAction("Export...") {
 
             @Override
-            public boolean isEnabled() {
-                return pdb.hasSelection();
-            }
-
-            @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
 
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                chooser.setAcceptAllFileFilterUsed(false);
+                
+                if ((chooser.showSaveDialog(pdb)) != JFileChooser.APPROVE_OPTION) {
+                    return;
+                }
+                
+                String dir = chooser.getSelectedFile().getPath();
+                
+                @SuppressWarnings("unchecked")
+                List<PdbRecord> vals = pdb.asJList().getSelectedValuesList();
+                
+                FileUtil util = new FileUtil();
+                
+                for(final PdbRecord i : vals) {
+                    File file = new File(dir + File.separator + i.getID());
+                    util.write(file, new OutputAction() {
+
+                        @Override
+                        public void act(OutputStream stream) throws IOException {
+                            stream.write(i.getData());
+                        }
+                        
+                    });
+                }
             }
         });
         edit.setNewAction(new FileActions.FileNewAction(this));
@@ -158,23 +176,26 @@ public class Controller {
             @Override
             public void run() {
                 MobiFile file = Controller.this.file;
+                
                 edit.setTitle(file.getTitle());
+                
                 pdb.setFile(file);
+                
                 info.setTitle(file.getTitle());
                 info.setAuthor(file.getAuthor());
                 info.setBlurb(file.getBlurb());
                 info.setThumb(file.getCoverOrThumb());
+                
                 images.setImages(file.getImages());
-                // images.getImageView()
-                // .setSelectedItems(
-                // new BufferedImage[] { file.getCover(),
-                // file.getThumb() });
+                int[] indices = new int[] {
+                  file.getMobiDocHeader().getExthHeader().getCover(),
+                  file.getMobiDocHeader().getExthHeader().getThumb()
+                };
+                images.asJList().setSelectedIndices(indices);
 
                 text.getEditorKit().setImageList(file.getImages());
-                text.setText(file.getText().getText());
                 text.readFromStream(file.getText().getStream());
-                text.setSelectedItem(file.getPalmDocHeader().getCompression()
-                        .toString());
+                text.setSelectedItem(file.getPalmDocHeader().getCompression().toString());
                 header.setHeader(file.getMobiDocHeader());
             }
         });

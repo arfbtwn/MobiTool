@@ -15,10 +15,12 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package format;
+
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import format.DefaultCodecManager;
+import format.MobiFile;
 import format.headers.MobiDocHeader;
 import format.headers.PalmDocHeader;
 import format.headers.Enumerations.Compression;
@@ -27,14 +29,14 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+import media.framework.MediaLoader;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import test.MobiBaseTest;
-
 public class MobiFileTest extends MobiBaseTest {
 
-    CodecManager _codecs = new CodecManager();
+    DefaultCodecManager _codecs = new DefaultCodecManager();
 
     MobiFile _file;
 
@@ -59,7 +61,14 @@ public class MobiFileTest extends MobiBaseTest {
     public void test_New_Compressed_TextRecordOnly_FilePointers() {
         try {
             File html = getHtmlContentFile("LoremIpsum");
-            _file.importFromHtml(html);
+            
+            MediaLoader loader = new MediaLoader();
+            
+            if (!loader.load(html.toURI()))
+                    fail();
+            
+            _file.getText().setText(loader.data().text());
+            
             _file.setTitle("Lorem Ipsum (Compressed)");
             _file.setAuthor("Me");
             _file.setBlurb("Test Document");
@@ -75,7 +84,7 @@ public class MobiFileTest extends MobiBaseTest {
             assertEquals("FlisRecord", -1, _mobi.getFlisRecord());
             assertEquals("FcisRecord", -1, _mobi.getFcisRecord());
             assertEquals(1, _palm.getTextRecordCount());
-            assertEquals(2, _file.getRecordCount());
+            assertEquals(3, _file.getRecordCount());
             File out = getMobiOutputFile("LoremIpsum_compressed");
             _file.writeToFile(out);
         } catch (Exception e) {
@@ -90,16 +99,24 @@ public class MobiFileTest extends MobiBaseTest {
     public void test_New_TextImageRecord_FilePointers() {
         try {
             File html = getHtmlContentFile("LoremIpsum");
-            _file.importFromHtml(html);
+            
+            MediaLoader loader = new MediaLoader();
+            
+            if (!loader.load(html.toURI()))
+                    fail();
+            
+            _file.getText().setText(loader.data().text());
+            
             _file.setCovers(ImageIO.read(getContentFile("image")));
             _file.setTitle("Lorem Ipsum (Cover)");
             _file.setAuthor("Me");
             _file.setBlurb("Test Document");
             _file.refresh();
+            
             assertEquals("FirstContentRecord", 1, _mobi.getFirstContentRecord());
             assertEquals("FirstNonBookRecord", 2, _mobi.getFirstNonBookRecord());
             assertEquals("IndxRecord", -1, _mobi.getIndxRecord());
-            assertEquals("HuffmanRecord", -1, _mobi.getHuffmanRecord());
+            assertEquals("HuffmanRecord", 0, _mobi.getHuffmanRecord());
             assertEquals("FirstImageRecord", 2, _mobi.getFirstImageRecord());
             assertEquals("LastContentRecord", 2, _mobi.getLastContentRecord());
             assertEquals("FlisRecord", -1, _mobi.getFlisRecord());
@@ -117,7 +134,14 @@ public class MobiFileTest extends MobiBaseTest {
     public void test_New_TextRecordOnly_FilePointers() {
         try {
             File html = getHtmlContentFile("LoremIpsum");
-            _file.importFromHtml(html);
+            
+            MediaLoader loader = new MediaLoader();
+
+            if (!loader.load(html.toURI()))
+                    fail();
+            
+            _file.getText().setText(loader.data().text());
+            
             _file.setTitle("Lorem Ipsum");
             _file.setAuthor("Me");
             _file.setBlurb("Test Document");
@@ -126,7 +150,7 @@ public class MobiFileTest extends MobiBaseTest {
             assertEquals("FirstNonBookRecord", -1,
                     _mobi.getFirstNonBookRecord());
             assertEquals("IndxRecord", -1, _mobi.getIndxRecord());
-            assertEquals("HuffmanRecord", -1, _mobi.getHuffmanRecord());
+            assertEquals("HuffmanRecord", 0, _mobi.getHuffmanRecord());
             assertEquals("FirstImageRecord", -1, _mobi.getFirstImageRecord());
             assertEquals("LastContentRecord", 1, _mobi.getLastContentRecord());
             assertEquals("FlisRecord", -1, _mobi.getFlisRecord());
@@ -153,7 +177,7 @@ public class MobiFileTest extends MobiBaseTest {
             assertEquals("FirstNonBookRecord", -1,
                     _mobi.getFirstNonBookRecord());
             assertEquals("IndxRecord", -1, _mobi.getIndxRecord());
-            assertEquals("HuffmanRecord", -1, _mobi.getHuffmanRecord());
+            assertEquals("HuffmanRecord", 0, _mobi.getHuffmanRecord());
             assertEquals("FirstImageRecord", -1, _mobi.getFirstImageRecord());
             assertEquals("LastContentRecord", 1, _mobi.getLastContentRecord());
             assertEquals("FlisRecord", -1, _mobi.getFlisRecord());

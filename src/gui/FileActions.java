@@ -22,8 +22,8 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 
 import little.nj.util.ImageUtil;
-import exceptions.InvalidHeaderException;
 import format.MobiFile;
+import format.headers.InvalidHeaderException;
 
 public class FileActions {
 
@@ -116,4 +116,6 @@ public class FileActions {
 
     static protected JFileChooser jfc = new JFileChooser(
             System.getProperty("user.dir"));
+    
+    protected FileActions() { }
 }

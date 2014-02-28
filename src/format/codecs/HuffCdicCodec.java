@@ -14,13 +14,12 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package algorithms;
+package format.codecs;
 
-import java.util.Arrays;
+import format.Codec;
+import little.nj.exceptions.NotImplementedException;
 
-import interfaces.ICodec;
-
-public class RawCodec implements ICodec {
+public class HuffCdicCodec implements Codec {
 
     /*
      * (non-Javadoc)
@@ -29,7 +28,7 @@ public class RawCodec implements ICodec {
      */
     @Override
     public byte[] compress(byte[] input) {
-        return Arrays.copyOf(input, input.length);
+        throw new NotImplementedException();
     }
 
     /*
@@ -39,6 +38,7 @@ public class RawCodec implements ICodec {
      */
     @Override
     public byte[] decompress(byte[] input) {
-        return Arrays.copyOf(input, input.length);
+        throw new NotImplementedException();
     }
+
 }

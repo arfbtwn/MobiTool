@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package algorithms;
+package format.codecs;
 
 import static little.nj.util.ConversionUtil.convert;
-import interfaces.ICodec;
+import format.Codec;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
@@ -27,7 +27,7 @@ import java.util.Map;
 
 import little.nj.algorithms.KmpSearch;
 
-public class PalmDocCodec implements ICodec {
+public class PalmDocCodec implements Codec {
 
     /**
      * The default back track distance for repeated string 

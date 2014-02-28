@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2013 Nicholas J. Little <arealityfarbetween@googlemail.com>
+ * Copyright (C) 2013 
+ * Nicholas J. Little <arealityfarbetween@googlemail.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -14,13 +15,18 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package interfaces;
+package gui;
 
-public interface IManageCodecs {
+public final class ProgramInfo {
 
-    ICodec getCodec(String codec);
+    public static final String PROG_NAME = "MobiTool";
 
-    String[] getKeys();
+    public static final int PROG_V_MAJ = 0;
 
-    ICodec[] getValues();
+    public static final int PROG_V_MIN = 5;
+
+    public static final String PROG_VER = 
+            String.format("%1d.%02d", PROG_V_MAJ, PROG_V_MIN);
+    
+    private ProgramInfo() { }
 }

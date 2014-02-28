@@ -18,7 +18,6 @@
 package format;
 
 import format.headers.Enumerations.Encoding;
-import interfaces.ICodec;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,7 +28,7 @@ public class PalmDocText {
 
     public static final short DEFAULT_RECORD_LENGTH = 4096;
 
-    private ICodec codec;
+    private Codec codec;
 
     private Encoding encoding;
 
@@ -55,7 +54,7 @@ public class PalmDocText {
         }
     }
 
-    public ICodec getCodec() {
+    public Codec getCodec() {
         return codec;
     }
 
@@ -67,7 +66,7 @@ public class PalmDocText {
         return new String(o_stream.toByteArray(), encoding.getCharset());
     }
 
-    public void setCodec(ICodec codec) {
+    public void setCodec(Codec codec) {
         this.codec = codec;
     }
 

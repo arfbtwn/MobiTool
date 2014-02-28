@@ -1,67 +1,56 @@
 package gui.components;
 
-import java.awt.BorderLayout;
-
-import javax.swing.AbstractListModel;
 import javax.swing.Action;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import little.nj.gui.components.ListPanel;
 import format.PdbFile;
 import format.records.PdbRecord;
 
 @SuppressWarnings("serial")
-public class PdbPanel extends JPanel {
+public class PdbPanel extends ListPanel {
 
-    private PdbFile file;
-
-    private JScrollPane scroller;
-    private JList<PdbRecord> list;
-    private JPanel controls;
     private JButton export;
 
     public PdbPanel() {
-        list = new JList<>();
-        scroller = new JScrollPane(list);
-        controls = new JPanel();
         export = new JButton("Export...");
-
+        
         init();
     }
 
     private void init() {
-        setLayout(new BorderLayout());
-
-        add(scroller, BorderLayout.CENTER);
-        controls.add(export);
-        add(controls, BorderLayout.PAGE_END);
+        asJList().getSelectionModel().addListSelectionListener(listener);
+        asJPanel().removeAll();
+        asJPanel().add(export);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void setFile(PdbFile file) {
-        this.file = file;
-        list.setModel(new ListModel());
+        DefaultListModel model = (DefaultListModel)asJList().getModel();
+        
+        model.clear();
+        for(PdbRecord i : file.getToc()) {
+            model.addElement(i);
+        }
     }
 
     public void setExportAction(Action a) {
         export.setAction(a);
     }
 
-    public boolean hasSelection() {
-        return list.getSelectedIndices().length > 0;
-    }
-
-    private class ListModel extends AbstractListModel<PdbRecord> {
+    private ListSelectionListener listener = new ListSelectionListener() {
 
         @Override
-        public int getSize() {
-            return file.getToc().getCount();
+        public void valueChanged(ListSelectionEvent e) {
+            if (e.getValueIsAdjusting())
+                return;
+            
+            export.getAction()
+                  .setEnabled(asJList().getSelectedIndices().length > 0);
         }
-
-        @Override
-        public PdbRecord getElementAt(int index) {
-            return file.getToc().records().get(index);
-        }
-    }
+        
+    };
 }

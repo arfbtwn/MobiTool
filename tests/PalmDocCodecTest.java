@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package algorithms;
+
 
 import static org.junit.Assert.*;
 import little.nj.util.Statics;
@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.MobiBaseTest;
+import format.codecs.PalmDocCodec;
 
 public class PalmDocCodecTest extends MobiBaseTest {
 

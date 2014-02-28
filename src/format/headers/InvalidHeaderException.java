@@ -14,29 +14,15 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package test;
+package format.headers;
 
-import java.io.File;
+@SuppressWarnings("serial")
+public class InvalidHeaderException extends Exception {
 
-import little.nj.core.tests.TestBase;
-
-public class MobiBaseTest extends TestBase {
-
-    protected static String _filename = null;
-
-    protected File getHtmlContentFile(String basename) {
-        return getContentFile(basename + ".html");
+    public InvalidHeaderException() {
     }
 
-    protected File getHtmlOutputFile(String basename) {
-        return getOutputFile(basename + ".html");
-    }
-
-    protected File getMobiContentFile(String basename) {
-        return getContentFile(basename + ".mobi");
-    }
-
-    protected File getMobiOutputFile(String basename) {
-        return getOutputFile(basename + ".mobi");
+    public InvalidHeaderException(String m) {
+        super(m);
     }
 }

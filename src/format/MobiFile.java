@@ -17,15 +17,19 @@
  */
 package format;
 
-import interfaces.ICodec;
-import interfaces.IManageCodecs;
+import format.headers.InvalidHeaderException;
+import format.headers.MobiDocHeader;
+import format.headers.PalmDocHeader;
+import format.records.EofRecord;
+import format.records.FcisRecord;
+import format.records.FlisRecord;
+import format.records.PdbRecord;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -35,27 +39,16 @@ import java.util.ListIterator;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
 
 import little.nj.adts.ByteFieldMapSet;
 import little.nj.adts.IntByteField;
 import little.nj.util.StringUtil;
-import util.HtmlImporter;
-import exceptions.InvalidHeaderException;
-import format.headers.MobiDocHeader;
-import format.headers.PalmDocHeader;
-import format.records.EofRecord;
-import format.records.FcisRecord;
-import format.records.FlisRecord;
-import format.records.PdbRecord;
 
 public class MobiFile extends PdbFile {
 
     public static final String IMAGE_EXT = "jpg";
 
-    public IManageCodecs codec_manager;
+    public CodecManager codec_manager;
 
     private List<BufferedImage> images = new LinkedList<BufferedImage>();
 
@@ -69,7 +62,7 @@ public class MobiFile extends PdbFile {
 
     private boolean write_flis, write_fcis;
 
-    public MobiFile(IManageCodecs codecs) {
+    public MobiFile(CodecManager codecs) {
         zero = new PdbRecord();
         palm = new PalmDocHeader();
         mobi = new MobiDocHeader();
@@ -77,7 +70,7 @@ public class MobiFile extends PdbFile {
         codec_manager = codecs;
     }
 
-    public MobiFile(File in, IManageCodecs codecs) throws IOException,
+    public MobiFile(File in, CodecManager codecs) throws IOException,
             InvalidHeaderException {
         super(in);
         codec_manager = codecs;
@@ -128,7 +121,7 @@ public class MobiFile extends PdbFile {
         int record = mobi.getFirstContentRecord();
         int count = palm.getTextRecordCount();
         if (record > 0) {
-            setTextCodec();
+            ensureTextCodec();
             ListIterator<PdbRecord> it = getToc().iterator(record);
 
             while (count-- > 0) {
@@ -244,34 +237,6 @@ public class MobiFile extends PdbFile {
         }
     }
 
-    public void importFromHtml(File file) {
-        setTextCodec();
-
-        final HTMLEditorKit kit = new HTMLEditorKit();
-
-        final HTMLDocument doc;
-
-        HtmlImporter importer = new HtmlImporter();
-
-        if (importer.readFromFile(file)) {
-            importer.stripParagraphStyle();
-
-            doc = importer.getDocument();
-
-            try (StringWriter writer = new StringWriter(doc.getLength())) {
-                kit.write(writer, doc, 0, doc.getLength());
-                getText().setText(writer.toString());
-
-                Object title = doc.getProperty(HTMLDocument.TitleProperty);
-
-                if (title != null)
-                    setTitle((String) title);
-            } catch (BadLocationException | IOException e) {
-                getText().setText(StringUtil.EMPTY_STRING);
-            }
-        }
-    }
-
     @Override
     public boolean writeToFile(File out) {
         refresh();
@@ -344,7 +309,7 @@ public class MobiFile extends PdbFile {
     }
 
     protected int insertText(int record) {
-        setTextCodec();
+        ensureTextCodec();
         byte[][] records = text.getCompressedRecords();
         ListIterator<PdbRecord> it = getToc().iterator(record);
         for (byte[] i : records)
@@ -365,8 +330,8 @@ public class MobiFile extends PdbFile {
         return records.length;
     }
 
-    protected void setTextCodec() {
-        ICodec codec = codec_manager.getCodec(palm.getCompression().toString());
+    protected void ensureTextCodec() {
+        Codec codec = codec_manager.getCodec(palm.getCompression().toString());
         getText().setCodec(codec);
     }
 
